@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: leafandbean
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: leafandbean
+      POSTGRES_PASSWORD: leafandbean123
+      POSTGRES_DB: coffeebean
+    ports:
+      - "5332:5432"
