@@ -25,7 +25,7 @@ public class Employee {
     @Column(name = "employee_lastname", nullable = false)
     private String lastName;
 
-    @Column(name = "employee_username", nullable = false, unique = true)
+    @Column(name = "employee_username", nullable = false, unique = true )
     private String username;
 
     @Column(name = "employee_password", nullable = false)
