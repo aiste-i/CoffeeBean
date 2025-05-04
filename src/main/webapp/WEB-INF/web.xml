@@ -32,4 +32,16 @@
         <param-value>true</param-value>
     </context-param>
 
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.xhtml</form-login-page>
+            <form-error-page>/loginError.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <role-name>User</role-name>
+    </security-role>
+
 </web-app>
