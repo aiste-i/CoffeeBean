@@ -42,6 +42,9 @@ public class Business implements Serializable {
     @Column(name = "business_email")
     private String email;
 
+    @Column(name = "business_password", nullable = false)
+    private String password;
+
     @Convert(converter = BusinessHoursConverter.class)
     @Column(name = "working_hours", columnDefinition = "TEXT")
     private BusinessHours businessHours;
@@ -65,5 +68,10 @@ public class Business implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    /** Simple password verifier (plaintext). */
+    public boolean checkPassword(String rawPassword) {
+    return this.password.equals(rawPassword);
     }
 }
