@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
 @RequestScoped
@@ -60,6 +61,8 @@ public class EmployeeSignUpBean {
     }
 
     public List<EmployeeRole> getAvailableRoles() {
-        return Collections.singletonList(EmployeeRole.EMPLOYEE);
+        return Arrays.stream(EmployeeRole.values())
+                .filter(role -> role != EmployeeRole.ADMIN) 
+                .collect(Collectors.toList());
     }
 }
