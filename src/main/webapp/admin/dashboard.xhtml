@@ -12,12 +12,12 @@
     <p:panel header="Admin Dashboard">
 
         <p>Welcome,
-            <h:outputText value="#{request.remoteUser}" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('EMPLOYEE')}"/>
+            <h:outputText value="#{sessionScope.loggedInUsername}"/>
             !
         </p>
         <p>Your Role:
-            <h:panelGroup rendered="#{request.isUserInRole('ADMIN')}">ADMIN</h:panelGroup>
-            <h:panelGroup rendered="#{request.isUserInRole('EMPLOYEE') and not request.isUserInRole('ADMIN')}">EMPLOYEE</h:panelGroup>
+            <h:panelGroup rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">ADMIN</h:panelGroup>
+            <h:panelGroup rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}">EMPLOYEE</h:panelGroup>
         </p>
 
         <hr/>
@@ -26,10 +26,10 @@
             <p:button value="Manage Orders" outcome="/admin/login.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-bottom: 10px;" />
             <p:button value="Manage Products" outcome="/admin/login.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-bottom: 10px;" />
             <p:button value="Add Employee" outcome="/admin/add-employee.xhtml" icon="pi pi-user-plus"
-                      rendered="#{request.isUserInRole('ADMIN')}"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
             <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
-                      rendered="#{request.isUserInRole('ADMIN')}"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
         </p:panelGrid>
 

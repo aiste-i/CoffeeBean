@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 public class EmployeeLoginBean {
 
     @Inject
-    private EmployeeDAO employeeDAO; // Your DAO for Employee data
+    private EmployeeDAO employeeDAO;
 
     @Getter
     @Setter
@@ -34,48 +34,34 @@ public class EmployeeLoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            Employee employee = employeeDAO.findByUsername(username); // Find by username
+            Employee employee = employeeDAO.findByUsername(username);
 
-            if (employee != null && PasswordUtil.checkPassword(password, employee.getPassword())) { // Check hashed password!
+            if (employee != null && PasswordUtil.checkPassword(password, employee.getPassword())) {
 
-                // --- Login Successful ---
-                HttpSession session = request.getSession(); // Get or create session
-                session.setAttribute("loggedInUserType", "Employee"); // Mark type
-                session.setAttribute("loggedInUserId", employee.getId()); // Store ID
-                 session.setAttribute("loggedInUserRole", employee.getRole());
-                session.setAttribute("loggedInUsername", employee.getUsername()); // For display etc.
+                HttpSession session = request.getSession();
+                session.setAttribute("loggedInUserId", employee.getId());
+                session.setAttribute("loggedInUserRole", employee.getRole());
+                session.setAttribute("loggedInUsername", employee.getUsername());
 
-                // Redirect to the employee/admin area
                 return "/admin/dashboard.xhtml?faces-redirect=true";
 
             } else {
-                // --- Login Failed ---
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username or password."));
-                return null; // Stay on the same page
+                return null;
             }
         } catch (Exception e) {
-            // Log the exception properly
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username or password."));
-            return null; // Stay on the same page
+            return null;
         }
     }
 
     public String logout() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        HttpSession session = request.getSession(false); // Get session only if it exists
+        HttpSession session = request.getSession(false);
         if (session != null) {
-            session.invalidate(); // Invalidate session
+            session.invalidate();
         }
         return "/index.xhtml?faces-redirect=true";
-    }
-
-    public boolean isLoggedIn() {
-        return FacesContext.getCurrentInstance().getExternalContext().getRemoteUser() != null;
-    }
-
-    // Optional: Get username (relies on container security)
-    public String getUsername() {
-        return FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
     }
 }

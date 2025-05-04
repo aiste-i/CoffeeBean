@@ -37,13 +37,13 @@ public class Payment implements Serializable {
     @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @Column(name = "payment_method_type", length = 50) // e.g., "card", "ideal", "sepa_debit" from Stripe
+    @Column(name = "payment_method_type", length = 50)
     private String paymentMethodType;
 
-    @Column(name = "failure_code", length = 100) // e.g., card_declined (from Stripe error)
+    @Column(name = "failure_code", length = 100)
     private String failureCode;
 
-    @Column(name = "failure_message", length = 500) // Message from Stripe error
+    @Column(name = "failure_message", length = 500)
     private String failureMessage;
 
     @Column(name = "gateway", length = 50, nullable = false)

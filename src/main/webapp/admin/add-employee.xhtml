@@ -11,58 +11,57 @@
 
 <h:body>
     <div class="card" style="padding: 20px;">
-        <h:form id="signUpForm">
+        <h:form id="signUpForm" rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">
             <p:panel header="Employee Sign Up" style="margin-bottom: 10px; border: none;">
 
                 <p:messages id="messages" globalOnly="false" showDetail="true" closable="true">
                     <p:autoUpdate/>
                 </p:messages>
 
-                <!-- Grid for Row 1 -->
                 <h:panelGrid columns="4" style="width:100%;" cellpadding="5" columnClasses="ui-g-2, ui-g-4, ui-g-2, ui-g-4">
-                    <p:outputLabel for="firstName" value="First Name: *" />
+                    <p:outputLabel for="firstName" value="First Name:" />
                     <h:panelGroup styleClass="form-group">
-                        <p:inputText id="firstName" value="#{employeeSignUpBean.newEmployee.firstName}" required="true" requiredMessage="First name is required." label="First Name" style="width: 95%"/>
+                        <p:inputText id="firstName" value="#{employeeSignUpBean.newEmployee.firstName}" maxlength="100" required="true" requiredMessage="First name is required." label="First Name" style="width: 95%"/>
                         <p:message for="firstName"/>
                     </h:panelGroup>
 
-                    <p:outputLabel for="lastName" value="Last Name: *" />
+                    <p:outputLabel for="lastName" value="Last Name:" />
                     <h:panelGroup styleClass="form-group">
-                        <p:inputText id="lastName" value="#{employeeSignUpBean.newEmployee.lastName}" required="true" requiredMessage="Last name is required." label="Last Name" style="width: 95%"/>
+                        <p:inputText id="lastName" value="#{employeeSignUpBean.newEmployee.lastName}" maxlength="100" required="true" requiredMessage="Last name is required." label="Last Name" style="width: 95%"/>
                         <p:message for="lastName"/>
                     </h:panelGroup>
                 </h:panelGrid>
 
-                <!-- Grid for Row 2 -->
                 <h:panelGrid columns="4" style="width:100%;" cellpadding="5" columnClasses="ui-g-2, ui-g-4, ui-g-2, ui-g-4">
-                    <p:outputLabel for="username" value="Username: *" />
+                    <p:outputLabel for="username" value="Username:" />
                     <h:panelGroup styleClass="form-group">
-                        <p:inputText id="username" value="#{employeeSignUpBean.newEmployee.username}" required="true" requiredMessage="Username is required." label="Username" style="width: 95%">
+                        <p:inputText id="username" value="#{employeeSignUpBean.newEmployee.username}" required="true" maxlength="100"
+                                     requiredMessage="Username is required."
+                                     label="Username" style="width: 95%"
+                                     validator="#{usernameExistenceValidator.validate}">
                         </p:inputText>
                         <p:message for="username"/>
                     </h:panelGroup>
-                    <h:panelGroup/><!-- Spacer -->
-                    <h:panelGroup/><!-- Spacer -->
+                    <h:panelGroup/>
+                    <h:panelGroup/>
                 </h:panelGrid>
 
-                <!-- Grid for Row 3 -->
                 <h:panelGrid columns="4" style="width:100%;" cellpadding="5" columnClasses="ui-g-2, ui-g-4, ui-g-2, ui-g-4">
-                    <p:outputLabel for="password" value="Password: *" />
+                    <p:outputLabel for="password" value="Password:" />
                     <h:panelGroup styleClass="form-group">
                         <p:password id="password" value="#{employeeSignUpBean.plainPassword}" required="true" feedback="false" requiredMessage="Password is required." label="Password" match="confirmPassword" style="width: 95%"/>
                         <p:message for="password"/>
                     </h:panelGroup>
 
-                    <p:outputLabel for="confirmPassword" value="Confirm Password: *" />
+                    <p:outputLabel for="confirmPassword" value="Confirm Password:" />
                     <h:panelGroup styleClass="form-group">
                         <p:password id="confirmPassword" required="true" feedback="false" requiredMessage="Password confirmation is required." label="Confirm Password" style="width: 95%"/>
                         <p:message for="confirmPassword"/>
                     </h:panelGroup>
                 </h:panelGrid>
 
-                <!-- Grid for Row 4 -->
                 <h:panelGrid columns="4" style="width:100%;" cellpadding="5" columnClasses="ui-g-2, ui-g-4, ui-g-2, ui-g-4">
-                    <p:outputLabel for="role" value="Role: *" />
+                    <p:outputLabel for="role" value="Role:" />
                     <h:panelGroup styleClass="form-group">
                         <p:selectOneMenu id="role" value="#{employeeSignUpBean.newEmployee.role}" required="true" requiredMessage="Role is required." label="Role" style="width: 95%">
                             <f:selectItem itemLabel="Select Role..." itemValue="#{null}" noSelectionOption="true"/>
@@ -70,8 +69,8 @@
                         </p:selectOneMenu>
                         <p:message for="role"/>
                     </h:panelGroup>
-                    <h:panelGroup/><!-- Spacer -->
-                    <h:panelGroup/><!-- Spacer -->
+                    <h:panelGroup/>
+                    <h:panelGroup/>
                 </h:panelGrid>
 
 
@@ -81,7 +80,5 @@
             </p:panel>
         </h:form>
     </div>
-
 </h:body>
-
 </html>

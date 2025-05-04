@@ -7,14 +7,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-@ApplicationScoped // Or @Stateless if using EJB
+@ApplicationScoped
 public class BusinessService {
 
     @Inject
     private BusinessDAO businessDAO;
 
     public Business getActiveBusiness() {
-        // Consider caching this result for performance if frequently needed within a request
         List<Business> businesses = businessDAO.findAll();
 
         if (businesses.size() == 1) {
@@ -30,11 +29,4 @@ public class BusinessService {
         return getActiveBusiness().getId();
     }
 
-//    // Optional: Add method for admin panel later to update business details
-//    @Transactional
-//    public Business updateBusinessDetails(Long id,) {
-//        // Fetch, update, merge logic
-//        // ...
-//        return null; // return updated business
-//    }
 }

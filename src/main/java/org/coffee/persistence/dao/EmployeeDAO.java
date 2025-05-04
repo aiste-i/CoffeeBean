@@ -3,6 +3,8 @@ package org.coffee.persistence.dao;
 import org.coffee.persistence.entity.Employee;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class EmployeeDAO extends BaseDAO<Employee> {
@@ -16,5 +18,23 @@ public class EmployeeDAO extends BaseDAO<Employee> {
                         Employee.class)
                 .setParameter("username", username)
                 .getSingleResult();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public boolean removeByUsername(String username) {
+        try {
+            Employee employee = this.findByUsername(username);
+
+            if (employee != null) {
+                em.remove(employee);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoResultException e) {
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to remove employee (safe) " + username, e);
+        }
     }
 }

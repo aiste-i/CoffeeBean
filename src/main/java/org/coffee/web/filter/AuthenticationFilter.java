@@ -8,15 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
-// Apply this filter ONLY to the paths you want to protect
 @WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/admin/*"})
 public class AuthenticationFilter implements Filter {
 
+    private static final Set<String> ADMIN_ONLY_PATHS = new HashSet<>();
+
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Initialization logic if needed
-        System.out.println("AuthenticationFilter Initialized for /admin/*");
+    public void init(FilterConfig filterConfig) {
+        ADMIN_ONLY_PATHS.add("/admin/add-employee.xhtml");
     }
 
     @Override
@@ -25,63 +27,53 @@ public class AuthenticationFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false); // Get session only if it exists
+        HttpSession session = httpRequest.getSession(false);
 
+        EmployeeRole userRole = null;
         boolean loggedIn = false;
-        boolean authorized = false;
 
-        // --- Check if user is logged in based on session attributes YOU set ---
         if (session != null) {
-            Object loggedInUserType = session.getAttribute("loggedInUserType");
-            Object loggedInUserRole = session.getAttribute("loggedInUserRole"); // Retrieve role
+            Object loggedInUsernameObj = session.getAttribute("loggedInUsername");
+            Object loggedInUserRoleObj = session.getAttribute("loggedInUserRole");
 
-            if ("Employee".equals(loggedInUserType)) { // Check if it's an Employee session
+            if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&
+                    !loggedInUsernameObj.toString().isEmpty() && loggedInUserRoleObj instanceof EmployeeRole) {
+
                 loggedIn = true;
-                // Check if the role is sufficient (ADMIN or EMPLOYEE)
-                if (loggedInUserRole == EmployeeRole.ADMIN || loggedInUserRole == EmployeeRole.EMPLOYEE) {
-                    authorized = true;
-                }
+                userRole = (EmployeeRole) loggedInUserRoleObj;
             }
         }
-        // ----------------------------------------------------------------------
 
-
-        String loginURI = httpRequest.getContextPath() + "/admin/login.xhtml";
+        String contextPath = httpRequest.getContextPath();
+        String loginURI = contextPath + "/admin/login.xhtml";
         String requestedURI = httpRequest.getRequestURI();
+        String pathWithinContext = requestedURI.substring(contextPath.length());
 
         boolean loginRequest = requestedURI.equals(loginURI);
-        // Also allow access to resources needed by the login page (CSS, JS)
         boolean resourceRequest = requestedURI.contains("/javax.faces.resource/");
 
+        if (loginRequest || resourceRequest) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-        if (loggedIn && authorized) {
-            // User is logged in and has the correct role, allow access
-            System.out.println("AuthFilter: User logged in and authorized. Proceeding.");
-            chain.doFilter(request, response); // Continue to the requested resource
-        } else if (loginRequest || resourceRequest) {
-            // Allow access to the login page itself and its resources
-            System.out.println("AuthFilter: Allowing access to login page or resource.");
+        if (!loggedIn) {
+            httpResponse.sendRedirect(loginURI);
+            return;
+        }
+
+        if (ADMIN_ONLY_PATHS.contains(pathWithinContext)) {
+            if (userRole == EmployeeRole.ADMIN) {
+                chain.doFilter(request, response);
+            } else {
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            }
+        }
+        else if (userRole == EmployeeRole.ADMIN || userRole == EmployeeRole.EMPLOYEE) {
             chain.doFilter(request, response);
         }
-        else if (loggedIn && !authorized) {
-            // User is logged in but doesn't have the right role
-            System.out.println("AuthFilter: User logged in but NOT authorized. Redirecting to access denied (or login).");
-            // You might want a dedicated access denied page
-            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-            // Or redirect back to login
-            // httpResponse.sendRedirect(loginURI);
-        }
         else {
-            // User is not logged in, redirect to the login page
-            System.out.println("AuthFilter: User not logged in. Redirecting to login page.");
-            // Store the original requested URL so login can redirect back (Optional)
-            // You could store requestedURI in the session before redirecting
-            httpResponse.sendRedirect(loginURI);
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
         }
-    }
-
-    @Override
-    public void destroy() {
-        // Cleanup logic if needed
     }
 }

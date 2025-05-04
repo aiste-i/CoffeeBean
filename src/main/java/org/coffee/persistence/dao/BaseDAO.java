@@ -2,6 +2,8 @@ package org.coffee.persistence.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
 import static org.coffee.constants.Constants.persistenceUnit;
 
 public abstract class BaseDAO<T> {
@@ -15,10 +17,12 @@ public abstract class BaseDAO<T> {
         this.entityClass = entityClass;
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public void persist(T entity) {
         em.persist(entity);
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public void removeById(Object primaryKey) {
         T entityToRemove = em.find(entityClass, primaryKey);
         if (entityToRemove != null) {
@@ -30,6 +34,7 @@ public abstract class BaseDAO<T> {
         return em.find(entityClass, id);
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public T update(T entity) {
         return em.merge(entity);
     }
