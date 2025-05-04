@@ -11,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -34,7 +35,7 @@ public class EmployeeLoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            Employee employee = employeeDAO.findByUsername(username);
+            Employee employee = getEmployee();
 
             if (employee != null && PasswordUtil.checkPassword(password, employee.getPassword())) {
 
@@ -46,13 +47,23 @@ public class EmployeeLoginBean {
                 return "/admin/dashboard.xhtml?faces-redirect=true";
 
             } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username or password."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
                 return null;
             }
         } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username or password."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
             return null;
         }
+    }
+
+    private Employee getEmployee() {
+        Employee employee = null;
+        try{
+            employee = employeeDAO.findByUsername(username);
+        }catch (NoResultException ignore){
+            employee = employeeDAO.findByEmail(username);
+        }
+        return employee;
     }
 
     public String logout() {

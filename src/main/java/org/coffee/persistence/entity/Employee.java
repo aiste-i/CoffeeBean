@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.coffee.persistence.entity.enums.EmployeeRole;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -27,6 +28,10 @@ public class Employee {
 
     @Column(name = "employee_username", nullable = false, unique = true, length = 100)
     private String username;
+
+    @Email
+    @Column(name = "employee_email", unique = true)
+    private String email;
 
     @Column(name = "employee_password", nullable = false)
     private String password;

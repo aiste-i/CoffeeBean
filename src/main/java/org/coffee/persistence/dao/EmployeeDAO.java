@@ -20,6 +20,14 @@ public class EmployeeDAO extends BaseDAO<Employee> {
                 .getSingleResult();
     }
 
+    public Employee findByEmail(String email) {
+        return em.createQuery(
+                        "SELECT e FROM Employee e WHERE e.email = :email",
+                        Employee.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
+
     @Transactional(Transactional.TxType.REQUIRED)
     public boolean removeByUsername(String username) {
         try {
