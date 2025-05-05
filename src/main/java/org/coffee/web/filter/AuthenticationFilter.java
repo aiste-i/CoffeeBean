@@ -1,4 +1,4 @@
-package org.coffee.web.filter;
+/*package org.coffee.web.filter;
 
 import org.coffee.persistence.entity.enums.EmployeeRole;
 
@@ -76,4 +76,4 @@ public class AuthenticationFilter implements Filter {
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
         }
     }
-}
+}*/

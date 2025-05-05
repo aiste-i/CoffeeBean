@@ -44,6 +44,7 @@ public class EmployeeSignUpBean {
         try {
             newEmployee.setPassword(PasswordUtil.hashPassword(plainPassword));
             newEmployee.setBusiness(businessService.getActiveBusiness());
+            newEmployee.setRole(EmployeeRole.ADMIN);
             employeeDAO.persist(newEmployee);
 
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sign Up Successful",
