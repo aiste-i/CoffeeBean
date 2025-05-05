@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Admin Dashboard</title>
+</h:head>
+
+<h:body>
+
+    <p:panel header="Admin Dashboard">
+
+        <p>Welcome,
+            <h:outputText value="#{sessionScope.loggedInUsername}"/>
+            !
+        </p>
+        <p>Your Role:
+            <h:panelGroup rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">ADMIN</h:panelGroup>
+            <h:panelGroup rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}">EMPLOYEE</h:panelGroup>
+        </p>
+
+        <hr/>
+
+        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
+            <p:button value="Manage Orders" outcome="/admin/login.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-bottom: 10px;" />
+            <p:button value="Manage Products" outcome="/admin/login.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-bottom: 10px;" />
+            <p:button value="Add Employee" outcome="/admin/add-employee.xhtml" icon="pi pi-user-plus"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
+            <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
+        </p:panelGrid>
+
+        <hr style="margin-top: 20px;"/>
+
+        <h:form id="logoutForm">
+            <p:commandButton value="Logout" action="#{employeeLoginBean.logout}"
+            icon="pi pi-sign-out" ajax="false" immediate="true"
+            styleClass="ui-button-danger"/>
+        </h:form>
+
+    </p:panel>
+
+</h:body>
+
+</html>

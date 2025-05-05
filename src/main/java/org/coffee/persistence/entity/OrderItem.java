@@ -40,7 +40,6 @@ public class OrderItem implements Serializable {
     @Column(name = "opt_lock_version")
     private Integer version;
 
-    //not certain about this one
     @Column(name = "order_item_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal priceAtOrder;
 
