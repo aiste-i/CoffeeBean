@@ -7,10 +7,8 @@
     <title>User Login</title>
 </h:head>
 <h:body>
-    <!-- Use h:form now to bind to JSF bean -->
     <h:form id="userLoginForm">
         <p:panel header="User Login" style="width: 400px; margin: 50px auto;">
-            <!-- Use PrimeFaces messages -->
             <p:messages id="messages" showDetail="true" closable="true" />
 
             <h:panelGrid columns="1" cellpadding="5" style="width: 100%;">
@@ -25,14 +23,7 @@
                 <p:message for="password"/>
 
                 <div style="margin-top: 15px; text-align: center;">
-                    <!--
-                        KEY CHANGE:
-                        - action points to the backing bean method.
-                        - update targets the messages component.
-                        - ajax can be true (default) or false. If true, navigation happens via return string.
-                    -->
                     <p:commandButton value="Login" action="#{userLoginBean.login()}" update=":userLoginForm:messages" icon="pi pi-sign-in"/>
-                    <!-- Update targets messages within this form -->
                 </div>
 
             </h:panelGrid>

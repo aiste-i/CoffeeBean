@@ -7,10 +7,8 @@
     <title>Sign Up</title>
 </h:head>
 <h:body>
-    <!-- Use h:form now to bind to JSF bean -->
     <h:form id="userSignupForm">
         <p:panel header="Sign Up" style="width: 400px; margin: 50px auto;">
-            <!-- Use PrimeFaces messages -->
             <p:messages id="messages" showDetail="true" closable="true" />
 
             <h:panelGrid columns="1" cellpadding="5" style="width: 100%;">
@@ -28,23 +26,15 @@
                 <p:password id="password" value="#{userSignUpBean.plainPassword}" required="true" requiredMessage="Password is required." style="width: 95%;" feedback="false" label="Password"/>
                 <p:message for="password"/>
 
-                <p:outputLabel for="repeatPassword" value="Repeat Password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
-                <p:password id="repeatPassword" value="#{userSignUpBean.plainRepeatPassword}" required="true" requiredMessage="Repeat password is required." style="width: 95%;" feedback="false" label="Repeat Password"/>
-                <p:message for="repeatPassword"/>
+                <p:outputLabel for="confirmPassword" value="Confirm Password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
+                <p:password id="confirmPassword" value="#{userSignUpBean.plainRepeatPassword}" match="password" required="true" requiredMessage="Confirming password is required." style="width: 95%;" feedback="false" label="Confirm Password"/>
+                <p:message for="confirmPassword"/>
 
                 <div style="margin-top: 15px; text-align: center;">
-                    <!--
-                        KEY CHANGE:
-                        - action points to the backing bean method.
-                        - update targets the messages component.
-                        - ajax can be true (default) or false. If true, navigation happens via return string.
-                    -->
                     <p:commandButton value="Sign Up" action="#{userSignUpBean.signUp()}" update=":userSignupForm:messages" icon="pi pi-sign-in"/>
-                    <!-- Update targets messages within this form -->
                 </div>
 
             </h:panelGrid>
-            <p>Don't have an account? <a href="signup.xhtml">Create a new one.</a></p>
         </p:panel>
     </h:form>
 </h:body>

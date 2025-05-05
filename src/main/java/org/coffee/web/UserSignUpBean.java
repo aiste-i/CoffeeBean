@@ -45,14 +45,7 @@ public class UserSignUpBean {
 
         try {
             newUser.setEmail(email);
-
-            if(plainPassword.equals(plainRepeatPassword)){
-                newUser.setPassword(PasswordUtil.hashPassword(plainPassword));
-            }
-            else{
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign up failed.", "Password and repeated password don't match."));
-                return null;
-            }
+            newUser.setPassword(PasswordUtil.hashPassword(plainPassword));
 
             userDAO.persist(newUser);
 
@@ -62,7 +55,6 @@ public class UserSignUpBean {
                 session.setAttribute("loggedInUserType", "User"); // Mark type
                 session.setAttribute("loggedInUserId", user.getId());
                 session.setAttribute("loggedInUserEmail", user.getEmail());
-                return "/index.xhtml?faces-redirect=true";
             }
 
             return "/index.xhtml?faces-redirect=true";
