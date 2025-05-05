@@ -11,7 +11,7 @@
 
 <h:body>
     <div class="card" style="padding: 20px;">
-        <h:form id="signUpForm" >
+        <h:form id="signUpForm" rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">
             <p:panel header="Employee Sign Up" style="margin-bottom: 10px; border: none;">
 
                 <p:messages id="messages" globalOnly="false" showDetail="true" closable="true">
