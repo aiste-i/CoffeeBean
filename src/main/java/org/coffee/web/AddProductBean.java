@@ -3,6 +3,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.Product;
 import org.coffee.util.PasswordUtil;
@@ -17,6 +18,8 @@ import javax.transaction.Transactional;
 @Named
 @RequestScoped
 public class AddProductBean {
+    @Inject
+    private ProductDAO productDAO;
 
     @Getter
     @Setter
@@ -27,6 +30,7 @@ public class AddProductBean {
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
+            productDAO.persist(newProduct);
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Product Creation Successful",
                     "Product '" + newProduct.getName() + "' created."));
 
