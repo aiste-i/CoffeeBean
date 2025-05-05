@@ -4,6 +4,14 @@
         <jta-data-source>java:/CoffeeBeanDS</jta-data-source>
         <class>org.coffee.persistence.entity.Employee</class>
         <class>org.coffee.persistence.entity.Business</class>
+        <class>org.coffee.persistence.entity.User</class>
+        <class>org.coffee.persistence.entity.Product</class>
+        <class>org.coffee.persistence.entity.ProductVariation</class>
+        <class>org.coffee.persistence.entity.Payment</class>
+        <class>org.coffee.persistence.entity.Order</class>
+        <class>org.coffee.persistence.entity.OrderItem</class>
+        <class>org.coffee.persistence.entity.Category</class>
+
 
         <properties>
             <property name="hibernate.show_sql" value="true"/>
