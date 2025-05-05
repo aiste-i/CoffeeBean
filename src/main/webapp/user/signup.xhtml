@@ -4,25 +4,33 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>User Login</title>
+    <title>Sign Up</title>
 </h:head>
 <h:body>
     <!-- Use h:form now to bind to JSF bean -->
-    <h:form id="userLoginForm">
-        <p:panel header="User Login" style="width: 400px; margin: 50px auto;">
+    <h:form id="userSignupForm">
+        <p:panel header="Sign Up" style="width: 400px; margin: 50px auto;">
             <!-- Use PrimeFaces messages -->
             <p:messages id="messages" showDetail="true" closable="true" />
 
             <h:panelGrid columns="1" cellpadding="5" style="width: 100%;">
 
                 <p:outputLabel for="email" value="E-mail:" style="display: block; margin-bottom: 3px;"/>
-                <p:inputText id="email" value="#{userLoginBean.email}" required="true" requiredMessage="E-mail is required." style="width: 95%;" label="E-mail"/>
-                <p:message for="email"/>
-
+                <p:inputText id="email"
+                             value="#{userSignUpBean.email}"
+                             required="true"
+                             requiredMessage="E-mail is required."
+                             style="width: 95%;"
+                             label="E-mail"/>
+                <p:message for="email" />
 
                 <p:outputLabel for="password" value="Password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
-                <p:password id="password" value="#{userLoginBean.password}" required="true" requiredMessage="Password is required." style="width: 95%;" feedback="false" label="Password"/>
+                <p:password id="password" value="#{userSignUpBean.plainPassword}" required="true" requiredMessage="Password is required." style="width: 95%;" feedback="false" label="Password"/>
                 <p:message for="password"/>
+
+                <p:outputLabel for="repeatPassword" value="Repeat Password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
+                <p:password id="repeatPassword" value="#{userSignUpBean.plainRepeatPassword}" required="true" requiredMessage="Repeat password is required." style="width: 95%;" feedback="false" label="Repeat Password"/>
+                <p:message for="repeatPassword"/>
 
                 <div style="margin-top: 15px; text-align: center;">
                     <!--
@@ -31,7 +39,7 @@
                         - update targets the messages component.
                         - ajax can be true (default) or false. If true, navigation happens via return string.
                     -->
-                    <p:commandButton value="Login" action="#{userLoginBean.login()}" update=":userLoginForm:messages" icon="pi pi-sign-in"/>
+                    <p:commandButton value="Sign Up" action="#{userSignUpBean.signUp()}" update=":userSignupForm:messages" icon="pi pi-sign-in"/>
                     <!-- Update targets messages within this form -->
                 </div>
 

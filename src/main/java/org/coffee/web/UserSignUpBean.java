@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 @Named
@@ -31,6 +32,10 @@ public class UserSignUpBean {
 
     @Getter
     @Setter
+    private String plainRepeatPassword;
+
+    @Getter
+    @Setter
     private User newUser = new User();
 
     @Transactional
@@ -40,23 +45,31 @@ public class UserSignUpBean {
 
         try {
             newUser.setEmail(email);
-            newUser.setPassword(PasswordUtil.hashPassword(plainPassword));
+
+            if(plainPassword.equals(plainRepeatPassword)){
+                newUser.setPassword(PasswordUtil.hashPassword(plainPassword));
+            }
+            else{
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign up failed.", "Password and repeated password don't match."));
+                return null;
+            }
+
             userDAO.persist(newUser);
 
-            // Clear the form state (since it's RequestScoped, it's implicitly cleared, but good practice)
-            newUser = new User();
-            email = null;
-            plainPassword = null;
+            User user = userDAO.findByUsername(email);
+            if (user != null && PasswordUtil.checkPassword(plainPassword, user.getPassword())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("loggedInUserType", "User"); // Mark type
+                session.setAttribute("loggedInUserId", user.getId());
+                session.setAttribute("loggedInUserEmail", user.getEmail());
+                return "/index.xhtml?faces-redirect=true";
+            }
 
-            // Redirect to the admin login page after successful signup
-            // Use faces-redirect=true for a clean GET request after POST
-            return "/user/login.xhtml?faces-redirect=true";
+            return "/index.xhtml?faces-redirect=true";
 
 
         } catch (Exception e) {
-            // Log the exception e properly using a Logger
-            System.err.println("Error during sign up: " + e.getMessage()); // Replace with Logger
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign Up Failed", "An unexpected error occurred."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign up failed.", "An unexpected error occurred."));
             return null; // Stay on the same page
         }
     }

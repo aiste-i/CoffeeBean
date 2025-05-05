@@ -9,6 +9,12 @@
       <p:menuitem value="Employee/Admin Login"
                   outcome="/admin/login.xhtml"
                   icon="pi pi-briefcase" />
+      <p:menuitem rendered="#{empty sessionScope.loggedInUserId}" value="User Login"
+                  outcome="/user/login.xhtml"
+                  icon="pi pi-sign-in" />
+      <p:menuitem rendered="#{not empty sessionScope.loggedInUserId}" value="Logout"
+                  outcome="#{userLoginBean.logout()}"
+                  icon="pi pi-sign-out" />
    </p:menubar>
    <div style="padding: 20px;">
       <h1>Welcome to The Daily Grind!</h1>
