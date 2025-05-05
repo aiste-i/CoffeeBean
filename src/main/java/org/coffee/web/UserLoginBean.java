@@ -2,9 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.dao.UserDAO;
-import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
 import org.coffee.util.PasswordUtil;
 
