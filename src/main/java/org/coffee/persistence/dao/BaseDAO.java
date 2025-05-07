@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import java.util.List;
+
 import static org.coffee.constants.Constants.persistenceUnit;
 
 public abstract class BaseDAO<T> {
@@ -38,4 +40,10 @@ public abstract class BaseDAO<T> {
     public T update(T entity) {
         return em.merge(entity);
     }
+
+    public List<T> findAll() {
+        return em.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
+                .getResultList();
+    }
+
 }
