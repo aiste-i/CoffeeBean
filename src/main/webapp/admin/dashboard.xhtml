@@ -23,12 +23,32 @@
         <hr/>
 
         <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
-            <p:button value="Manage Orders" outcome="/admin/login.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-bottom: 10px;" />
-            <p:button value="Manage Products" outcome="/admin/manage-products.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-bottom: 10px;" />
-            <p:button value="Add Employee" outcome="/admin/add-employee.xhtml" icon="pi pi-user-plus"
+            <p:button value="Manage Orders"
+                      outcome="/admin/login.xhtml"
+                      icon="pi pi-shopping-cart"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
+
+            <p:button value="Manage Products"
+                      outcome="/admin/manage-products.xhtml"
+                      icon="pi pi-tags"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
+
+            <p:button value="Add Employee"
+                      outcome="/admin/add-employee.xhtml"
+                      icon="pi pi-user-plus"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
-            <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
+
+            <p:button value="Manage Employees"
+                      outcome="/admin/login.xhtml"
+                      icon="pi pi-users"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
+
+            <!-- Change Business Email button -->
+            <p:button value="Change Email"
+                      outcome="/admin/change-email.xhtml"
+                      icon="pi pi-envelope"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
         </p:panelGrid>
@@ -36,13 +56,15 @@
         <hr style="margin-top: 20px;"/>
 
         <h:form id="logoutForm">
-            <p:commandButton value="Logout" action="#{employeeLoginBean.logout}"
-            icon="pi pi-sign-out" ajax="false" immediate="true"
-            styleClass="ui-button-danger"/>
+            <p:commandButton value="Logout"
+                             action="#{employeeLoginBean.logout}"
+                             icon="pi pi-sign-out"
+                             ajax="false"
+                             immediate="true"
+                             styleClass="ui-button-danger"/>
         </h:form>
 
     </p:panel>
 
 </h:body>
-
 </html>

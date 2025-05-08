@@ -28,11 +28,14 @@ public class EmployeeDAO extends BaseDAO<Employee> {
                 .getSingleResult();
     }
 
+    public Employee findById(Long id) {
+        return em.find(Employee.class, id);
+    }
+
     @Transactional(Transactional.TxType.REQUIRED)
     public boolean removeByUsername(String username) {
         try {
             Employee employee = this.findByUsername(username);
-
             if (employee != null) {
                 em.remove(employee);
                 return true;
@@ -44,5 +47,10 @@ public class EmployeeDAO extends BaseDAO<Employee> {
         } catch (Exception e) {
             throw new RuntimeException("Failed to remove employee (safe) " + username, e);
         }
+    }
+
+    @Transactional
+    public void merge(Employee employee) {
+        em.merge(employee);
     }
 }
