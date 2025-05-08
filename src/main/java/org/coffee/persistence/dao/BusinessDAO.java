@@ -31,9 +31,4 @@ public class BusinessDAO extends BaseDAO<Business> {
         return update(business);
     }
 
-    public List<Business> findAll(){
-        return em.createQuery("SELECT b FROM Business b", Business.class)
-                .getResultList();
-    }
-
 }
