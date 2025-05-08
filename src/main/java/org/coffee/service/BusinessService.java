@@ -1,8 +1,10 @@
 package org.coffee.service;
 
 import org.coffee.persistence.dao.BusinessDAO;
+import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Business;
+import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
 import org.coffee.util.PasswordUtil;
 
@@ -20,6 +22,12 @@ public class BusinessService {
     @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private EmployeeDAO employeeDAO;
+
+    /**
+     * Returns the single active Business in the system.
+     */
     public Business getActiveBusiness() {
         List<Business> businesses = businessDAO.findAll();
 
@@ -32,16 +40,15 @@ public class BusinessService {
         }
     }
 
+    /**
+     * Helper to fetch the ID of the active Business.
+     */
     public Long getActiveBusinessId() {
         return getActiveBusiness().getId();
     }
 
     /**
      * Change a user's password.
-     * @param userId          the database ID of the user
-     * @param currentPassword the existing plain‐text password to verify
-     * @param newPassword     the new plain‐text password
-     * @throws IllegalArgumentException if the current password is wrong or the user is not found
      */
     @Transactional
     public void updatePassword(Long userId, String currentPassword, String newPassword) {
@@ -50,15 +57,37 @@ public class BusinessService {
             throw new IllegalArgumentException("User not found");
         }
 
-        // verify current password
         if (!PasswordUtil.checkPassword(currentPassword, user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
 
-        // hash & set new password
         user.setPassword(PasswordUtil.hashPassword(newPassword));
-
-        // merge back to the database
         userDAO.merge(user);
+    }
+
+    /**
+     * Change the business email—admin must re‐enter their password for confirmation.
+     *
+     * @param adminId         the database ID of the logged‐in employee
+     * @param currentPassword the admin's plain-text password to verify
+     * @param newEmail        the new business email address
+     */
+    @Transactional
+    public void updateBusinessEmail(Long adminId, String currentPassword, String newEmail) {
+        // 1) verify admin credentials
+        Employee admin = employeeDAO.findById(adminId);
+        if (admin == null) {
+            throw new IllegalArgumentException("Admin not found");
+        }
+        if (!PasswordUtil.checkPassword(currentPassword, admin.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        // 2) load the single Business
+        Business business = getActiveBusiness();
+
+        // 3) update its email and save
+        business.setEmail(newEmail);
+        businessDAO.update(business);
     }
 }

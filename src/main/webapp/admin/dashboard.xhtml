@@ -31,7 +31,11 @@
             <p:button value="Change password" outcome="/admin/change-password.xhtml" icon="pi pi-user-plus"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
-            <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
+
+            <!-- Change Business Email button -->
+            <p:button value="Change Email"
+                      outcome="/admin/change-email.xhtml"
+                      icon="pi pi-envelope"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
         </p:panelGrid>
@@ -39,13 +43,15 @@
         <hr style="margin-top: 20px;"/>
 
         <h:form id="logoutForm">
-            <p:commandButton value="Logout" action="#{employeeLoginBean.logout}"
-            icon="pi pi-sign-out" ajax="false" immediate="true"
-            styleClass="ui-button-danger"/>
+            <p:commandButton value="Logout"
+                             action="#{employeeLoginBean.logout}"
+                             icon="pi pi-sign-out"
+                             ajax="false"
+                             immediate="true"
+                             styleClass="ui-button-danger"/>
         </h:form>
 
     </p:panel>
 
 </h:body>
-
 </html>
