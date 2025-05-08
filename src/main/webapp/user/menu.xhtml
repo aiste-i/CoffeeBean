@@ -21,6 +21,34 @@
 
       <!-- Content inside panel -->
       <h:outputText value="Main content goes here." />
+      <div class="card product">
+         <h:form id="form">
+            <p:dataView var="product" value="#{showPorductBean.productList}" rows="12" paginator="true"
+                        rowsPerPageTemplate="6,12,16"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        gridIcon="pi pi-th-large" listIcon="" layout="grid">
+
+               <p:dataViewGridItem>
+                  <div class="product-grid-item card border-1">
+                     <div class="product-grid-item-content text-center">
+                        <p:graphicImage value="#{resource['images/dark-coffee.jpg']}"/>
+                        <div class="product-name mt-2">#{product.name}</div>
+                        <div class="product-price font-bold mt-1">
+                           <h:outputText value="#{10}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
+                              <f:convertNumber currencySymbol="$" type="currency"/>
+                           </h:outputText>
+                        </div>
+                        <p:commandButton type="button"
+                                         value="Add To Cart"
+                                         icon="pi pi-shopping-cart"
+                                         styleClass="mt-2"/>
+                     </div>
+                  </div>
+               </p:dataViewGridItem>
+
+            </p:dataView>
+         </h:form>
+      </div>
    </p:panel>
 
    <p:sidebar widgetVar="sidebar2" position="right">
