@@ -15,6 +15,9 @@
                 <p:commandButton value="Add Product" icon="pi pi-plus" update=":dialogs:productDialog"
                                  oncomplete="PF('productDialog').show()" actionListener="#{managementBean.openNew}" />
             </p:toolbarGroup>
+            <p:toolbarGroup align="right">
+                <p:button value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi-home"/>
+            </p:toolbarGroup>
         </p:toolbar>
 
         <p:dataTable id="dt-products" widgetVar="dtProducts" var="product"
