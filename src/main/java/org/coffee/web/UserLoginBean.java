@@ -62,6 +62,6 @@ public class UserLoginBean {
         if (session != null) {
             session.invalidate(); // Invalidate session
         }
-        return "/index.xhtml?faces-redirect=true";
+        return "/user/menu.xhtml";
     }
 }
