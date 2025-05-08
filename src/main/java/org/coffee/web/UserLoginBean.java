@@ -43,7 +43,7 @@ public class UserLoginBean {
                 session.setAttribute("loggedInUserId", user.getId()); // Store ID
                 session.setAttribute("loggedInUserEmail", user.getEmail());
 
-                return "/index.xhtml?faces-redirect=true";
+                return "/user/menu.xhtml";
 
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed.", "Invalid username or password."));
