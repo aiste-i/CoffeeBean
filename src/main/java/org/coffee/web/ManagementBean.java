@@ -5,11 +5,11 @@ import lombok.Setter;
 import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.Product;
 
-
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -21,8 +21,8 @@ public class ManagementBean implements Serializable {
     @Inject
     private ProductDAO productDAO;
 
-    private Product newProduct = new Product();
     private Product selectedProduct;
+    private List<Product> selectedProducts;
 
     private List<Product> productList;
 
@@ -33,15 +33,16 @@ public class ManagementBean implements Serializable {
         return productList;
     }
 
-
-    public void addProduct() {
-        productDAO.persist(newProduct);
-        refreshProductList();
-        newProduct = new Product(); // reset form
+    public void openNew() {
+        selectedProduct = new Product();
     }
 
-    public void updateProduct() {
-        productDAO.update(selectedProduct);
+    public void saveProduct() {
+        if (selectedProduct.getId() == null) {
+            productDAO.persist(selectedProduct);
+        } else {
+            productDAO.update(selectedProduct);
+        }
         refreshProductList();
         selectedProduct = null;
     }
@@ -54,12 +55,7 @@ public class ManagementBean implements Serializable {
         }
     }
 
-    public void selectProduct(Product product) {
-        selectedProduct = product;
-    }
-
     public void refreshProductList() {
         productList = productDAO.findAll();
     }
-
 }
