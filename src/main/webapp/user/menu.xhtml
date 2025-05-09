@@ -26,13 +26,18 @@
             <p:dataView var="product" value="#{showPorductBean.productList}" rows="12" paginator="true"
                         rowsPerPageTemplate="6,12,16"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                        gridIcon="pi pi-th-large" listIcon="" layout="grid">
+                        gridIcon="pi pi-th-large" listIcon="pi pi-bars" layout="grid"
+                        styleClass="grid"
+                        gridRowStyleClass="xl:col-3 lg:col-3 md:col-4 sm:col-6">
 
                <p:dataViewGridItem>
                   <div class="product-grid-item card border-1">
-                     <div class="product-grid-item-content text-center">
-                        <p:graphicImage value="#{resource['images/dark-coffee.jpg']}"/>
+                     <div class="product-grid-item-content">
+                        <p:graphicImage name="dark-coffee.jpg" alt="Coffee"
+                                        style="max-height:15rem; height:auto; width:auto; display:block; margin:auto;" />
                         <div class="product-name mt-2">#{product.name}</div>
+                     </div>
+                     <div class="product-grid-item-bottom">
                         <div class="product-price font-bold mt-1">
                            <h:outputText value="#{10}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
                               <f:convertNumber currencySymbol="$" type="currency"/>
