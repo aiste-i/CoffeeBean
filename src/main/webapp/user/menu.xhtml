@@ -19,20 +19,18 @@
          </h:panelGrid>
       </f:facet>
 
-      <!-- Content inside panel -->
       <div class="card product">
          <h:form id="form">
             <p:dataView var="product" value="#{showPorductBean.productList}" rows="12" paginator="true"
-                        rowsPerPageTemplate="6,12,16"
+                        rowsPerPageTemplate="4,12,16"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         layout="grid"
-                        styleClass="grid"
                         gridRowStyleClass="col-3">
 
                <p:dataViewGridItem>
-                  <div class="product-grid-item card border-1">
+                  <div class="product-grid-item card border-1 col-12 md:col-6 lg:col-3" style="max-width:50%">
                      <div class="product-grid-item-content">
-                        <p:graphicImage name="dark-coffee.jpg" alt="Coffee" style="max-width:100%; height:auto; display:block; margin:auto; border:15rem" />
+                        <p:graphicImage name="dark-coffee-small.jpg" alt="Coffee" style="max-width:100%; height:auto; display:block; margin:auto; border:15rem" />
                         <div class="product-name mt-2">#{product.name}</div>
                      </div>
                      <div class="product-grid-item-bottom">
