@@ -61,7 +61,7 @@ public class PasswordForgotBean implements Serializable {
             if(user != null){
                 token = tokenBean.generateToken();
 
-                reset.setEmail(email);
+                reset.setUser(user);
                 reset.setToken(token);
 
                 resetDAO.persist(reset);

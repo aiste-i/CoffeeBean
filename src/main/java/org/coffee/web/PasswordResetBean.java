@@ -55,7 +55,7 @@ public class PasswordResetBean implements Serializable {
         tokenValid = validateToken(token);
 
         if(tokenValid){
-            user = userDAO.findByUsername(reset.getEmail());
+            user = userDAO.find(reset.getUser().getId());
         }
     }
 
@@ -89,7 +89,6 @@ public class PasswordResetBean implements Serializable {
         }
         catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Password reset failed.", "An unexpected error occurred."));
-            System.err.println(e.getMessage());
             return null; // Stay on the same page
         }
     }

@@ -21,9 +21,8 @@ public class PasswordReset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
-    @Column(name = "user_email", nullable = false)
-    private String email;
+    @OneToOne
+    private User user;
 
     @Column(name = "reset_token")
     private String token;
@@ -50,6 +49,6 @@ public class PasswordReset {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, token);
+        return Objects.hash(id, user, token);
     }
 }
