@@ -2,7 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.service.BusinessService;
+import org.coffee.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 public class ChangePasswordBean {
 
     @Inject
-    private BusinessService businessService;
+    private UserService userService;        // ← inject UserService
 
     @Getter @Setter
     private String currentPassword;
@@ -30,7 +30,6 @@ public class ChangePasswordBean {
     public String changePassword() {
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        // confirm new/confirm match
         if (!newPassword.equals(confirmPassword)) {
             ctx.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -38,21 +37,18 @@ public class ChangePasswordBean {
             return null;
         }
 
-        // get logged-in user ID
         HttpSession session = (HttpSession) ctx
                 .getExternalContext().getSession(false);
         Long userId = (Long) session.getAttribute("loggedInUserId");
 
         try {
-            businessService.updatePassword(userId, currentPassword, newPassword);
+            userService.updatePassword(userId, currentPassword, newPassword);
 
-            // keep FacesMessages across redirect
             ctx.getExternalContext().getFlash().setKeepMessages(true);
             ctx.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Password changed successfully", null));
 
-            // redirect to home
             return "/index.xhtml?faces-redirect=true";
 
         } catch (IllegalArgumentException ex) {
