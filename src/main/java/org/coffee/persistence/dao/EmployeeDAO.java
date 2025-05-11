@@ -5,6 +5,7 @@ import org.coffee.persistence.entity.Employee;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @ApplicationScoped
 public class EmployeeDAO extends BaseDAO<Employee> {
@@ -12,26 +13,40 @@ public class EmployeeDAO extends BaseDAO<Employee> {
         super(Employee.class);
     }
 
-    public Employee findByUsername(String username) {
-        return em.createQuery(
-                        "SELECT e FROM Employee e WHERE e.username = :username",
-                        Employee.class)
-                .setParameter("username", username)
-                .getSingleResult();
+    public Optional<Employee> findByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        try {
+            Employee employee = em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.username = :username", Employee.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+            return Optional.of(employee);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
-    public Employee findByEmail(String email) {
-        return em.createQuery(
-                        "SELECT e FROM Employee e WHERE e.email = :email",
-                        Employee.class)
-                .setParameter("email", email)
-                .getSingleResult();
+    public Optional<Employee> findByEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        try {
+            Employee employee = em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.email = :email", Employee.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+            return Optional.of(employee);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
     public boolean removeByUsername(String username) {
         try {
-            Employee employee = this.findByUsername(username);
+            Employee employee = this.findByUsername(username).orElse(null);
 
             if (employee != null) {
                 em.remove(employee);
