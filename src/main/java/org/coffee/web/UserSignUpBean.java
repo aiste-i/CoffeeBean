@@ -57,7 +57,7 @@ public class UserSignUpBean {
                 session.setAttribute("loggedInUserEmail", user.getEmail());
             }
 
-            return "/user/menu.xhtml";
+            return "/user/menu.xhtml?faces-redirect=true";
 
 
         } catch (Exception e) {

@@ -11,6 +11,7 @@
         <class>org.coffee.persistence.entity.Order</class>
         <class>org.coffee.persistence.entity.OrderItem</class>
         <class>org.coffee.persistence.entity.Category</class>
+        <class>org.coffee.persistence.entity.PasswordReset</class>
 
 
         <properties>
