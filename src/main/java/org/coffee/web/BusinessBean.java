@@ -1,28 +1,26 @@
 package org.coffee.web;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.coffee.persistence.dao.BusinessDAO;
 import org.coffee.persistence.entity.Business;
+import org.coffee.service.BusinessService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.transaction.Transactional;
-import java.io.Serializable;
 
-@RequestScoped
 @Named("businessBean")
-public class BusinessBean implements Serializable {
+@RequestScoped
+public class BusinessBean {
+
     @Inject
-    private BusinessDAO businessDAO;
+    private BusinessService businessService;
 
-    @Getter
-    @Setter
-    private Business business = new Business();
+    /** Returns the single configured Business */
+    public Business getActiveBusiness() {
+        return businessService.getActiveBusiness();
+    }
 
-    @Transactional
-    public void create(){
-        businessDAO.persist(business);
+    /** Shortcut for the email */
+    public String getEmail() {
+        return getActiveBusiness().getEmail();
     }
 }

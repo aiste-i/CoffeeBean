@@ -16,6 +16,7 @@
                     placeholder="Current Password"
                     required="true"
                     requiredMessage="Please enter your current password" />
+            <p:message for="currentPwd" display="text" />
         </p:panel>
 
         <p:panel header="New Business Email">
@@ -25,6 +26,8 @@
                     placeholder="new@example.com"
                     required="true"
                     requiredMessage="Please enter the new email address" />
+            <!-- shows @Email violations -->
+            <p:message for="newEmail" display="text" />
         </p:panel>
 
         <p:commandButton value="Change Email"
