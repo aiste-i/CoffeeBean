@@ -34,6 +34,14 @@
                 <h:outputText value="#{product.description}"/>
             </p:column>
 
+            <p:column headerText="Category" sortBy="#{product.category}" filterBy="#{product.category}">
+                <h:outputText value="#{product.category}"/>
+            </p:column>
+
+            <p:column headerText="Price" sortBy="#{product.price}" filterBy="#{product.price}">
+                <h:outputText value="#{product.price}"/>
+            </p:column>
+
 
             <p:column headerText="Actions" exportable="false">
                 <p:commandButton icon="pi pi-pencil" update=":dialogs:productDialog"
@@ -57,8 +65,14 @@
                     <p:outputLabel for="name" value="Name:" />
                     <p:inputText id="name" value="#{managementBean.selectedProduct.name}" required="true"/>
 
-                    <p:outputLabel for="price" value="Description:" />
-                    <p:inputText id="price" value="#{managementBean.selectedProduct.description}" required="true" />
+                    <p:outputLabel for="description" value="Description:" />
+                    <p:inputText id="description" value="#{managementBean.selectedProduct.description}" required="true" />
+
+                    <p:outputLabel for="category" value="Category:" />
+                    <p:inputText id="category" value="#{managementBean.selectedProduct.category}" required="true"/>
+
+                    <p:outputLabel for="price" value="Price:" />
+                    <p:inputText id="price" value="#{managementBean.selectedProduct.price}" required="true"/>
 
                 </p:panelGrid>
 
