@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Email;
 
 @Named("changeBusinessEmailBean")
 @RequestScoped
@@ -21,6 +22,7 @@ public class ChangeBusinessEmailBean {
     @Getter @Setter
     private String currentPassword;
 
+    @Email(message = "Please enter a valid e-mail address")
     @Getter @Setter
     private String newEmail;
 
