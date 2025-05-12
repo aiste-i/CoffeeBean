@@ -28,9 +28,6 @@ public class PasswordForgotBean implements Serializable {
     private TokenBean tokenBean;
 
     @Inject
-    private BaseUrlProvider urlProvider;
-
-    @Inject
     private UserDAO userDAO;
 
     @Inject
@@ -66,7 +63,7 @@ public class PasswordForgotBean implements Serializable {
 
                 resetDAO.persist(reset);
 
-                // change later to urlProvider.getBaseUrl() + "/reset-password.xhtml?token=" + token
+                // change later to BaseUrlProvider.getBaseUrl() + "/user/reset-password.xhtml?token=" + token
                 String resetUrl = "http://localhost:8080/coffee-1.0-SNAPSHOT/user/reset-password.xhtml?token=" + token;
 
                 emailSenderBean.setDefaultSender(true);

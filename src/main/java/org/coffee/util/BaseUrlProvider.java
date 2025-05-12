@@ -5,8 +5,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 
-@RequestScoped
-public class BaseUrlProvider {
+public final class BaseUrlProvider {
 
     public String getBaseUrl() {
         FacesContext context = FacesContext.getCurrentInstance();
