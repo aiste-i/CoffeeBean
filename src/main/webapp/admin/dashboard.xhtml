@@ -28,6 +28,9 @@
             <p:button value="Add Employee" outcome="/admin/add-employee.xhtml" icon="pi pi-user-plus"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
+            <p:button value="Change password" outcome="/admin/change-password.xhtml" icon="pi pi-user-plus"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                      style="margin-right: 10px; margin-bottom: 10px;" />
             <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />

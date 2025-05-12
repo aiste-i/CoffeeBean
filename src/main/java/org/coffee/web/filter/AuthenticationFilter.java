@@ -19,6 +19,7 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) {
         ADMIN_ONLY_PATHS.add("/admin/add-employee.xhtml");
+        ADMIN_ONLY_PATHS.add("/admin/change-password.xhtml");
     }
 
     @Override
@@ -48,6 +49,10 @@ public class AuthenticationFilter implements Filter {
         String loginURI = contextPath + "/admin/login.xhtml";
         String requestedURI = httpRequest.getRequestURI();
         String pathWithinContext = requestedURI.substring(contextPath.length());
+
+        httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        httpResponse.setHeader("Pragma", "no-cache");
+        httpResponse.setDateHeader("Expires", 0);
 
         boolean loginRequest = requestedURI.equals(loginURI);
         boolean resourceRequest = requestedURI.contains("/javax.faces.resource/");
