@@ -2,7 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.entity.enums.EmployeeRole;
+import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.service.EmployeeService;
 
 import javax.enterprise.context.RequestScoped;
@@ -46,7 +46,7 @@ public class EmployeeChangeBean {
             return null;
         }
 
-        if(Enum.valueOf(EmployeeRole.class, session.getAttribute("loggedInUserRole").toString()) != EmployeeRole.ADMIN){
+        if(Enum.valueOf(UserRole.class, session.getAttribute("loggedInUserRole").toString()) != UserRole.ADMIN){
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Password change failed", "Password cannot be changed"));
             return null;
         }
