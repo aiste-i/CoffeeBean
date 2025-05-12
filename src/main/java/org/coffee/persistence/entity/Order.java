@@ -79,7 +79,7 @@ public class Order implements Serializable {
 
     public BigDecimal calculateTotalPrice() {
         return this.items.stream()
-                .map(OrderItem::getOrderItemPrice)
+                .map(OrderItem::calculatePrice)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

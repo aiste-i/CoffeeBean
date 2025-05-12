@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.persistence.entity.enums.EmployeeRole;
+import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.service.BusinessService;
 import org.coffee.util.PasswordUtil;
 
@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,9 +59,9 @@ public class EmployeeSignUpBean {
         }
     }
 
-    public List<EmployeeRole> getAvailableRoles() {
-        return Arrays.stream(EmployeeRole.values())
-                .filter(role -> role != EmployeeRole.ADMIN)
+    public List<UserRole> getAvailableRoles() {
+        return Arrays.stream(UserRole.values())
+                .filter(role -> role != UserRole.ADMIN)
                 .collect(Collectors.toList());
     }
 }

@@ -3,7 +3,7 @@ package org.coffee.persistence.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.coffee.persistence.entity.enums.EmployeeRole;
+import org.coffee.persistence.entity.enums.UserRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -38,7 +38,7 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "employee_role", nullable = false)
-    private EmployeeRole role;
+    private UserRole role;
 
     @Column(name = "deleted", nullable = false)
     private boolean isDeleted;

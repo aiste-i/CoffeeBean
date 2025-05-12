@@ -26,13 +26,15 @@
                 <p:password id="password" value="#{userSignUpBean.plainPassword}" match="confirmPassword" required="true" requiredMessage="Password is required." style="width: 95%;" feedback="false" label="Password"/>
                 <p:message for="password"/>
 
-                <p:outputLabel for="confirmPassword" value="Confirm Password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
+                <p:outputLabel for="confirmPassword" value="Confirm password:" style="display: block; margin-bottom: 3px; margin-top: 10px;"/>
                 <p:password id="confirmPassword" value="#{userSignUpBean.plainRepeatPassword}" required="true" requiredMessage="Confirming password is required." style="width: 95%;" feedback="false" label="Confirm Password"/>
                 <p:message for="confirmPassword"/>
 
                 <div style="margin-top: 15px; text-align: center;">
                     <p:commandButton value="Sign Up" action="#{userSignUpBean.signUp()}" update=":userSignupForm:messages" icon="pi pi-sign-in"/>
                 </div>
+
+                <p>Already have an account? <a href="login.xhtml">Log in.</a></p>
 
             </h:panelGrid>
         </p:panel>
