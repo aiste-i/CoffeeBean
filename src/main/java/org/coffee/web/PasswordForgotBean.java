@@ -7,7 +7,6 @@ import org.coffee.persistence.dao.PasswordResetDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.PasswordReset;
 import org.coffee.persistence.entity.User;
-import org.coffee.util.BaseUrlProvider;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;

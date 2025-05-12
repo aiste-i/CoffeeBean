@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.User;
+import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.util.PasswordUtil;
 
 import javax.enterprise.context.RequestScoped;
@@ -41,6 +42,7 @@ public class UserLoginBean {
                 HttpSession session = request.getSession(); // Get or create session
                 session.setAttribute("loggedInUserType", "User"); // Mark type
                 session.setAttribute("loggedInUserId", user.getId()); // Store ID
+                session.setAttribute("loggedInUserRole", UserRole.CUSTOMER); // Store role
                 session.setAttribute("loggedInUserEmail", user.getEmail());
 
                 return "/user/menu.xhtml";

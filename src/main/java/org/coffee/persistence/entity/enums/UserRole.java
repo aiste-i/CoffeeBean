@@ -1,6 +1,7 @@
 package org.coffee.persistence.entity.enums;
 
-public enum EmployeeRole {
+public enum UserRole {
     ADMIN,
-    EMPLOYEE
+    EMPLOYEE,
+    CUSTOMER
 }
