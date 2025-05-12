@@ -19,6 +19,7 @@ public class AdminAuthFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) {
         FILTERED_PATHS.add("/admin/add-employee.xhtml");
+        FILTERED_PATHS.add("/admin/change-password.xhtml");
     }
 
     @Override
@@ -43,14 +44,18 @@ public class AdminAuthFilter implements Filter {
         }
 
         String contextPath = httpRequest.getContextPath();
-        String adminLoginURI = contextPath + "/admin/login.xhtml";
+        String loginURI = contextPath + "/admin/login.xhtml";
         String requestedURI = httpRequest.getRequestURI();
         String pathWithinContext = requestedURI.substring(contextPath.length());
 
-        boolean adminLoginRequest = requestedURI.equals(adminLoginURI);
+        httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        httpResponse.setHeader("Pragma", "no-cache");
+        httpResponse.setDateHeader("Expires", 0);
+
+        boolean loginRequest = requestedURI.equals(loginURI);
         boolean resourceRequest = requestedURI.contains("/javax.faces.resource/");
 
-        if (adminLoginRequest || resourceRequest) {
+        if (loginRequest || resourceRequest) {
             chain.doFilter(request, response);
             return;
         }
@@ -71,7 +76,7 @@ public class AdminAuthFilter implements Filter {
         // If a user accessing business page is not logged in, they end up here,
         // and get redirected to login page
         else {
-            httpResponse.sendRedirect(adminLoginURI);
+            httpResponse.sendRedirect(loginURI);
         }
     }
 }
