@@ -10,7 +10,7 @@
 
 <h:body>
 
-   <p:panel>
+   <p:panel >
       <f:facet name="header">
          <h:panelGrid columns="2" style="width:100%">
             <h:outputText value="Menu" style="font-weight:bold; font-size:1.2em" />
@@ -20,7 +20,7 @@
       </f:facet>
 
       <div class="card product">
-         <h:form id="form">
+         <h:form id="form" >
             <p:dataView var="product" value="#{showProductBean.productList}" rows="12" paginator="true"
                         rowsPerPageTemplate="4,12,16"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

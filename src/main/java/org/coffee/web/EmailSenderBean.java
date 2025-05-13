@@ -3,10 +3,8 @@ package org.coffee.web;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.coffee.util.BaseUrlProvider;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
