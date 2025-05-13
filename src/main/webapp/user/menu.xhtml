@@ -19,8 +19,36 @@
          </h:panelGrid>
       </f:facet>
 
-      <!-- Content inside panel -->
-      <h:outputText value="Main content goes here." />
+      <div class="card product">
+         <h:form id="form">
+            <p:dataView var="product" value="#{showProductBean.productList}" rows="12" paginator="true"
+                        rowsPerPageTemplate="4,12,16"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        layout="grid"
+                        gridRowStyleClass="col-3">
+
+               <p:dataViewGridItem>
+                  <div class="product-grid-item card border-1 col-12 md:col-6 lg:col-3" style="max-width:50%">
+                     <div class="product-grid-item-content">
+                        <p:graphicImage name="dark-coffee-small.jpg" alt="Coffee" style="max-width:100%; height:auto; display:block; margin:auto; border:15rem" />
+                        <div class="product-name mt-2">#{product.name}</div>
+                     </div>
+                     <div class="product-grid-item-bottom">
+                        <div class="product-price font-bold mt-1">
+                           <h:outputText value="#{10}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
+                              <f:convertNumber currencySymbol="$" type="currency"/>
+                           </h:outputText>
+                        </div>
+                        <p:commandButton type="button"
+                                         value="Add To Cart"
+                                         icon="pi pi-shopping-cart"
+                                         styleClass="mt-2"/>
+                     </div>
+                  </div>
+               </p:dataViewGridItem>
+            </p:dataView>
+         </h:form>
+      </div>
    </p:panel>
 
    <p:sidebar widgetVar="sidebar2" position="right">
@@ -30,6 +58,9 @@
                           icon="pi pi-sign-out" ajax="false" immediate="true"
                           styleClass="ui-button-danger"/>
       </h:form>
+      <div><p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-top: 10px;" /></div>
+      <div><p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-top: 10px;" /></div>
+      <div><p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-right: 10px; margin-top: 10px;" /></div>
    </p:sidebar>
 
 </h:body>

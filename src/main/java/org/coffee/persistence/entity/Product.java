@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,11 +26,12 @@ public class Product implements Serializable {
     @Column(name = "product_description")
     private String description;
 
-    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
-    private Set<Category> categories = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private ProductCategory category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ProductVariation> variations = new ArrayList<>();
+    @Column(name = "price",nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "product_date_created", updatable = false)
     private LocalDateTime created;
@@ -51,21 +53,17 @@ public class Product implements Serializable {
         updated = LocalDateTime.now();
     }
 
-    public void removeVariation(ProductVariation size) {
-        this.variations.remove(size);
-        size.setProduct(null);
-    }
+    public List<IngredientType> getValidAddonIngredientTypes(){
+        if(category == null) {
+            return null;
+        }
 
-    public void addVariation(ProductVariation size) {
-        this.variations.add(size);
-        size.setProduct(this);
-    }
+        List<IngredientType> validTypes = category.getAddonIngredientTypes();
+        if(validTypes != null) {
+            return category.getAddonIngredientTypes();
+        }
 
-    void addCategoryInternal(Category category) {
-        this.categories.add(category);
-    }
-    void removeCategoryInternal(Category category) {
-        this.categories.remove(category);
+        return new ArrayList<>();
     }
 
     @Override
@@ -74,8 +72,7 @@ public class Product implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
         return Objects.equals(id, product.id)
-                && Objects.equals(name, product.name)
-                && Objects.equals(description, product.description);
+                && Objects.equals(name, product.name);
     }
 
     @Override

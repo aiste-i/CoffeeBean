@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
+import org.coffee.service.EmployeeService;
 import org.coffee.util.PasswordUtil;
 
 import javax.enterprise.context.RequestScoped;
@@ -11,9 +12,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Named
 @RequestScoped
@@ -25,45 +26,37 @@ public class EmployeeLoginBean {
     @Getter
     @Setter
     private String username;
+
     @Getter
     @Setter
     private String password;
 
+    @Inject
+    private EmployeeService employeeService;
 
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
-        try {
-            Employee employee = getEmployee();
+        Optional<Employee> employeeOpt = employeeService.getEmployee(this.username);
 
-            if (employee != null && PasswordUtil.checkPassword(password, employee.getPassword())) {
-
-                HttpSession session = request.getSession();
+        if (employeeOpt.isPresent()) {
+            Employee employee = employeeOpt.get();
+            if (PasswordUtil.checkPassword(password, employee.getPassword())) {
+                HttpSession session = request.getSession(true);
                 session.setAttribute("loggedInUserId", employee.getId());
                 session.setAttribute("loggedInUserRole", employee.getRole());
                 session.setAttribute("loggedInUsername", employee.getUsername());
 
                 return "/admin/dashboard.xhtml?faces-redirect=true";
-
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
                 return null;
             }
-        } catch (Exception e) {
+        } else {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
             return null;
         }
-    }
-
-    private Employee getEmployee() {
-        Employee employee = null;
-        try{
-            employee = employeeDAO.findByUsername(username);
-        }catch (NoResultException ignore){
-            employee = employeeDAO.findByEmail(username);
-        }
-        return employee;
     }
 
     public String logout() {
