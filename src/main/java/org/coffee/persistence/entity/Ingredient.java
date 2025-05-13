@@ -5,20 +5,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "ingredients")
-public class Ingredient {
+public class Ingredient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
@@ -27,11 +28,8 @@ public class Ingredient {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_type_id", nullable = false)
+    @JoinColumn(name = "ingredient_type_id")
     private IngredientType type;
-
-    @Column(name = "deleted", nullable = false)
-    private boolean isDeleted;
 
     @Column(name = "date_created", updatable = false)
     private LocalDateTime created;
@@ -39,8 +37,9 @@ public class Ingredient {
     @Column(name = "date_updated")
     private LocalDateTime updated;
 
-    @Column(name = "date_deleted")
-    private LocalDateTime deleted;
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer version;
 
     @PrePersist
     protected void onCreate() {
