@@ -12,6 +12,7 @@
         <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
         <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
         <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+        <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
     </p:menubar>
 
     <h:outputText value="Ingredients"
@@ -21,9 +22,10 @@
 
     <h:form id="form">
 
+
         <p:toolbar>
             <p:toolbarGroup>
-                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update=":dialogs:ingredientDialog"
+                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update=":ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()" actionListener="#{ingredientManagementBean.openNew}" />
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
@@ -46,9 +48,12 @@
                 <h:outputText value="#{ingredient.price}"/>
             </p:column>
 
+            <p:column headerText="Type" sortBy="#{ingredient.type.name}" filterBy="#{ingredient.type.name}">
+                <h:outputText value="#{ingredient.type.name}" />
+            </p:column>
 
             <p:column headerText="Actions" exportable="false">
-                <p:commandButton icon="pi pi-pencil" update=":dialogs:ingredientDialog"
+                <p:commandButton icon="pi pi-pencil" update=":ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()"
                                  actionListener="#{ingredientManagementBean.setSelectedIngredient(ingredient)}" title="Edit"/>
                 <p:commandButton icon="pi pi-trash" update=":form:dt-ingredients"
@@ -60,30 +65,39 @@
 
     </h:form>
 
-    <h:form id="dialogs">
-        <p:dialog header="Ingredient Details" widgetVar="ingredientDialog" modal="true" resizable="false"
-                  id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200">
+    <p:dialog header="Ingredient Details" widgetVar="ingredientDialog" modal="true" resizable="false"
+              id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200" dynamic="true">
+        <h:form id="dialogs">
+            <p:messages id="messages" autoUpdate="true" showDetail="true" />
             <p:outputPanel id="ingredientDialogPanel" style="text-align:center;">
                 <p:panelGrid columns="2" style="margin:0 auto;" columnClasses="label,value">
 
                     <p:outputLabel for="name" value="Name:" />
                     <p:inputText id="name" value="#{ingredientManagementBean.selectedIngredient.name}" required="true"/>
 
-
                     <p:outputLabel for="price" value="Price:" />
                     <p:inputText id="price" value="#{ingredientManagementBean.selectedIngredient.price}" required="true"/>
+
+                    <p:outputLabel for="type" value="Ingredient Type:" />
+                    <p:selectOneMenu id="type" value="#{ingredientManagementBean.selectedIngredient.type}" required="true">
+                        <f:selectItems value="#{ingredientManagementBean.ingredientTypes}" var="type"
+                                       itemValue="#{type}" itemLabel="#{type.name}" />
+                    </p:selectOneMenu>
 
                 </p:panelGrid>
 
                 <p:separator/>
 
-                <p:commandButton value="Save" icon="pi pi-check"
-                                 actionListener="#{ingredientManagementBean.saveIngredient}"
-                                 update=":form:dt-ingredients" oncomplete="PF('ingredientDialog').hide()" />
+                <p:commandButton value="Save"
+                                 process="@form"
+                                 update=":form:dt-ingredients"
+                                 action="#{ingredientManagementBean.saveIngredient}"
+                                 oncomplete="PF('ingredientDialog').hide()" icon="pi pi-check" />
                 <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('ingredientDialog').hide()" type="button"/>
             </p:outputPanel>
-        </p:dialog>
-    </h:form>
+        </h:form>
+    </p:dialog>
+
 
 </h:body>
 </html>
