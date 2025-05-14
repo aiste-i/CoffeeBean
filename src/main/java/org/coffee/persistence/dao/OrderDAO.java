@@ -11,4 +11,12 @@ public class OrderDAO extends BaseDAO<Order>{
     protected OrderDAO() {
         super(Order.class);
     }
+
+    public Order findActiveOrderByCustomerId(Long customerId) {
+        List<Order> results = em.createQuery(
+                        "SELECT o FROM Order o WHERE o.user.id = :customerId AND o.orderStatus = 'IN_PROGRESS'", Order.class)
+                .setParameter("customerId", customerId)
+                .getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
 }
