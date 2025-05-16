@@ -9,6 +9,10 @@ import java.util.List;
 public class IngredientDAO extends BaseDAO<Ingredient> {
     public IngredientDAO() {super(Ingredient.class);}
 
+    public Ingredient findById(Long id) {
+        return em.find(Ingredient.class, id);
+    }
+
     public List<Ingredient> findByTypeId(Long typeId) {
         return em.createQuery(
                         "SELECT i FROM Ingredient i WHERE i.type.id = :typeId", Ingredient.class)

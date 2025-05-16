@@ -48,7 +48,15 @@ public class AddToOrderBean implements Serializable{
 
     public void addToCart() {
         if (selectedProduct == null || quantity < 1) {
+            System.out.println("Product is null or quantity is invalid.");
             return;
+        }
+
+        System.out.println("Selected product: " + selectedProduct.getName());
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Selected add-ons: ");
+        for (Ingredient ingredient : selectedAddOns) {
+            System.out.println("- " + ingredient.getName());
         }
 
         OrderItem orderItem = new OrderItem();

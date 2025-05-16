@@ -35,13 +35,18 @@
                      </div>
                      <div class="product-grid-item-bottom">
                         <div class="product-price font-bold mt-1">
-                           <h:outputText value="#{10}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
+                           <h:outputText value="#{product.price}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
                               <f:convertNumber currencySymbol="$" type="currency"/>
                            </h:outputText>
+                           <p:commandButton value="Open Dialog" type="button"
+                                            onclick="PF('addonDialog').show()" />
                         </div>
                         <p:commandButton type="button"
                                          value="Add To Cart"
                                          icon="pi pi-shopping-cart"
+                                         action="#{addToOrderBean.openAddToCartDialog(product)}"
+                                         update=":addToCartForm"
+                                         onclick="PF('addToCartDialog').show()"
                                          styleClass="mt-2"/>
                      </div>
                   </div>
@@ -50,6 +55,35 @@
          </h:form>
       </div>
    </p:panel>
+
+   <p:dialog header="Test Dialog" widgetVar="addonDialog" modal="true" closable="true">
+      <h:form>
+         <h:outputText value="Dialog works!" />
+      </h:form>
+   </p:dialog>
+
+   <h:form id="addToCartForm">
+      <p:dialog header="Customize Product" widgetVar="addToCartDialog" modal="true" closable="true" resizable="false" width="500">
+         <h:panelGrid columns="1" style="width:100%">
+
+            <h:outputText value="Quantity:"/>
+            <p:spinner value="#{addToOrderBean.quantity}" min="1" />
+
+            <h:outputText value="Select Add-ons:" style="margin-top:10px;" />
+            <h:outputText value="#{addToOrderBean.availableAddOns.size()}" />
+            <p:selectManyCheckbox value="#{addToOrderBean.selectedAddOns}">
+               <f:selectItems value="#{addToOrderBean.availableAddOns}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+            </p:selectManyCheckbox>
+
+            <p:commandButton value="Add to Order"
+                             icon="pi pi-check"
+                             action="#{addToOrderBean.addToCart}"
+                             update=":form :addToCartForm"
+                             process=":addToCartForm"
+                             oncomplete="PF('addToCartDialog').hide()"/>
+         </h:panelGrid>
+      </p:dialog>
+   </h:form>
 
    <p:sidebar widgetVar="sidebar2" position="right">
       <h3>Options</h3>
