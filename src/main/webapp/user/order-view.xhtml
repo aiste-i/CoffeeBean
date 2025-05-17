@@ -9,43 +9,21 @@
    <title>Review Your Order</title>
    <style type="text/css">
       body { margin: 0; padding-top: 10px; }
-      .order-item-row td {
-         padding: 8px 5px;
-         vertical-align: middle;
-         border-bottom: 1px solid #eee;
-      }
-      .total-row td {
-         font-weight: bold;
-         padding-top: 10px;
-      }
-      .action-buttons {
-         margin-top: 20px;
-         text-align: right;
-      }
-      .action-buttons .ui-button {
-         margin-left: 10px;
-      }
-      .empty-order-message {
-         text-align: center;
-         padding: 20px;
-         font-style: italic;
-         color: #666;
-      }
+      .order-item-row td { padding: 8px 5px; vertical-align: middle; border-bottom: 1px solid #eee; }
+      .total-row td { font-weight: bold; padding-top: 10px; }
+      .action-buttons { margin-top: 20px; text-align: right; }
+      .action-buttons .ui-button { margin-left: 10px; }
+      .empty-order-message { text-align: center; padding: 20px; font-style: italic; color: #666; }
+      .sixty-percent { width: 60%;}
+      .forty-percent-right-align { width: 40%; text-align: right;}
    </style>
 </h:head>
 
 <h:body>
-   <p:growl id="pageMessages" showDetail="true" />
+   <p:growl id="pageMessages" autoUpdate="false" showDetail="true" life="3000"/>
 
    <h:form id="reviewOrderForm">
-      <p:panel style="width: 600px; margin: 20px auto;">
-         <f:facet name="header">
-            <h:panelGrid columns="2" style="width:100%">
-               <h:outputText value="Your Order" style="font-weight:bold; font-size:1.2em" />
-               <p:commandButton icon="pi pi-arrow-left" type="button"
-                                onclick="PF('optionsSidebar').show()" style="float:right" />
-            </h:panelGrid>
-         </f:facet>
+      <p:panel style="width: 800px; margin: 20px auto;" header="Your Current Order">
 
          <p:outputPanel id="orderContentsPanel">
             <h:panelGroup rendered="#{orderBean.orderEmpty}">
@@ -57,30 +35,49 @@
             <h:panelGroup rendered="#{not orderBean.orderEmpty}">
                <p:dataTable var="item" value="#{orderBean.currentOrder.items}"
                             emptyMessage="Your order is empty."
-                            style="margin-bottom: 20px;">
+                            style="margin-bottom: 20px;" rowIndexVar="idx">
+                  <p:column headerText="#" style="width:30px; text-align:center;">
+                     <h:outputText value="#{idx + 1}" />
+                  </p:column>
                   <p:column headerText="Item">
-                     <h:outputText value="#{item.name}" />
+                     <h:outputText value="#{item.name}" /> <br/>
+                     <h:outputText value="Product: #{item.product.name}" style="font-size:0.9em; color:gray;"/>
+                     <h:panelGroup rendered="#{not empty item.addons}">
+                        <br/><h:outputText value="Addons: " style="font-style:italic;"/>
+                        <ui:repeat value="#{item.addons}" var="addon" varStatus="loop">
+                           <h:outputText value="#{addon.name} (#{addon.price})"/>
+                           <h:outputText value=", " rendered="#{!loop.last}"/>
+                        </ui:repeat>
+                     </h:panelGroup>
+                     <h:panelGroup rendered="#{not empty item.specialRequirements}">
+                        <br/><h:outputText value="Notes: #{item.specialRequirements}" style="font-style:italic;"/>
+                     </h:panelGroup>
                   </p:column>
 
-                  <p:column headerText="Quantity" style="text-align:center; width:80px;">
-                     <h:outputText value="#{item.quantity}" />
+                  <p:column headerText="Quantity" style="text-align:center; width:120px;">
+                     <p:inputNumber value="#{item.quantity}" minValue="1">
+                        <p:ajax event="valueChange"
+                        listener="#{orderBean.updateItemQuantity(item, item.quantity)}"
+                        process="@this"
+                        update=":reviewOrderForm:orderContentsPanel :pageMessages" />
+                     </p:inputNumber>
                   </p:column>
 
-                  <p:column headerText="Price" style="text-align:right; width:100px;">
+                  <p:column headerText="Unit Price" style="text-align:right; width:100px;">
                      <h:outputText value="#{item.product.price}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
                      </h:outputText>
                   </p:column>
 
-                  <p:column headerText="Total" style="text-align:right; width:120px;">
+                  <p:column headerText="Total Item Price" style="text-align:right; width:120px;">
                      <h:outputText value="#{item.calculatePrice()}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
                      </h:outputText>
                   </p:column>
 
-                  <p:column style="width:50px;text-align:center">
-                     <p:commandButton icon="pi pi-trash" action="#{orderBean.removeItemFromOrder(item)}"
-                                      update="reviewOrderForm:orderContentsPanel" process="@this"
+                  <p:column style="width:60px;text-align:center">
+                     <p:commandButton icon="pi pi-trash" actionListener="#{orderBean.removeItemFromOrder(item)}"
+                                      update=":reviewOrderForm:orderContentsPanel :pageMessages" process="@this"
                                       title="Remove item" styleClass="ui-button-danger ui-button-outlined"/>
                   </p:column>
                </p:dataTable>
@@ -96,14 +93,14 @@
                </h:panelGrid>
 
                <div class="action-buttons">
-                  <p:commandButton value="Clear Order" action="#{orderBean.clearOrder}"
-                                   update="reviewOrderForm:orderContentsPanel pageMessages" process="@this"
+                  <p:commandButton value="Clear Order" actionListener="#{orderBean.clearOrder}"
+                                   update=":reviewOrderForm:orderContentsPanel :pageMessages" process="@this"
                                    icon="pi pi-times-circle" styleClass="ui-button-warning"
                                    rendered="#{not orderBean.orderEmpty}">
                      <p:confirm header="Confirmation" message="Are you sure you want to clear your entire order?" icon="pi pi-exclamation-triangle"/>
                   </p:commandButton>
 
-                  <p:commandButton value="Proceed to Submit"
+                  <p:commandButton value="Proceed to Checkout"
                                    action="#{orderBean.proceedToFinalSubmission}"
                                    icon="pi pi-arrow-right" styleClass="ui-button-success"
                                    rendered="#{not orderBean.orderEmpty}"
@@ -113,9 +110,8 @@
          </p:outputPanel>
       </p:panel>
    </h:form>
-
-   <h:form id="confirmDialogFormPlaceholder" style="display:none;">
-      <p:confirmDialog global="true">
+   <h:form>
+      <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
          <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
          <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
       </p:confirmDialog>
@@ -130,11 +126,6 @@
       </h:form>
       <div><p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-top: 10px;" /></div>
    </p:sidebar>
-
-   <style type="text/css">
-      .sixty-percent { width: 60%;}
-      .forty-percent-right-align { width: 40%; text-align: right;}
-   </style>
 
 </h:body>
 </html>

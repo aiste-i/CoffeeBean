@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class Ingredient {
 
     @ManyToOne
     @JoinColumn(name = "ingredient_type_id", nullable = false)
+    @JsonbTransient
     private IngredientType type;
 
     @Column(name = "deleted", nullable = false)

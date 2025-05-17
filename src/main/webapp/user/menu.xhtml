@@ -9,18 +9,21 @@
 </h:head>
 
 <h:body>
+   <p:growl id="pageGrowl" showDetail="true" life="3000" globalOnly="false"/>
 
-   <p:panel >
+   <p:panel id="menuPanel">
       <f:facet name="header">
          <h:panelGrid columns="2" style="width:100%">
             <h:outputText value="Menu" style="font-weight:bold; font-size:1.2em" />
-            <p:commandButton icon="pi pi-arrow-left" type="button"
-                             onclick="PF('sidebar2').show()" style="float:right" />
+            <h:form>
+               <p:commandButton icon="pi pi-arrow-left" type="button"
+                                onclick="PF('sidebarMenuWidget').show()" style="float:right" />
+            </h:form>
          </h:panelGrid>
       </f:facet>
 
       <div class="card product">
-         <h:form id="form" >
+         <h:form id="menuProductForm">
             <p:dataView var="product" value="#{showProductBean.productList}" rows="12" paginator="true"
                         rowsPerPageTemplate="4,12,16"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -39,9 +42,10 @@
                               <f:convertNumber currencySymbol="$" type="currency"/>
                            </h:outputText>
                         </div>
-                        <p:commandButton type="button"
-                                         value="Add To Cart"
-                                         icon="pi pi-shopping-cart"
+                        <p:commandButton value="Add To Cart"
+                                         actionListener="#{orderBean.addItemToOrder(product)}"
+                                         process="@this"
+                                         update=":pageGrowl :sidebarMenuForm:orderItemCountOutputPanel"
                                          styleClass="mt-2"/>
                      </div>
                   </div>
@@ -51,16 +55,19 @@
       </div>
    </p:panel>
 
-   <p:sidebar widgetVar="sidebar2" position="right">
+   <p:sidebar widgetVar="sidebarMenuWidget" position="right">
       <h3>Options</h3>
-      <h:form id="logoutForm">
+      <h:form id="sidebarMenuForm">
+         <p:outputPanel id="orderItemCountOutputPanel" style="margin-bottom:10px;">
+            <h:outputText value="Items in Order: #{orderBean.currentOrder.items.size()}" />
+         </p:outputPanel>
+         <p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-bottom: 10px; display:block;"/>
+         <p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-bottom: 10px; display:block;" />
+         <p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-bottom: 10px; display:block;" />
          <p:commandButton value="Logout" action="#{userLoginBean.logout}"
                           icon="pi pi-sign-out" ajax="false" immediate="true"
-                          styleClass="ui-button-danger"/>
+                          styleClass="ui-button-danger" style="display:block;"/>
       </h:form>
-      <div><p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-top: 10px;" /></div>
-      <div><p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-top: 10px;" /></div>
-      <div><p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-right: 10px; margin-top: 10px;" /></div>
    </p:sidebar>
 
 </h:body>

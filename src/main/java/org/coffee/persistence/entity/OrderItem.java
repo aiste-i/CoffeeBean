@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,15 +28,16 @@ public class OrderItem implements Serializable {
     @Column(name = "requirements")
     private String specialRequirements;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonbTransient
     private Order order;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "order_item_addons",
             joinColumns = @JoinColumn(name = "order_item_id"),
@@ -51,6 +53,7 @@ public class OrderItem implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
     public BigDecimal calculatePrice() {
