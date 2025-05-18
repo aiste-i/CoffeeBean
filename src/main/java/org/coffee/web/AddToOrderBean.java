@@ -3,7 +3,6 @@ package org.coffee.web;
 import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.dao.IngredientDAO;
-import org.coffee.persistence.dao.OrderItemDAO;
 import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.Ingredient;
 import org.coffee.persistence.entity.OrderItem;
@@ -29,7 +28,7 @@ public class AddToOrderBean implements Serializable{
     private IngredientDAO ingredientDao;
 
     @Inject
-    private OrderItemDAO orderItemDao;
+    private OrderSessionBean orderSessionBean;
 
     private Product selectedProduct;
 
@@ -52,21 +51,16 @@ public class AddToOrderBean implements Serializable{
             return;
         }
 
-        System.out.println("Selected product: " + selectedProduct.getName());
-        System.out.println("Quantity: " + quantity);
-        System.out.println("Selected add-ons: ");
-        for (Ingredient ingredient : selectedAddOns) {
-            System.out.println("- " + ingredient.getName());
-        }
-
         OrderItem orderItem = new OrderItem();
         orderItem.setProduct(selectedProduct);
-        orderItem.setAddons(selectedAddOns);
+        orderItem.setAddons(new ArrayList<>(selectedAddOns));
         orderItem.setQuantity(quantity);
         orderItem.setName(selectedProduct.getName());
         orderItem.setPriceAtOrder(orderItem.calculatePrice());
 
-        orderItemDao.persist(orderItem);
+        orderSessionBean.addItem(orderItem);
+
+        System.out.println("Added to cart (in session): " + orderItem.getName() + " x" + quantity);
 
         clearSelection();
     }
@@ -74,8 +68,10 @@ public class AddToOrderBean implements Serializable{
     private void loadAvailableAddOns(Product product) {
         if (product != null && product.getCategory() != null) {
             availableAddOns = ingredientDao.findAddOnsForCategory(product.getCategory().getId());
+            System.out.println("Loaded " + availableAddOns.size() + " add-ons for category: " + product.getCategory().getName());
         } else {
             availableAddOns = new ArrayList<>();
+            System.out.println("No category found for product or product is null.");
         }
     }
 
@@ -85,7 +81,4 @@ public class AddToOrderBean implements Serializable{
         quantity = 1;
         availableAddOns = null;
     }
-
-
-
 }

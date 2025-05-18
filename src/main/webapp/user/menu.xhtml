@@ -41,12 +41,12 @@
                            <p:commandButton value="Open Dialog" type="button"
                                             onclick="PF('addonDialog').show()" />
                         </div>
-                        <p:commandButton type="button"
+                        <p:commandButton type="submit"
                                          value="Add To Cart"
                                          icon="pi pi-shopping-cart"
                                          action="#{addToOrderBean.openAddToCartDialog(product)}"
                                          update=":addToCartForm"
-                                         onclick="PF('addToCartDialog').show()"
+                                         oncomplete="PF('addToCartDialog').show()"
                                          styleClass="mt-2"/>
                      </div>
                   </div>
@@ -75,7 +75,8 @@
                <f:selectItems value="#{addToOrderBean.availableAddOns}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
             </p:selectManyCheckbox>
 
-            <p:commandButton value="Add to Order"
+            <p:commandButton type="submit"
+                             value="Add to Order"
                              icon="pi pi-check"
                              action="#{addToOrderBean.addToCart}"
                              update=":form :addToCartForm"
@@ -95,6 +96,7 @@
       <div><p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-top: 10px;" /></div>
       <div><p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-top: 10px;" /></div>
       <div><p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-right: 10px; margin-top: 10px;" /></div>
+
    </p:sidebar>
 
 </h:body>
