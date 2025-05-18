@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Named
@@ -41,6 +42,8 @@ public class ShowProductBean implements Serializable {
 
     private Map<Long, List<Ingredient>> availableAddonsByType = new HashMap<>();
 
+    private Map<Long, String> selectedAddonsByType = new HashMap<>();
+
     public void setSelectedProduct(Product product) {
         if (product != null) {
             System.out.println("[DEBUG_LOG] Setting selected product: " + product.getName() + " (ID: " + product.getId() + ")");
@@ -62,6 +65,7 @@ public class ShowProductBean implements Serializable {
         }
         // Reset selected addons when a new product is selected
         this.selectedAddons.clear();
+        this.selectedAddonsByType.clear();
     }
 
     private void loadAvailableAddons() {
@@ -130,6 +134,7 @@ public class ShowProductBean implements Serializable {
     public void resetQuantity() {
         quantity = 1;
         selectedAddons.clear();
+        selectedAddonsByType.clear();
     }
 
     public List<IngredientType> getAvailableAddonTypes() {
@@ -182,6 +187,54 @@ public class ShowProductBean implements Serializable {
         }
 
         System.out.println("[DEBUG_LOG] Selected addons count: " + selectedAddons.size());
+    }
+
+    public void selectAddonForType(Long typeId) {
+        System.out.println("[DEBUG_LOG] selectAddonForType called for typeId: " + typeId);
+
+        // Get the selected addon ID for this type
+        String selectedAddonId = selectedAddonsByType.get(typeId);
+        System.out.println("[DEBUG_LOG] Selected addon ID: " + selectedAddonId);
+
+        if (selectedAddonId == null) {
+            System.out.println("[DEBUG_LOG] No addon selected for type: " + typeId);
+            return;
+        }
+
+        // Update the selectedAddons list to maintain compatibility with existing code
+        updateSelectedAddonsList();
+    }
+
+    public void updateSelectedAddonsList() {
+        // Clear the current selected addons
+        selectedAddons.clear();
+
+        // For each type with a selected addon, add that addon to the selectedAddons list
+        for (Map.Entry<Long, String> entry : selectedAddonsByType.entrySet()) {
+            Long typeId = entry.getKey();
+            String addonIdStr = entry.getValue();
+
+            try {
+                Long addonId = Long.parseLong(addonIdStr);
+
+                // Find the addon in the available addons
+                List<Ingredient> addonsForType = availableAddonsByType.get(typeId);
+                if (addonsForType != null) {
+                    Optional<Ingredient> selectedAddon = addonsForType.stream()
+                        .filter(addon -> addon.getId() == addonId)
+                        .findFirst();
+
+                    selectedAddon.ifPresent(addon -> {
+                        System.out.println("[DEBUG_LOG] Adding addon to selectedAddons: " + addon.getName());
+                        selectedAddons.add(addon);
+                    });
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("[DEBUG_LOG] Error parsing addon ID: " + addonIdStr);
+            }
+        }
+
+        System.out.println("[DEBUG_LOG] Updated selectedAddons count: " + selectedAddons.size());
     }
 
     public boolean isAddonSelected(Ingredient addon) {
