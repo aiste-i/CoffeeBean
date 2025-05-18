@@ -74,6 +74,7 @@
       <h:form id="confirmForm">
          <p:outputPanel id="confirmContent" style="text-align: center;">
             <p class="m-0">How many #{showProductBean.selectedProduct.name} would you like to add to your cart?</p>
+            <p class="m-0 mt-2" style="font-style: italic; font-size: 0.9em; color: #666;">#{showProductBean.availableAddons}</p>
             <div class="mt-3">
                 <p:spinner id="quantity" value="#{showProductBean.quantity}" min="1" max="99" />
             </div>
