@@ -38,14 +38,14 @@
                      </div>
                      <div class="product-grid-item-bottom">
                         <div class="product-price font-bold mt-1">
-                           <h:outputText value="#{10}"> <!-- TO DO: channge to "<h:outputText value="#{product.price}">" when price is added-->
+                           <h:outputText value="#{product.price}">
                               <f:convertNumber currencySymbol="$" type="currency"/>
                            </h:outputText>
                         </div>
                         <p:commandButton value="Add To Cart"
-                                         actionListener="#{orderBean.addItemToOrder(product)}"
-                                         process="@this"
-                                         update=":pageGrowl :sidebarMenuForm:orderItemCountOutputPanel"
+                                         actionListener="#{showProductBean.setSelectedProduct(product)}"
+                                         oncomplete="PF('confirmDialog').show()"
+                                         update=":confirmForm:confirmContent"
                                          styleClass="mt-2"/>
                      </div>
                   </div>
@@ -70,5 +70,23 @@
       </h:form>
    </p:sidebar>
 
+   <p:dialog header="Confirm Order" widgetVar="confirmDialog" modal="true" showEffect="fade" hideEffect="fade">
+      <h:form id="confirmForm">
+         <p:outputPanel id="confirmContent" style="text-align: center;">
+            <p class="m-0">Are you sure you want to add #{showProductBean.selectedProduct.name} to your cart?</p>
+            <div class="mt-3">
+                <p:commandButton value="Yes" 
+                               actionListener="#{orderBean.addItemToOrder(showProductBean.selectedProduct)}"
+                               oncomplete="PF('confirmDialog').hide()"
+                               update=":pageGrowl :sidebarMenuForm:orderItemCountOutputPanel"
+                               styleClass="ui-button-success mr-2"/>
+                <p:commandButton value="No" 
+                               onclick="PF('confirmDialog').hide()" 
+                               type="button"
+                               styleClass="ui-button-secondary"/>
+            </div>
+         </p:outputPanel>
+      </h:form>
+   </p:dialog>
 </h:body>
 </html>

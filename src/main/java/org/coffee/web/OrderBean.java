@@ -25,6 +25,8 @@ public class OrderBean implements Serializable {
     @Inject
     private UserSessionBean userSessionBean;
 
+
+
     @PostConstruct
     public void init() {
         createNewOrder();

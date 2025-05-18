@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.Product;
 
+import javax.annotation.ManagedBean;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,6 +20,8 @@ public class ShowProductBean implements Serializable {
 
     @Inject
     private ProductDAO productDAO;
+
+    private Product selectedProduct;
 
     private List<Product> productList;
 
