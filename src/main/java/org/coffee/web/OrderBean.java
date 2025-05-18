@@ -1,5 +1,6 @@
 package org.coffee.web;
 
+import org.coffee.persistence.entity.Ingredient;
 import org.coffee.persistence.entity.Order;
 import org.coffee.persistence.entity.OrderItem;
 import org.coffee.persistence.entity.Product;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Named
@@ -54,6 +56,10 @@ public class OrderBean implements Serializable {
     }
 
     public void addItemToOrder(Product product, int quantity) {
+        addItemToOrder(product, quantity, null);
+    }
+
+    public void addItemToOrder(Product product, int quantity, List<Ingredient> addons) {
         if (product == null) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_WARN, "No product selected.", ""));
@@ -61,9 +67,13 @@ public class OrderBean implements Serializable {
         }
         int quantityToAdd = quantity > 0 ? quantity : 1;
 
+        // Check if we have the same product with the same addons
         Optional<OrderItem> existingItemOpt = currentOrder.getItems().stream()
                 .filter(oi -> oi.getProduct().getId().equals(product.getId()) &&
-                        (oi.getAddons() == null || oi.getAddons().isEmpty()) &&
+                        // Check if both have no addons or have the same addons
+                        ((addons == null || addons.isEmpty()) && (oi.getAddons() == null || oi.getAddons().isEmpty()) ||
+                         (addons != null && !addons.isEmpty() && oi.getAddons() != null && !oi.getAddons().isEmpty() &&
+                          addons.size() == oi.getAddons().size() && oi.getAddons().containsAll(addons))) &&
                         (oi.getSpecialRequirements() == null || oi.getSpecialRequirements().isEmpty()))
                 .findFirst();
 
@@ -75,12 +85,23 @@ public class OrderBean implements Serializable {
             newItem.setProduct(product);
             newItem.setName(product.getName());
             newItem.setQuantity(quantityToAdd);
+
+            // Add addons if provided
+            if (addons != null && !addons.isEmpty()) {
+                newItem.getAddons().addAll(addons);
+            }
+
             currentOrder.addItem(newItem);
         }
         currentOrder.setTotalPrice(currentOrder.calculateTotalPrice());
 
+        String addonInfo = "";
+        if (addons != null && !addons.isEmpty()) {
+            addonInfo = " with " + addons.size() + " add-on(s)";
+        }
+
         FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Added", product.getName() + " added to your order."));
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Added", product.getName() + addonInfo + " added to your order."));
     }
 
     public void removeItemFromOrder(OrderItem itemToRemove) {

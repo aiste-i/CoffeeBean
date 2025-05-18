@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
    <title>Menu</title>
@@ -70,17 +71,29 @@
       </h:form>
    </p:sidebar>
 
-   <p:dialog header="Confirm Order" widgetVar="confirmDialog" modal="true" showEffect="fade" hideEffect="fade">
+   <p:dialog header="Confirm Order" widgetVar="confirmDialog" modal="true" showEffect="fade" hideEffect="fade" width="500">
       <h:form id="confirmForm">
          <p:outputPanel id="confirmContent" style="text-align: center;">
             <p class="m-0">How many #{showProductBean.selectedProduct.name} would you like to add to your cart?</p>
-            <p class="m-0 mt-2" style="font-style: italic; font-size: 0.9em; color: #666;">#{showProductBean.availableAddons}</p>
             <div class="mt-3">
                 <p:spinner id="quantity" value="#{showProductBean.quantity}" min="1" max="99" />
             </div>
+
+            <p:panel header="Available Add-ons" toggleable="true" collapsed="false" styleClass="mt-3" rendered="#{not empty showProductBean.availableAddonTypes}">
+                <p:accordionPanel dynamic="true" multiple="true" var="addonType" value="#{showProductBean.availableAddonTypes}">
+                    <p:tab title="#{addonType.name}">
+                        <p:dataList value="#{showProductBean.getAvailableAddonsForType(addonType.id)}" var="addon" type="unordered">
+                            <p:selectBooleanCheckbox id="addonCheckbox_#{addon.id}" itemLabel="#{addon.name} (+$#{addon.price})">
+                                <p:ajax listener="#{showProductBean.toggleAddon(addon)}" update="@this" />
+                            </p:selectBooleanCheckbox>
+                        </p:dataList>
+                    </p:tab>
+                </p:accordionPanel>
+            </p:panel>
+
             <div class="mt-3">
                 <p:commandButton value="Add to Cart" 
-                               actionListener="#{orderBean.addItemToOrder(showProductBean.selectedProduct, showProductBean.quantity)}"
+                               actionListener="#{orderBean.addItemToOrder(showProductBean.selectedProduct, showProductBean.quantity, showProductBean.selectedAddons)}"
                                oncomplete="PF('confirmDialog').hide(); #{showProductBean.resetQuantity()}"
                                update=":pageGrowl :sidebarMenuForm:orderItemCountOutputPanel"
                                styleClass="ui-button-success mr-2"/>
