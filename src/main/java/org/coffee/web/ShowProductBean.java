@@ -25,6 +25,8 @@ public class ShowProductBean implements Serializable {
 
     private List<Product> productList;
 
+    private int quantity = 1;
+
     public List<Product> getProductList() {
         if (productList == null) {
             productList = productDAO.findAll();
@@ -34,6 +36,10 @@ public class ShowProductBean implements Serializable {
 
     public void refreshProducts() {
         productList = productDAO.findAll();
+    }
+
+    public void resetQuantity() {
+        quantity = 1;
     }
 
 }

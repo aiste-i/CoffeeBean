@@ -53,13 +53,13 @@ public class OrderBean implements Serializable {
         return currentOrder;
     }
 
-    public void addItemToOrder(Product product) {
+    public void addItemToOrder(Product product, int quantity) {
         if (product == null) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_WARN, "No product selected.", ""));
             return;
         }
-        int quantityToAdd = 1;
+        int quantityToAdd = quantity > 0 ? quantity : 1;
 
         Optional<OrderItem> existingItemOpt = currentOrder.getItems().stream()
                 .filter(oi -> oi.getProduct().getId().equals(product.getId()) &&
