@@ -56,17 +56,24 @@ public class OrderItem implements Serializable {
     @JsonbTransient
     private Integer version;
 
-    public BigDecimal calculatePrice() {
-        if (this.product != null && this.quantity != null) {
+    public BigDecimal calculateUnitPrice() {
+        if (this.product != null) {
             BigDecimal basePrice = this.product.getPrice() != null ? this.product.getPrice() : BigDecimal.ZERO;
 
             BigDecimal addonPrice = addons.stream()
                     .map(Ingredient::getPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            basePrice = basePrice.add(addonPrice);
+            return basePrice.add(addonPrice);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
 
-            return basePrice.multiply(new BigDecimal(this.quantity));
+    public BigDecimal calculatePrice() {
+        if (this.product != null && this.quantity != null) {
+            BigDecimal unitPrice = calculateUnitPrice();
+            return unitPrice.multiply(new BigDecimal(this.quantity));
         } else {
             return BigDecimal.ZERO;
         }

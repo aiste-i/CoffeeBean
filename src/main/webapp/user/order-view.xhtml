@@ -55,22 +55,19 @@
                   </p:column>
 
                   <p:column headerText="Quantity" style="text-align:center; width:120px;">
-                     <p:inputNumber value="#{item.quantity}" minValue="1">
-                        <p:ajax event="valueChange"
-                        listener="#{orderBean.updateItemQuantity(item, item.quantity)}"
-                        process="@this"
-                        update=":reviewOrderForm:orderContentsPanel :pageMessages" />
-                     </p:inputNumber>
+                     <p:spinner id="quantity" value="#{item.quantity}" min="1" max="99">
+                        <p:ajax update="totalItemPrice unitPrice :reviewOrderForm:orderTotal" process="@this" listener="#{orderBean.updateOrderTotal()}" />
+                     </p:spinner>
                   </p:column>
 
-                  <p:column headerText="Unit Price" style="text-align:right; width:100px;">
-                     <h:outputText value="#{item.product.price}">
+                  <p:column headerText="Unit Price (with addons)" style="text-align:right; width:100px;">
+                     <h:outputText id="unitPrice" value="#{item.calculateUnitPrice()}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
                      </h:outputText>
                   </p:column>
 
                   <p:column headerText="Total Item Price" style="text-align:right; width:120px;">
-                     <h:outputText value="#{item.calculatePrice()}">
+                     <h:outputText id="totalItemPrice" value="#{item.calculatePrice()}">
                         <f:convertNumber type="currency" currencySymbol="$"/>
                      </h:outputText>
                   </p:column>
@@ -86,7 +83,7 @@
                   <h:outputText value="" />
                   <h:panelGroup style="text-align:right; font-size:1.2em;">
                      <h:outputText value="Order Total: " style="font-weight:bold;" />
-                     <h:outputText value="#{orderBean.currentOrder.totalPrice}" style="font-weight:bold;">
+                     <h:outputText id="orderTotal" value="#{orderBean.currentOrder.calculateTotalPrice()}" style="font-weight:bold;">
                         <f:convertNumber type="currency" currencySymbol="$"/>
                      </h:outputText>
                   </h:panelGroup>

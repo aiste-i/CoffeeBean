@@ -17,7 +17,7 @@
             <p:dataTable var="item" value="#{checkoutConfirmBean.orderToConfirm.items}" style="margin-bottom:20px;">
                 <p:column headerText="Item"><h:outputText value="#{item.name}" /></p:column>
                 <p:column headerText="Qty"><h:outputText value="#{item.quantity}" /></p:column>
-                <p:column headerText="Price"><h:outputText value="#{item.product.price}"><f:convertNumber type="currency"/></h:outputText></p:column>
+                <p:column headerText="Item Price"><h:outputText value="#{item.calculateUnitPrice()}"><f:convertNumber type="currency"/></h:outputText></p:column>
                 <p:column headerText="Total"><h:outputText value="#{item.calculatePrice()}"><f:convertNumber type="currency"/></h:outputText></p:column>
             </p:dataTable>
 

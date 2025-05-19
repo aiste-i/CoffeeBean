@@ -138,4 +138,10 @@ public class OrderBean implements Serializable {
 
         return "/user/checkout-confirm.xhtml?faces-redirect=true";
     }
+
+    public void updateOrderTotal() {
+        if (currentOrder != null) {
+            currentOrder.setTotalPrice(currentOrder.calculateTotalPrice());
+        }
+    }
 }
