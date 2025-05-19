@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,8 @@ public class ShowProductBean implements Serializable {
 
     private Map<Long, String> selectedAddonsByType = new HashMap<>();
 
+    private BigDecimal unitPrice;
+
     public void setSelectedProduct(Product product) {
         if (product != null) {
             System.out.println("[DEBUG_LOG] Setting selected product: " + product.getName() + " (ID: " + product.getId() + ")");
@@ -66,6 +69,9 @@ public class ShowProductBean implements Serializable {
         // Reset selected addons when a new product is selected
         this.selectedAddons.clear();
         this.selectedAddonsByType.clear();
+
+        // Initialize the unitPrice field
+        getUnitPrice();
     }
 
     private void loadAvailableAddons() {
@@ -135,6 +141,9 @@ public class ShowProductBean implements Serializable {
         quantity = 1;
         selectedAddons.clear();
         selectedAddonsByType.clear();
+
+        // Reset the unitPrice field
+        getUnitPrice();
     }
 
     public List<IngredientType> getAvailableAddonTypes() {
@@ -203,9 +212,16 @@ public class ShowProductBean implements Serializable {
 
         // Update the selectedAddons list to maintain compatibility with existing code
         updateSelectedAddonsList();
+
+        // Update the unitPrice field
+        getUnitPrice();
+
+        // Log the updated prices for debugging
+        System.out.println("[DEBUG_LOG] Updated unit price: " + this.unitPrice);
+        System.out.println("[DEBUG_LOG] Updated total price: " + calculateTotalPrice());
     }
 
-    public void updateSelectedAddonsList() {
+    public List<Ingredient> updateSelectedAddonsList() {
         // Clear the current selected addons
         selectedAddons.clear();
 
@@ -235,6 +251,11 @@ public class ShowProductBean implements Serializable {
         }
 
         System.out.println("[DEBUG_LOG] Updated selectedAddons count: " + selectedAddons.size());
+
+        // Update the unitPrice field
+        getUnitPrice();
+
+        return selectedAddons;
     }
 
     public boolean isAddonSelected(Ingredient addon) {
@@ -272,5 +293,49 @@ public class ShowProductBean implements Serializable {
                 .collect(Collectors.joining(", "));
 
         return "Available add-ons: " + addonTypes;
+    }
+
+    /**
+     * Calculates the total price of all selected addons
+     * @return The sum of all selected addon prices
+     */
+    public BigDecimal calculateAddonPrice() {
+        if (selectedAddons == null || selectedAddons.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        return selectedAddons.stream()
+                .map(Ingredient::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Calculates the total price including product price, addons, and quantity
+     * @return The total price
+     */
+    public BigDecimal calculateTotalPrice() {
+        if (selectedProduct == null) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal basePrice = selectedProduct.getPrice() != null ? selectedProduct.getPrice() : BigDecimal.ZERO;
+        BigDecimal addonPrice = calculateAddonPrice();
+
+        return basePrice.add(addonPrice).multiply(new BigDecimal(quantity));
+    }
+
+    /**
+     * Gets the unit price (product + addons) without quantity
+     * @return The unit price
+     */
+    public BigDecimal getUnitPrice() {
+        if (selectedProduct == null) {
+            this.unitPrice = BigDecimal.ZERO;
+            return this.unitPrice;
+        }
+
+        BigDecimal basePrice = selectedProduct.getPrice() != null ? selectedProduct.getPrice() : BigDecimal.ZERO;
+        this.unitPrice = basePrice.add(calculateAddonPrice());
+        return this.unitPrice;
     }
 }
