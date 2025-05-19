@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Ingredient Management</title>
+</h:head>
+<h:body>
+
+    <p:menubar>
+        <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
+        <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
+        <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+        <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
+    </p:menubar>
+
+    <h:outputText value="Ingredients"
+                  style="display:block; font-size: 24px; font-weight: bold; color: #333;
+                         margin-top: 2rem; margin-bottom: 2rem; text-align: center;" />
+
+
+    <h:form id="form">
+
+
+        <p:toolbar>
+            <p:toolbarGroup>
+                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update=":ingredientDialog"
+                                 oncomplete="PF('ingredientDialog').show()" actionListener="#{ingredientManagementBean.openNew}" />
+            </p:toolbarGroup>
+            <p:toolbarGroup align="right">
+                <p:button value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"/>
+            </p:toolbarGroup>
+        </p:toolbar>
+
+        <p:dataTable id="dt-ingredients" widgetVar="dtIngredients" var="ingredient"
+                     value="#{ingredientManagementBean.ingredientList}" rowKey="#{ingredient.id}" paginator="true" rows="10"
+                     responsiveLayout="scroll">
+
+            <p:column  exportable="false" style="width: 3rem"/>
+
+            <p:column headerText="Name" sortBy="#{ingredient.name}" filterBy="#{ingredient.name}">
+                <h:outputText value="#{ingredient.name}"/>
+            </p:column>
+
+
+            <p:column headerText="Price" sortBy="#{ingredient.price}" filterBy="#{ingredient.price}">
+                <h:outputText value="#{ingredient.price}"/>
+            </p:column>
+
+            <p:column headerText="Type" sortBy="#{ingredient.type.name}" filterBy="#{ingredient.type.name}">
+                <h:outputText value="#{ingredient.type.name}" />
+            </p:column>
+
+            <p:column headerText="Actions" exportable="false">
+                <p:commandButton icon="pi pi-pencil" update=":ingredientDialog"
+                                 oncomplete="PF('ingredientDialog').show()"
+                                 actionListener="#{ingredientManagementBean.setSelectedIngredient(ingredient)}" title="Edit"/>
+                <p:commandButton icon="pi pi-trash" update=":form:dt-ingredients"
+                                 actionListener="#{ingredientManagementBean.deleteIngredient(ingredient)}" title="Delete"
+                                 styleClass="ui-button-danger" />
+            </p:column>
+
+        </p:dataTable>
+
+    </h:form>
+
+    <p:dialog header="Ingredient Details" widgetVar="ingredientDialog" modal="true" resizable="false"
+              id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200" dynamic="true">
+        <h:form id="dialogs">
+            <p:messages id="messages" autoUpdate="true" showDetail="true" />
+            <p:outputPanel id="ingredientDialogPanel" style="text-align:center;">
+                <p:panelGrid columns="2" style="margin:0 auto;" columnClasses="label,value">
+
+                    <p:outputLabel for="name" value="Name:" />
+                    <p:inputText id="name" value="#{ingredientManagementBean.selectedIngredient.name}" required="true"/>
+
+                    <p:outputLabel for="price" value="Price:" />
+                    <p:inputText id="price" value="#{ingredientManagementBean.selectedIngredient.price}" required="true"/>
+
+                    <p:outputLabel for="type" value="Ingredient Type:" />
+                    <p:selectOneMenu id="type" value="#{ingredientManagementBean.selectedIngredient.type}" required="true">
+                        <f:selectItems value="#{ingredientManagementBean.ingredientTypes}" var="type"
+                                       itemValue="#{type}" itemLabel="#{type.name}" />
+                    </p:selectOneMenu>
+
+                </p:panelGrid>
+
+                <p:separator/>
+
+                <p:commandButton value="Save"
+                                 process="@form"
+                                 update=":form:dt-ingredients"
+                                 action="#{ingredientManagementBean.saveIngredient}"
+                                 oncomplete="PF('ingredientDialog').hide()" icon="pi pi-check" />
+                <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('ingredientDialog').hide()" type="button"/>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+
+
+</h:body>
+</html>
