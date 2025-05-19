@@ -10,6 +10,7 @@ import org.coffee.persistence.entity.IngredientType;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
@@ -48,8 +49,16 @@ public class IngredientManagementBean implements Serializable {
         loadIngredientTypes();
     }
 
+    @Transactional
     public void saveIngredient() {
-        System.out.println("Saving Ingredient: " + selectedIngredient.getName() + " with type: " + selectedIngredient.getType().getName());
+        System.out.println("selectedIngredient");
+        if (selectedIngredient == null) {
+            System.out.println("Selected ingredient is null");
+        } else {
+            String ingredientName = selectedIngredient.getName();
+            String typeName = (selectedIngredient.getType() != null) ? selectedIngredient.getType().getName() : "null";
+            System.out.println("Saving Ingredient: " + ingredientName + " with type: " + typeName);
+        }
         if (selectedIngredient.getId() == null) {
             ingredientDao.persist(selectedIngredient);
         } else {

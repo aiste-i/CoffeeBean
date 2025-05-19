@@ -65,8 +65,7 @@ public class IngredientType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IngredientType ingredient = (IngredientType) o;
-        return Objects.equals(id, ingredient.id)
-                && Objects.equals(name, ingredient.name);
+        return Objects.equals(id, ingredient.id);
     }
 
     @Override

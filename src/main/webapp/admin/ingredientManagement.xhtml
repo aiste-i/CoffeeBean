@@ -21,11 +21,12 @@
 
 
     <h:form id="form">
+        <p:messages id="messages2" autoUpdate="true" showDetail="true" />
 
 
         <p:toolbar>
             <p:toolbarGroup>
-                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update=":ingredientDialog"
+                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update="ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()" actionListener="#{ingredientManagementBean.openNew}" />
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
@@ -53,7 +54,7 @@
             </p:column>
 
             <p:column headerText="Actions" exportable="false">
-                <p:commandButton icon="pi pi-pencil" update=":ingredientDialog"
+                <p:commandButton icon="pi pi-pencil" update="ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()"
                                  actionListener="#{ingredientManagementBean.setSelectedIngredient(ingredient)}" title="Edit"/>
                 <p:commandButton icon="pi pi-trash" update=":form:dt-ingredients"
@@ -67,6 +68,7 @@
 
     <p:dialog header="Ingredient Details" widgetVar="ingredientDialog" modal="true" resizable="false"
               id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200" dynamic="true">
+        <p:messages id="messages1" autoUpdate="true" showDetail="true" />
         <h:form id="dialogs">
             <p:messages id="messages" autoUpdate="true" showDetail="true" />
             <p:outputPanel id="ingredientDialogPanel" style="text-align:center;">
@@ -78,11 +80,12 @@
                     <p:outputLabel for="price" value="Price:" />
                     <p:inputText id="price" value="#{ingredientManagementBean.selectedIngredient.price}" required="true"/>
 
-                    <p:outputLabel for="type" value="Ingredient Type:" />
-                    <p:selectOneMenu id="type" value="#{ingredientManagementBean.selectedIngredient.type}" required="true">
-                        <f:selectItems value="#{ingredientManagementBean.ingredientTypes}" var="type"
-                                       itemValue="#{type}" itemLabel="#{type.name}" />
-                    </p:selectOneMenu>
+                    <!--  <p:outputLabel for="type" value="Ingredient Type:" />
+                      <p:selectOneMenu id="type" value="#{ingredientManagementBean.selectedIngredient.type}" required="true">
+                          <f:selectItems value="#{ingredientManagementBean.ingredientTypes}" var="type"
+                                         itemValue="#{type}" itemLabel="#{type.name}" />
+                          <f:converter converterId="ingredientTypeConverter" />
+                    </p:selectOneMenu>-->
 
                 </p:panelGrid>
 
@@ -92,7 +95,7 @@
                                  process="@form"
                                  update=":form:dt-ingredients"
                                  action="#{ingredientManagementBean.saveIngredient}"
-                                 oncomplete="PF('ingredientDialog').hide()" icon="pi pi-check" />
+                                  icon="pi pi-check" />
                 <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('ingredientDialog').hide()" type="button"/>
             </p:outputPanel>
         </h:form>
