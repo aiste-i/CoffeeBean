@@ -38,6 +38,9 @@ public class UserSignUpBean {
     @Setter
     private User newUser = new User();
 
+    @Inject
+    private UserLoginBean userLoginBean;
+
     @Transactional
     public String signUp() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -49,16 +52,7 @@ public class UserSignUpBean {
 
             userDAO.persist(newUser);
 
-            User user = userDAO.findByUsername(email);
-            if (user != null && PasswordUtil.checkPassword(plainPassword, user.getPassword())) {
-                HttpSession session = request.getSession();
-                session.setAttribute("loggedInUserType", "User"); // Mark type
-                session.setAttribute("loggedInUserId", user.getId());
-                session.setAttribute("loggedInUserEmail", user.getEmail());
-            }
-
-            return "/user/menu.xhtml?faces-redirect=true";
-
+            return userLoginBean.login();
 
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign up failed.", "An unexpected error occurred."));

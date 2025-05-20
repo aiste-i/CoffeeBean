@@ -9,20 +9,18 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Named
 @ViewScoped
 @Getter
 @Setter
-public class ManagementBean implements Serializable {
+public class ProductManagementBean implements Serializable {
 
     @Inject
     private ProductDAO productDAO;
 
     private Product selectedProduct;
-    private List<Product> selectedProducts;
 
     private List<Product> productList;
 
