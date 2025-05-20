@@ -32,7 +32,7 @@ public class Ingredient {
     @JsonbTransient
     private IngredientType type;
 
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "deleted", nullable = false )
     private boolean isDeleted;
 
     @Column(name = "date_created", updatable = false)
