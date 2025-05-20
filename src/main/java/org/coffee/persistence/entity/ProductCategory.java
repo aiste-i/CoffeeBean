@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,19 @@ public class ProductCategory implements Serializable {
     @Column(name = "description", length = 500)
     private String description;
 
+    @Column(name = "date_created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "date_updated")
+    private LocalDateTime updated;
+
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer version;
+
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "category_addons",
@@ -33,6 +47,16 @@ public class ProductCategory implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "ingredient_type_id")
     )
     private List<IngredientType> addonIngredientTypes = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

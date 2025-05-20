@@ -40,12 +40,12 @@ public class UserLoginBean {
 
             if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) { // Check hashed password!
                 HttpSession session = request.getSession(); // Get or create session
-                session.setAttribute("loggedInUserType", "User"); // Mark type
                 session.setAttribute("loggedInUserId", user.getId()); // Store ID
                 session.setAttribute("loggedInUserRole", UserRole.CUSTOMER); // Store role
+                System.out.println(session.getAttribute("loggedInUserRole").toString());
                 session.setAttribute("loggedInUserEmail", user.getEmail());
 
-                return "/user/menu.xhtml";
+                return "/user/menu.xhtml?faces-redirect=true";
 
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed.", "Invalid username or password."));

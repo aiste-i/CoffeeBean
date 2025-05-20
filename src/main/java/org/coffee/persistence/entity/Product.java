@@ -30,7 +30,7 @@ public class Product implements Serializable {
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
-    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "price",nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
     @Column(name = "product_date_created", updatable = false)
@@ -72,8 +72,7 @@ public class Product implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
         return Objects.equals(id, product.id)
-                && Objects.equals(name, product.name)
-                && Objects.equals(description, product.description);
+                && Objects.equals(name, product.name);
     }
 
     @Override

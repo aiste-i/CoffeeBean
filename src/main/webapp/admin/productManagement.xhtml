@@ -8,20 +8,34 @@
 </h:head>
 <h:body>
 
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
+            <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
+            <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+            <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
+        </p:menubar>
+    </h:form>
+
+    <h:outputText value="Products"
+                  style="display:block; font-size: 24px; font-weight: bold; color: #333;
+                         margin-top: 2rem; margin-bottom: 2rem; text-align: center;" />
+
+
     <h:form id="form">
 
         <p:toolbar>
             <p:toolbarGroup>
                 <p:commandButton value="Add Product" icon="pi pi-plus" update=":dialogs:productDialog"
-                                 oncomplete="PF('productDialog').show()" actionListener="#{managementBean.openNew}" />
+                                 oncomplete="PF('productDialog').show()" actionListener="#{productManagementBean.openNew}" />
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
-                <p:button value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi-home"/>
+                <p:button value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"/>
             </p:toolbarGroup>
         </p:toolbar>
 
         <p:dataTable id="dt-products" widgetVar="dtProducts" var="product"
-                     value="#{managementBean.productList}" rowKey="#{product.id}" paginator="true" rows="10"
+                     value="#{productManagementBean.productList}" rowKey="#{product.id}" paginator="true" rows="10"
                      responsiveLayout="scroll">
 
             <p:column  exportable="false" style="width: 3rem"/>
@@ -34,21 +48,21 @@
                 <h:outputText value="#{product.description}"/>
             </p:column>
 
-            <p:column headerText="Category" sortBy="#{product.category}" filterBy="#{product.category}">
-                <h:outputText value="#{product.category}"/>
-            </p:column>
-
             <p:column headerText="Price" sortBy="#{product.price}" filterBy="#{product.price}">
                 <h:outputText value="#{product.price}"/>
+            </p:column>
+
+            <p:column headerText="Category" sortBy="#{product.category.name}" filterBy="#{product.category.name}">
+                <h:outputText value="#{product.category.name}"/>
             </p:column>
 
 
             <p:column headerText="Actions" exportable="false">
                 <p:commandButton icon="pi pi-pencil" update=":dialogs:productDialog"
                                  oncomplete="PF('productDialog').show()"
-                                 actionListener="#{managementBean.setSelectedProduct(product)}" title="Edit"/>
+                                 actionListener="#{productManagementBean.setSelectedProduct(product)}" title="Edit"/>
                 <p:commandButton icon="pi pi-trash" update=":form:dt-products"
-                                 actionListener="#{managementBean.deleteProduct(product)}" title="Delete"
+                                 actionListener="#{productManagementBean.deleteProduct(product)}" title="Delete"
                                  styleClass="ui-button-danger" />
             </p:column>
 
@@ -63,23 +77,26 @@
                 <p:panelGrid columns="2" style="margin:0 auto;" columnClasses="label,value">
 
                     <p:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{managementBean.selectedProduct.name}" required="true"/>
+                    <p:inputText id="name" value="#{productManagementBean.selectedProduct.name}" required="true"/>
 
                     <p:outputLabel for="description" value="Description:" />
-                    <p:inputText id="description" value="#{managementBean.selectedProduct.description}" required="true" />
-
-                    <p:outputLabel for="category" value="Category:" />
-                    <p:inputText id="category" value="#{managementBean.selectedProduct.category}" required="true"/>
+                    <p:inputText id="description" value="#{productManagementBean.selectedProduct.description}" required="true" />
 
                     <p:outputLabel for="price" value="Price:" />
-                    <p:inputText id="price" value="#{managementBean.selectedProduct.price}" required="true"/>
+                    <p:inputText id="price" value="#{productManagementBean.selectedProduct.price}" required="true"/>
+
+                    <p:outputLabel for="category" value="Product Category:" />
+                    <p:selectOneMenu id="category" value="#{productManagementBean.productCategoryId}" required="true">
+                        <f:selectItems value="#{productManagementBean.productCategoryDictionary.values()}" var="category"
+                                       itemValue="#{category.id}" itemLabel="#{category.name}" />
+                    </p:selectOneMenu>
 
                 </p:panelGrid>
 
                 <p:separator/>
 
                 <p:commandButton value="Save" icon="pi pi-check"
-                                 actionListener="#{managementBean.saveProduct}"
+                                 actionListener="#{productManagementBean.saveProduct}"
                                  update=":form:dt-products" oncomplete="PF('productDialog').hide()" />
                 <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('productDialog').hide()" type="button"/>
             </p:outputPanel>
