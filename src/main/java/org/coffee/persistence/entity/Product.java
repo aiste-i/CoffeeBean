@@ -60,7 +60,7 @@ public class Product implements Serializable {
 
         List<IngredientType> validTypes = category.getAddonIngredientTypes();
         if(validTypes != null) {
-            return category.getAddonIngredientTypes();
+            return validTypes;
         }
 
         return new ArrayList<>();

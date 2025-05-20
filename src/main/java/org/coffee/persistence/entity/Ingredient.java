@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -28,14 +29,21 @@ public class Ingredient implements Serializable {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_type_id")
+    @JoinColumn(name = "ingredient_type_id", nullable = false)
+    @JsonbTransient
     private IngredientType type;
+
+    @Column(name = "deleted", nullable = false )
+    private boolean isDeleted;
 
     @Column(name = "date_created", updatable = false)
     private LocalDateTime created;
 
     @Column(name = "date_updated")
     private LocalDateTime updated;
+  
+    @Column(name = "date_deleted")
+    private LocalDateTime deleted;
 
     @Version
     @Column(name = "opt_lock_version")
