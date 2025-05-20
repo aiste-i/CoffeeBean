@@ -7,7 +7,6 @@ import org.coffee.persistence.dao.ProductCategoryDAO;
 import org.coffee.persistence.entity.IngredientType;
 import org.coffee.persistence.entity.ProductCategory;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -87,7 +86,7 @@ public class CategoryManagementBean implements Serializable {
         this.selectedCategory = categoryDAO.findByIdWithAddonIngredientTypes(category.getId());
         this.selectedIngredientTypeIds = category.getAddonIngredientTypes().stream()
                 .map(IngredientType::getId)
-                .collect(Collectors.toSet()); // Change from toList() to toSet()
+                .collect(Collectors.toSet());
     }
 
 }
