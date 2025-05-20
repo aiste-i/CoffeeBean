@@ -7,42 +7,32 @@
 </h:head>
 <h:body>
     <h:form>
+        <p:messages globalOnly="true" />
 
-        <!-- one unified panel with both fields in a 2-column grid -->
-        <p:panel header="Confirm Your Password &amp; New Business Email" style="max-width:600px; margin:auto;">
-
-            <h:panelGrid columns="2" columnClasses="p-col-6 p-col-6" style="width:100%;" cellpadding="6">
-                <!-- Current Password -->
-                <h:outputLabel for="currentPwd" value="Current Password:" />
-                <p:password id="currentPwd"
-                            value="#{changeBusinessEmailBean.currentPassword}"
-                            placeholder="Current Password"
-                            required="true"
-                            requiredMessage="Please enter your current password"
-                            style="width:100%" />
-                <!-- New Email -->
-                <h:outputLabel for="newEmail" value="New Business Email:" />
-                <p:inputText id="newEmail"
-                             value="#{changeBusinessEmailBean.newEmail}"
-                             placeholder="new@example.com"
-                             required="true"
-                             requiredMessage="Please enter the new email address"
-                             style="width:100%" />
-            </h:panelGrid>
-
-            <!-- field-level messages, side-by-side -->
-            <h:panelGrid columns="2" columnClasses="p-col-6 p-col-6" style="width:100%;">
-                <p:message for="currentPwd" display="text" />
-                <p:message for="newEmail" display="text" />
-            </h:panelGrid>
-
-            <p:commandButton value="Change Email"
-                             action="#{changeBusinessEmailBean.changeEmail}"
-                             update="@form"
-                             style="margin-top:1em; display:block; margin-left:auto;" />
-
+        <p:panel header="Confirm Your Password">
+            <p:password
+                    id="currentPwd"
+                    value="#{changeBusinessEmailBean.currentPassword}"
+                    placeholder="Current Password"
+                    required="true"
+                    requiredMessage="Please enter your current password" />
+            <p:message for="currentPwd" display="text" />
         </p:panel>
 
+        <p:panel header="New Business Email">
+            <p:inputText
+                    id="newEmail"
+                    value="#{changeBusinessEmailBean.newEmail}"
+                    placeholder="new@example.com"
+                    required="true"
+                    requiredMessage="Please enter the new email address" />
+            <!-- shows @Email violations -->
+            <p:message for="newEmail" display="text" />
+        </p:panel>
+
+        <p:commandButton value="Change Email"
+                         action="#{changeBusinessEmailBean.changeEmail}"
+                         update="@form" />
     </h:form>
 </h:body>
 </html>

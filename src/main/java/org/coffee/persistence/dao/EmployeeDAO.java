@@ -47,11 +47,14 @@ public class EmployeeDAO extends BaseDAO<Employee> {
         return em.find(Employee.class, id);
     }
 
+    public Employee findById(Long id) {
+        return em.find(Employee.class, id);
+    }
+
     @Transactional(Transactional.TxType.REQUIRED)
     public boolean removeByUsername(String username) {
         try {
-            Employee employee = this.findByUsername(username).orElse(null);
-
+            Employee employee = this.findByUsername(username);
             if (employee != null) {
                 em.remove(employee);
                 return true;
