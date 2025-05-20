@@ -1,8 +1,8 @@
 package org.coffee.service.interfaces;
 
-import org.coffee.service.dto.EmployeeAuthResult;
-import org.coffee.service.dto.UserAuthResult;
-import org.coffee.service.exceptions.AuthenticationException;
+import org.coffee.dto.EmployeeAuthResult;
+import org.coffee.dto.UserAuthResult;
+import org.coffee.exception.AuthenticationException;
 
 public interface AuthenticationServiceInterface {
 
