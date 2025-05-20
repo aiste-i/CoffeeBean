@@ -1,4 +1,4 @@
-package org.coffee.service.exceptions;
+package org.coffee.exception;
 
 public class RegistrationException extends Exception {
     public RegistrationException(String message) {

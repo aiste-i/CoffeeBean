@@ -2,7 +2,7 @@ package org.coffee.service;
 
 import javax.enterprise.context.RequestScoped;
 import lombok.Setter;
-import org.coffee.service.exceptions.EmailException;
+import org.coffee.exception.EmailException;
 import org.coffee.service.interfaces.EmailServiceInterface;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

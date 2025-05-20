@@ -4,7 +4,7 @@ import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
-import org.coffee.service.exceptions.RegistrationException;
+import org.coffee.exception.RegistrationException;
 import org.coffee.service.interfaces.RegistrationServiceInterface;
 import org.coffee.util.PasswordUtil;
 

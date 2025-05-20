@@ -4,9 +4,9 @@ import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
-import org.coffee.service.dto.EmployeeAuthResult;
-import org.coffee.service.dto.UserAuthResult;
-import org.coffee.service.exceptions.AuthenticationException;
+import org.coffee.dto.EmployeeAuthResult;
+import org.coffee.dto.UserAuthResult;
+import org.coffee.exception.AuthenticationException;
 import org.coffee.service.interfaces.AuthenticationServiceInterface;
 import org.coffee.util.PasswordUtil;
 

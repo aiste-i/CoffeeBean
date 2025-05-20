@@ -1,7 +1,7 @@
 package org.coffee.service.interfaces;
 
 import org.coffee.persistence.entity.Employee;
-import org.coffee.service.exceptions.CredentialChangeException;
+import org.coffee.exception.CredentialChangeException;
 
 import javax.persistence.OptimisticLockException;
 

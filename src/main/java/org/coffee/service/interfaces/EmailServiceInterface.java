@@ -1,6 +1,6 @@
 package org.coffee.service.interfaces;
 
-import org.coffee.service.exceptions.EmailException;
+import org.coffee.exception.EmailException;
 
 import javax.mail.Authenticator;
 import javax.mail.Session;
