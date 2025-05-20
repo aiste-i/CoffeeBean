@@ -38,7 +38,7 @@ public class OrderBean implements Serializable {
         currentOrder.setTotalPrice(BigDecimal.ZERO);
 
         if (userSessionBean != null && userSessionBean.isLoggedIn()) {
-            User loggedUser = userSessionBean.getLoggedInUserEntity();
+            User loggedUser = (User) userSessionBean.getLoggedInUser();
             if (loggedUser != null) {
                 currentOrder.setUser(loggedUser);
                 currentOrder.setCustomerEmail(loggedUser.getEmail());
