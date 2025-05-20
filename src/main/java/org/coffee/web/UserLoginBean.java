@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.entity.User;
 import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.service.dto.UserAuthResult;
+import org.coffee.dto.UserAuthResult;
 import org.coffee.service.interfaces.AuthenticationServiceInterface;
 
 import javax.enterprise.context.RequestScoped;

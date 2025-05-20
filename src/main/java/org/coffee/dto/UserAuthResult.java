@@ -1,4 +1,4 @@
-package org.coffee.service.dto;
+package org.coffee.dto;
 
 import lombok.Getter;
 import org.coffee.persistence.entity.User;

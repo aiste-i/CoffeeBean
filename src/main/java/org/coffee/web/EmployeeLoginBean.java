@@ -3,8 +3,8 @@ package org.coffee.web;
 import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.service.dto.EmployeeAuthResult;
-import org.coffee.service.exceptions.AuthenticationException;
+import org.coffee.dto.EmployeeAuthResult;
+import org.coffee.exception.AuthenticationException;
 import org.coffee.service.interfaces.AuthenticationServiceInterface;
 
 import javax.enterprise.context.RequestScoped;

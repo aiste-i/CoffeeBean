@@ -2,7 +2,7 @@ package org.coffee.service;
 
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.service.exceptions.CredentialChangeException;
+import org.coffee.exception.CredentialChangeException;
 import org.coffee.service.interfaces.EmployeeServiceInterface;
 import org.coffee.util.PasswordUtil;
 
