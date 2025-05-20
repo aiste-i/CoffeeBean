@@ -27,8 +27,6 @@ public class OrderBean implements Serializable {
     @Inject
     private UserSessionBean userSessionBean;
 
-
-
     @PostConstruct
     public void init() {
         createNewOrder();
@@ -70,7 +68,6 @@ public class OrderBean implements Serializable {
         // Check if we have the same product with the same addons
         Optional<OrderItem> existingItemOpt = currentOrder.getItems().stream()
                 .filter(oi -> oi.getProduct().getId().equals(product.getId()) &&
-                        // Check if both have no addons or have the same addons
                         ((addons == null || addons.isEmpty()) && (oi.getAddons() == null || oi.getAddons().isEmpty()) ||
                          (addons != null && !addons.isEmpty() && oi.getAddons() != null && !oi.getAddons().isEmpty() &&
                           addons.size() == oi.getAddons().size() && oi.getAddons().containsAll(addons))) &&
@@ -86,7 +83,6 @@ public class OrderBean implements Serializable {
             newItem.setName(product.getName());
             newItem.setQuantity(quantityToAdd);
 
-            // Add addons if provided
             if (addons != null && !addons.isEmpty()) {
                 newItem.getAddons().addAll(addons);
             }
