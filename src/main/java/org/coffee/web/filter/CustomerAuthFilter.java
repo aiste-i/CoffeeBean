@@ -33,18 +33,14 @@ public class CustomerAuthFilter implements Filter {
         boolean loggedIn = false;
 
         if (session != null) {
-            System.out.println("---------------------Session not null");
-            Object loggedInUsernameObj = session.getAttribute("loggedInUserEmail");
+            Object loggedInUserEmailObj = session.getAttribute("loggedInUserEmail");
             Object loggedInUserRoleObj = session.getAttribute("loggedInUserRole");
-            System.out.println("loggedInUserRoleObj: " + loggedInUserRoleObj);
 
-            if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&
-                    !loggedInUsernameObj.toString().isEmpty() && loggedInUserRoleObj instanceof UserRole) {
+            if (loggedInUserEmailObj != null && loggedInUserRoleObj != null &&
+                    !loggedInUserEmailObj.toString().isEmpty() && loggedInUserRoleObj instanceof UserRole) {
 
                 userRole = (UserRole) loggedInUserRoleObj;
-                System.out.println("userRole: " + userRole);
                 loggedIn = true;
-                System.out.println("loggedIn: " + loggedIn);
             }
         }
 
@@ -61,13 +57,10 @@ public class CustomerAuthFilter implements Filter {
             return;
         }
 
-        System.out.println("User role: " + userRole);
-
-
         // We check if the user accessing the requested page (which requires login)
         // is validated as a logged-in user. Otherwise, they are redirected to login page
         if (FILTERED_PATHS.contains(pathWithinContext)) {
-            if(loggedIn) {
+            if(loggedIn && userRole.equals(UserRole.CUSTOMER)) {
                 chain.doFilter(request, response);
             }
             else {

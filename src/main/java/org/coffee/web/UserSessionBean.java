@@ -1,33 +1,76 @@
 package org.coffee.web;
 
-import org.coffee.persistence.entity.User;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Named
 @SessionScoped
 public class UserSessionBean implements Serializable {
-    private boolean loggedIn = false;
-    private User loggedInUserEntity; // Populate this on successful login
 
-    // Hardcode for testing, replace with actual login logic
-    public void loginTestUser() {
-        loggedInUserEntity = new User(); // Create a mock User
-        loggedInUserEntity.setId(1L);
-        loggedInUserEntity.setEmail("test@example.com");
-        // Set other User fields if needed
-        this.loggedIn = true;
-    }
-    public void logout() {
-        this.loggedIn = false;
-        this.loggedInUserEntity = null;
-        // FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        // Navigate to login page
+    @EJB
+    private UserServiceInterface userService;
+
+    @EJB
+    private EmployeeServiceInterface employeeService;
+
+    public String logout() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "/index.xhtml?faces-redirect=true";
     }
 
-    public boolean isLoggedIn() { return loggedIn; }
-    public User getLoggedInUserEntity() { return loggedInUserEntity; }
-    public Long getLoggedInUserId() { return loggedInUserEntity != null ? loggedInUserEntity.getId() : null; }
+    public Object getLoggedInUser() {
+        Long id = getLoggedInUserId();
+        UserRole role = getLoggedInUserRole();
+
+        if (Objects.requireNonNull(role) == UserRole.CUSTOMER) {
+            return userService.getUserById(id);
+        }
+
+        return employeeService.getEmployeeById(id);
+    }
+
+    public Long getLoggedInUserId() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context == null) {
+            return null;
+        }
+
+        return (Long) context.getExternalContext()
+                .getSessionMap()
+                .get("loggedInUserId");
+    }
+
+    public String getLoggedInUserEmail() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context == null) {
+            return null;
+        }
+
+        return (String) context.getExternalContext()
+                .getSessionMap()
+                .get("loggedInUserEmail");
+    }
+
+    public UserRole getLoggedInUserRole() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context == null) {
+            return null;
+        }
+
+        return (UserRole) context.getExternalContext()
+                .getSessionMap()
+                .get("loggedInUserRole");
+    }
+
+    public boolean isLoggedIn() {
+        return getLoggedInUserId() != null;
+    }
 }
