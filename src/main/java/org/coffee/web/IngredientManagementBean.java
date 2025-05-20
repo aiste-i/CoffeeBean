@@ -7,11 +7,17 @@ import org.coffee.persistence.dao.IngredientTypeDAO;
 import org.coffee.persistence.entity.Ingredient;
 import org.coffee.persistence.entity.IngredientType;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
@@ -20,26 +26,27 @@ import java.util.List;
 public class IngredientManagementBean implements Serializable {
 
     @Inject
-    private IngredientDAO ingredientDao;
+    private IngredientDAO ingredientDAO;
 
     @Inject
-    private IngredientTypeDAO ingredientTypeDao;
+    private IngredientTypeDAO ingredientTypeDAO;
 
     private Ingredient selectedIngredient;
+    private Long ingredientTypeId;
     private List<Ingredient> ingredientList;
-    private List<IngredientType> ingredientTypes;
+    private Map<Long, IngredientType> ingredientTypeDictionary;
 
 
     public void loadIngredientTypes() {
-        if (ingredientTypes == null) {
-            ingredientTypes = ingredientTypeDao.findAll();
+        if (ingredientTypeDictionary == null) {
+            ingredientTypeDictionary = ingredientTypeDAO.findAll()
+                    .stream()
+                    .collect(Collectors.toMap(IngredientType::getId, Function.identity()));
         }
     }
 
     public List<Ingredient> getIngredientList() {
-        if (ingredientList == null) {
-            ingredientList = ingredientDao.findAll();
-        }
+        ingredientList = ingredientDAO.findAll();
         return ingredientList;
     }
 
@@ -48,26 +55,39 @@ public class IngredientManagementBean implements Serializable {
         loadIngredientTypes();
     }
 
+
+    @Transactional
     public void saveIngredient() {
-        System.out.println("Saving Ingredient: " + selectedIngredient.getName() + " with type: " + selectedIngredient.getType().getName());
-        if (selectedIngredient.getId() == null) {
-            ingredientDao.persist(selectedIngredient);
-        } else {
-            ingredientDao.update(selectedIngredient);
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            if (selectedIngredient != null) {
+                IngredientType o = ingredientTypeDictionary.get(ingredientTypeId);
+                selectedIngredient.setType(o);
+
+                if (selectedIngredient.getId() == null) {
+                    ingredientDAO.persist(selectedIngredient);
+                    System.out.println("--------------------------------------------------------------------------------- no e");
+
+                    getIngredientList();
+                }
+                else {
+                    ingredientDAO.update(selectedIngredient);
+                }
+            }
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Operation failed.", "Ingredient already exists"));
         }
-        refreshIngredientList();
+
+        getIngredientList();
         selectedIngredient = null;
     }
 
     public void deleteIngredient(Ingredient ingredient) {
-        ingredientDao.removeById(ingredient.getId());
-        refreshIngredientList();
+        ingredientDAO.removeById(ingredient.getId());
+        getIngredientList();
         if (selectedIngredient != null && selectedIngredient.equals(ingredient)) {
             selectedIngredient = null;
         }
-    }
-
-    public void refreshIngredientList() {
-        ingredientList = ingredientDao.findAll();
     }
 }
