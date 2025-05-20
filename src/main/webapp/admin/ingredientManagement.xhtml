@@ -95,7 +95,8 @@
                                  process="@form"
                                  update="form:dt-ingredients :dialogs:messages"
                                  action="#{ingredientManagementBean.saveIngredient}"
-                                 icon="pi pi-check" />
+                                 icon="pi pi-check"
+                                 oncomplete="PF('ingredientDialog').hide()"/>
                 <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('ingredientDialog').hide()" type="button"/>
             </p:outputPanel>
         </h:form>

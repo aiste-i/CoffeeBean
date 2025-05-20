@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
 public class IngredientManagementBean implements Serializable {
 
     @Inject
-    private IngredientDAO ingredientDao;
+    private IngredientDAO ingredientDAO;
 
     @Inject
-    private IngredientTypeDAO ingredientTypeDao;
+    private IngredientTypeDAO ingredientTypeDAO;
 
     private Ingredient selectedIngredient;
     private Long ingredientTypeId;
@@ -39,15 +39,14 @@ public class IngredientManagementBean implements Serializable {
 
     public void loadIngredientTypes() {
         if (ingredientTypeDictionary == null) {
-            ingredientTypeDictionary = ingredientTypeDao.findAll()
+            ingredientTypeDictionary = ingredientTypeDAO.findAll()
                     .stream()
                     .collect(Collectors.toMap(IngredientType::getId, Function.identity()));
         }
     }
 
     public List<Ingredient> getIngredientList() {
-        ingredientList = ingredientDao.findAll();
-
+        ingredientList = ingredientDAO.findAll();
         return ingredientList;
     }
 
@@ -56,10 +55,6 @@ public class IngredientManagementBean implements Serializable {
         loadIngredientTypes();
     }
 
-    public void openExisting(Ingredient ingredient) {
-        selectedIngredient = ingredient;
-        loadIngredientTypes();
-    }
 
     @Transactional
     public void saveIngredient() {
@@ -71,24 +66,25 @@ public class IngredientManagementBean implements Serializable {
                 selectedIngredient.setType(o);
 
                 if (selectedIngredient.getId() == null) {
-                    ingredientDao.persist(selectedIngredient);
+                    ingredientDAO.persist(selectedIngredient);
                     System.out.println("--------------------------------------------------------------------------------- no e");
 
                     getIngredientList();
                 }
                 else {
-                    ingredientDao.update(selectedIngredient);
+                    ingredientDAO.update(selectedIngredient);
                 }
             }
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Operation failed.", "Ingredient already exists"));
         }
 
-        selectedIngredient = new Ingredient();
+        getIngredientList();
+        selectedIngredient = null;
     }
 
     public void deleteIngredient(Ingredient ingredient) {
-        ingredientDao.removeById(ingredient.getId());
+        ingredientDAO.removeById(ingredient.getId());
         getIngredientList();
         if (selectedIngredient != null && selectedIngredient.equals(ingredient)) {
             selectedIngredient = null;
