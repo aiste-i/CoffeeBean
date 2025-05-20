@@ -13,7 +13,7 @@
                   outcome="/user/login.xhtml"
                   icon="pi pi-sign-in" />
       <p:menuitem rendered="#{not empty sessionScope.loggedInUserId}" value="Logout"
-                  outcome="#{userLoginBean.logout()}"
+                  outcome="#{userSessionBean.logout()}"
                   icon="pi pi-sign-out" />
    </p:menubar>
    <div style="padding: 20px;">
