@@ -7,9 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -40,13 +38,13 @@ public class ProductCategory implements Serializable {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "category_addons",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_type_id")
     )
-    private List<IngredientType> addonIngredientTypes = new ArrayList<>();
+    private Set<IngredientType> addonIngredientTypes = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
