@@ -1,17 +1,16 @@
-package org.coffee.web;
+package org.coffee.service;
 
-import lombok.NoArgsConstructor;
+import org.coffee.service.interfaces.TokenServiceInterface;
 
 import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 @RequestScoped
-@NoArgsConstructor
-public class TokenBean {
+public class TokenService implements Serializable, TokenServiceInterface {
 
     private final SecureRandom secureRandom = new SecureRandom();
-
     private final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
 
     public String generateToken() {

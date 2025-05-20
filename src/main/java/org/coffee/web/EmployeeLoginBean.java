@@ -2,11 +2,10 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.service.EmployeeService;
-import org.coffee.util.PasswordUtil;
+import org.coffee.service.dto.EmployeeAuthResult;
+import org.coffee.service.exceptions.AuthenticationException;
+import org.coffee.service.interfaces.AuthenticationServiceInterface;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -15,16 +14,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
-
-import static org.coffee.constants.Constants.SessionAttributeKeys.*;
+import java.io.Serializable;
 
 @Named
 @RequestScoped
-public class EmployeeLoginBean {
+public class EmployeeLoginBean implements Serializable {
 
     @Inject
-    private EmployeeDAO employeeDAO;
+    private AuthenticationServiceInterface authService;
 
     @Getter
     @Setter
@@ -34,49 +31,43 @@ public class EmployeeLoginBean {
     @Setter
     private String password;
 
-    @Inject
-    private EmployeeService employeeService;
-
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
-        Optional<Employee> employeeOpt = employeeService.getEmployee(this.username);
+        try {
+            EmployeeAuthResult result = authService.authenticateEmployee(username, password);
 
-        if (!employeeOpt.isPresent()) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
+            if (result.isSuccess()) {
+                Employee employee = result.getEmployee();
+                HttpSession session = request.getSession(true);
+                session.setAttribute("loggedInUserId", employee.getId());
+                session.setAttribute("loggedInUserRole", employee.getRole());
+                session.setAttribute("loggedInUserEmail", employee.getEmail());
+
+                return "/admin/dashboard.xhtml?faces-redirect=true";
+            }
+            else {
+                context.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Login failed.",
+                                "Invalid credentials."));
+                return null;
+            }
+        }
+        catch (AuthenticationException e) {
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Login failed.",
+                            "Authentication error occurred."));
             return null;
         }
-
-        Employee employee = employeeOpt.get();
-
-        if (PasswordUtil.checkPassword(password, employee.getPassword())) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
+        catch (Exception e) {
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Login failed.",
+                            e.getCause().getMessage()));
             return null;
         }
-
-        HttpSession oldSession = request.getSession(false);
-        if (oldSession != null) {
-            oldSession.invalidate();
-        }
-        HttpSession session = request.getSession(true);
-        session.setAttribute(LOGGED_IN_USER_ID, employee.getId());
-        session.setAttribute(LOGGED_IN_USER_ROLE, employee.getRole());
-        session.setAttribute(LOGGED_IN_USERNAME, employee.getUsername());
-
-        if(employee.getRole().equals(UserRole.EMPLOYEE))
-            return "/admin/index.xhtml?faces-redirect=true";
-
-        return "/admin/dashboard.xhtml?faces-redirect=true";
-    }
-
-    public String logout() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        return "/index.xhtml?faces-redirect=true";
     }
 }
