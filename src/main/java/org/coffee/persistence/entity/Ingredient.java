@@ -6,21 +6,20 @@ import lombok.Setter;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "ingredients")
-public class Ingredient implements Serializable {
+public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
@@ -31,8 +30,10 @@ public class Ingredient implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ingredient_type_id", nullable = false)
     @JsonbTransient
-
     private IngredientType type;
+
+    @Column(name = "deleted", nullable = false )
+    private boolean isDeleted;
 
     @Column(name = "date_created", updatable = false)
     private LocalDateTime created;
@@ -40,9 +41,8 @@ public class Ingredient implements Serializable {
     @Column(name = "date_updated")
     private LocalDateTime updated;
 
-    @Version
-    @Column(name = "opt_lock_version")
-    private Integer version;
+    @Column(name = "date_deleted")
+    private LocalDateTime deleted;
 
     @PrePersist
     protected void onCreate() {
