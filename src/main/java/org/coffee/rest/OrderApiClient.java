@@ -24,7 +24,8 @@ import java.util.Map;
 @ApplicationScoped
 public class OrderApiClient {
 
-    private final String apiBaseUrl = "http://localhost:9080/coffee-1.0-SNAPSHOT/api";
+    // port may differ between thangs
+    private final String apiBaseUrl = "http://localhost:8080/coffee-1.0-SNAPSHOT/api";
 
     private Client client;
 

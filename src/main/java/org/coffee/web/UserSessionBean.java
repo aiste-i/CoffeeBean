@@ -1,8 +1,16 @@
 package org.coffee.web;
 
 
+import org.coffee.persistence.entity.enums.UserRole;
+import org.coffee.service.interfaces.EmployeeServiceInterface;
+import org.coffee.service.interfaces.UserServiceInterface;
+
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Objects;
 
