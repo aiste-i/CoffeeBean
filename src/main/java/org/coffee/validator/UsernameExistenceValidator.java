@@ -25,11 +25,18 @@ public class UsernameExistenceValidator implements Validator<String>  {
             return;
         }
         try {
-            employeeDAO.findByUsername(username);
-            throw new ValidatorException(
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Username already exists", "Please choose a different username.")
-            );
-        }catch (NoResultException ignored){}
+            boolean employeeExists = employeeDAO.findByUsername(username).isPresent();
+            if(employeeExists)
+            {
+                throw new ValidatorException(
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Username already exists.",
+                                "Please choose a different username.")
+                );
+            }
+
+        }
+        catch (NoResultException ignored){}
 
     }
 }
