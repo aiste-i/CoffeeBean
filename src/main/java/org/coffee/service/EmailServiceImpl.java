@@ -1,24 +1,19 @@
 package org.coffee.service;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-
-import lombok.Setter;
-import org.coffee.annotations.Logged;
-import org.coffee.exception.EmailException;
-import org.coffee.service.interfaces.EmailService;
-
 import javax.enterprise.context.RequestScoped;
+import lombok.Setter;
+import org.coffee.exception.EmailException;
+import org.coffee.service.interfaces.EmailServiceInterface;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-@Stateless
-public class EmailServiceImpl implements EmailService {
+@RequestScoped
+public class EmailService implements EmailServiceInterface {
 
-    private final static String defaultSender = "coffeebean@sandboxed93749178dd48e6ba10314f32bcd44a.mailgun.org";
-    private final static String defaultPass = "coffeebean12345";
+    private final String defaultSender = "coffeebean@sandboxed93749178dd48e6ba10314f32bcd44a.mailgun.org";
+    private final String defaultPass = "coffeebean12345";
 
     @Setter
     private Properties properties;
@@ -26,7 +21,6 @@ public class EmailServiceImpl implements EmailService {
     @Setter
     private Authenticator authenticator;
 
-    @Logged
     public void sendEmail(String to, String from, String subject, String body)
             throws EmailException{
 
@@ -47,7 +41,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Logged
     public void sendEmail(String to, String subject, String body) throws EmailException {
 
         Session session = getSessionInstance();

@@ -2,13 +2,11 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.annotations.EmployeeAuth;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.dto.EmployeeAuthResult;
 import org.coffee.exception.AuthenticationException;
-import org.coffee.service.interfaces.AuthenticationService;
+import org.coffee.service.interfaces.AuthenticationServiceInterface;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -23,8 +21,7 @@ import java.io.Serializable;
 public class EmployeeLoginBean implements Serializable {
 
     @Inject
-    @EmployeeAuth
-    private AuthenticationService authService;
+    private AuthenticationServiceInterface authService;
 
     @Getter
     @Setter
@@ -39,16 +36,16 @@ public class EmployeeLoginBean implements Serializable {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            EmployeeAuthResult result = (EmployeeAuthResult) authService.authenticate(username, password);
+            EmployeeAuthResult result = authService.authenticateEmployee(username, password);
 
             if (result.isSuccess()) {
-                Employee employee = result.getUser();
+                Employee employee = result.getEmployee();
                 HttpSession session = request.getSession(true);
                 session.setAttribute("loggedInUserId", employee.getId());
                 session.setAttribute("loggedInUserRole", employee.getRole());
                 session.setAttribute("loggedInUserEmail", employee.getEmail());
 
-                return "/admin/employee-dashboard.xhtml?faces-redirect=true";
+                return "/admin/dashboard.xhtml?faces-redirect=true";
             }
             else {
                 context.addMessage(null,

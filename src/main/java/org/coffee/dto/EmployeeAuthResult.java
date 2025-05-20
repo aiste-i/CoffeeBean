@@ -2,16 +2,21 @@ package org.coffee.dto;
 
 import lombok.Getter;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.persistence.entity.User;
 
-public class EmployeeAuthResult extends AuthResult {
+public class EmployeeAuthResult {
 
-    public EmployeeAuthResult(boolean success, Employee admin){
-        super(success, admin);
+    @Getter
+    private final boolean success;
+
+    @Getter
+    private final Employee employee;
+
+    private EmployeeAuthResult(boolean success, Employee admin){
+        this.success = success;
+        this.employee = admin;
     }
 
-    @Override
-    public Employee getUser() {
-        return (Employee) super.getUser();
+    public static EmployeeAuthResult create(boolean success, Employee employee) {
+        return new EmployeeAuthResult(success, employee);
     }
 }
