@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.coffee.constants.Constants.PERSISTENCE_UNIT;
@@ -50,5 +51,16 @@ public abstract class BaseDAO<T> {
     public void flush() {
         em.flush();
     }
+
+    public List<T> findByIds(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+
+        return em.createQuery(
+                        "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e.id IN :ids", entityClass)
+                .setParameter("ids", ids)
+                .getResultList();
+    }
+
+
 
 }

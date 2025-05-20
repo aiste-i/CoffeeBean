@@ -53,18 +53,14 @@ public class Product implements Serializable {
         updated = LocalDateTime.now();
     }
 
-    public List<IngredientType> getValidAddonIngredientTypes(){
-        if(category == null) {
-            return null;
+    public List<IngredientType> getValidAddonIngredientTypes() {
+        if (category == null || category.getAddonIngredientTypes() == null) {
+            return Collections.emptyList();
         }
 
-        List<IngredientType> validTypes = category.getAddonIngredientTypes();
-        if(validTypes != null) {
-            return validTypes;
-        }
-
-        return new ArrayList<>();
+        return new ArrayList<>(category.getAddonIngredientTypes());
     }
+
 
     @Override
     public boolean equals(Object o) {

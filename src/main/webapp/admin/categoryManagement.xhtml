@@ -77,6 +77,19 @@
                     <p:outputLabel for="description" value="Description:" />
                     <p:inputText id="description" value="#{categoryManagementBean.selectedCategory.description}" required="true" />
 
+                    <p:outputLabel for="addons" value="Addon Ingredient Types:" />
+                    <p:selectCheckboxMenu id="addons"
+                                          value="#{categoryManagementBean.selectedIngredientTypeIds}"
+                                          label="Select Addons"
+                                          multiple="true"
+                                          converter="javax.faces.Long">
+                        <f:selectItems value="#{categoryManagementBean.allIngredientTypes}"
+                                       var="addon"
+                                       itemLabel="#{addon.name}"
+                                       itemValue="#{addon.id}" />
+                    </p:selectCheckboxMenu>
+
+
                 </p:panelGrid>
 
                 <p:separator/>
