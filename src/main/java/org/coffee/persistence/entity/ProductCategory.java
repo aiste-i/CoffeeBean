@@ -37,6 +37,9 @@ public class ProductCategory implements Serializable {
     @Column(name = "opt_lock_version")
     private Integer version;
 
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "category_addons",

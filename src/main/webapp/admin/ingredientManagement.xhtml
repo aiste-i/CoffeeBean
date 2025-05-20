@@ -8,12 +8,14 @@
 </h:head>
 <h:body>
 
-    <p:menubar>
-        <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
-        <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
-        <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
-        <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
-    </p:menubar>
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
+            <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
+            <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+            <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
+        </p:menubar>
+    </h:form>
 
     <h:outputText value="Ingredients"
                   style="display:block; font-size: 24px; font-weight: bold; color: #333;
@@ -21,11 +23,12 @@
 
 
     <h:form id="form">
+        <p:messages id="messages2" autoUpdate="true" showDetail="true" />
 
 
         <p:toolbar>
             <p:toolbarGroup>
-                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update=":ingredientDialog"
+                <p:commandButton value="Add Ingredients" icon="pi pi-plus" update="ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()" actionListener="#{ingredientManagementBean.openNew}" />
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
@@ -53,7 +56,7 @@
             </p:column>
 
             <p:column headerText="Actions" exportable="false">
-                <p:commandButton icon="pi pi-pencil" update=":ingredientDialog"
+                <p:commandButton icon="pi pi-pencil" update="ingredientDialog"
                                  oncomplete="PF('ingredientDialog').show()"
                                  actionListener="#{ingredientManagementBean.setSelectedIngredient(ingredient)}" title="Edit"/>
                 <p:commandButton icon="pi pi-trash" update=":form:dt-ingredients"
@@ -79,9 +82,9 @@
                     <p:inputText id="price" value="#{ingredientManagementBean.selectedIngredient.price}" required="true"/>
 
                     <p:outputLabel for="type" value="Ingredient Type:" />
-                    <p:selectOneMenu id="type" value="#{ingredientManagementBean.selectedIngredient.type}" required="true">
-                        <f:selectItems value="#{ingredientManagementBean.ingredientTypes}" var="type"
-                                       itemValue="#{type}" itemLabel="#{type.name}" />
+                      <p:selectOneMenu id="type" value="#{ingredientManagementBean.ingredientTypeId}" required="true">
+                          <f:selectItems value="#{ingredientManagementBean.ingredientTypeDictionary.values()}" var="type"
+                                         itemValue="#{type.id}" itemLabel="#{type.name}" />
                     </p:selectOneMenu>
 
                 </p:panelGrid>
@@ -90,9 +93,10 @@
 
                 <p:commandButton value="Save"
                                  process="@form"
-                                 update=":form:dt-ingredients"
+                                 update="form:dt-ingredients :dialogs:messages"
                                  action="#{ingredientManagementBean.saveIngredient}"
-                                 oncomplete="PF('ingredientDialog').hide()" icon="pi pi-check" />
+                                 icon="pi pi-check"
+                                 oncomplete="PF('ingredientDialog').hide()"/>
                 <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('ingredientDialog').hide()" type="button"/>
             </p:outputPanel>
         </h:form>

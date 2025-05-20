@@ -40,6 +40,9 @@ public class Ingredient {
 
     @Column(name = "date_updated")
     private LocalDateTime updated;
+  
+    @Column(name = "date_deleted")
+    private LocalDateTime deleted;
 
     @Column(name = "date_deleted")
     private LocalDateTime deleted;
