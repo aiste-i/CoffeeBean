@@ -352,7 +352,8 @@ public class OrderService implements Serializable {
 
     @Transactional(Transactional.TxType.REQUIRED)
     private Order initializeOrder(Order order) {
-        if (order == null) return null;
+        if (order == null)
+            return null;
         Hibernate.initialize(order.getItems());
         for (OrderItem item : order.getItems()) {
             Hibernate.initialize(item.getProduct());

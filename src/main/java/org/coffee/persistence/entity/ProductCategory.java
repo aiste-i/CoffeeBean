@@ -34,10 +34,10 @@ public class ProductCategory implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonbTransient
     private List<Product> products = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -46,6 +46,7 @@ public class ProductCategory implements Serializable {
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_type_id")
     )
+    @JsonbTransient
     private Set<IngredientType> addonIngredientTypes = new HashSet<>();
 
     @PrePersist
