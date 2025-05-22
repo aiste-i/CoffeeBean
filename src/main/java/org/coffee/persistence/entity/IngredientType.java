@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Getter
 @Setter
@@ -23,8 +22,34 @@ public class IngredientType {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "type")
+    @Column(name = "description", length = 500)
+    private String description;
+
+    @Column(name = "date_created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "date_updated")
+    private LocalDateTime updated;
+
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer version;
+
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "addonIngredientTypes")
+    private Set<ProductCategory> categories = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
+    }
 
     public void addIngredient(Ingredient ingredient) {
         ingredients.add(ingredient);
@@ -41,8 +66,7 @@ public class IngredientType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IngredientType ingredient = (IngredientType) o;
-        return Objects.equals(id, ingredient.id)
-                && Objects.equals(name, ingredient.name);
+        return Objects.equals(id, ingredient.id);
     }
 
     @Override

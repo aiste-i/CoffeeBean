@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.coffee.persistence.entity.enums.Currency;
 import org.coffee.persistence.entity.enums.PaymentStatus;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public class Payment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonbTransient
     private Order order;
 
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
@@ -63,6 +65,7 @@ public class Payment implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
     @PrePersist

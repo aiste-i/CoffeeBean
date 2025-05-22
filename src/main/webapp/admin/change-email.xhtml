@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Change E-mail</title>
+</h:head>
+
+<h:body>
+    <h:form id="emailForm">
+        <p:panel header="Change Your E-mail">
+            <h:outputLabel for="currentPassword" value="Current Password:"/>
+            <p:password id="currentPassword"
+                        value="#{employeeEmailChangeBean.currentPassword}"
+                        required="true"
+                        label="Current Password"/>
+            <p:message for="currentPassword"/>
+
+            <h:outputLabel for="newEmail" value="New E-mail:" style="margin-top:1em;"/>
+            <p:inputText id="newEmail"
+                         value="#{employeeEmailChangeBean.newEmail}"
+                         required="true"
+                         label="New E-mail"/>
+            <p:message for="newEmail"/>
+
+            <p:commandButton value="Submit"
+                             action="#{employeeEmailChangeBean.submit}"
+                             update="@form" style="margin-top:1em;"/>
+        </p:panel>
+    </h:form>
+</h:body>
+</html>
