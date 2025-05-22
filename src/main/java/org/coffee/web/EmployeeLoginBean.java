@@ -45,7 +45,7 @@ public class EmployeeLoginBean implements Serializable {
                 session.setAttribute("loggedInUserRole", employee.getRole());
                 session.setAttribute("loggedInUserEmail", employee.getEmail());
 
-                return "/admin/dashboard.xhtml?faces-redirect=true";
+                return "/admin/employee-dashboard.xhtml?faces-redirect=true";
             }
             else {
                 context.addMessage(null,
