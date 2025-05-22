@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class ProductCategory implements Serializable {
     private Integer version;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonbTransient
     private List<Product> products = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
