@@ -47,6 +47,7 @@ public class Ingredient implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
     @PrePersist
