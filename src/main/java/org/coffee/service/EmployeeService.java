@@ -18,9 +18,7 @@ public class EmployeeService {
     private EmployeeDAO employeeDAO;
 
     public Optional<Employee> getEmployee(String usernameOrEmailInput) {
-        return employeeDAO.findByUsername(usernameOrEmailInput)
-                .map(Optional::of)
-                .orElseGet(() -> employeeDAO.findByEmail(usernameOrEmailInput));
+        return employeeDAO.findByUsername(usernameOrEmailInput).or(() -> employeeDAO.findByEmail(usernameOrEmailInput));
     }
 
     @Transactional
@@ -37,6 +35,22 @@ public class EmployeeService {
 
         employee.setPassword(PasswordUtil.hashPassword(newPassword));
 
+        employeeDAO.update(employee);
+    }
+
+    @Transactional
+    public void changeEmail(Long employeeId, String newEmail) {
+        Employee employee = employeeDAO.find(employeeId);
+        if (employee == null)
+            throw new IllegalArgumentException("Employee not found: " + employeeId);
+
+        employeeDAO.findByEmail(newEmail).ifPresent(e -> {
+            if (!e.getId().equals(employeeId)) {
+                throw new IllegalArgumentException("E-mail already in use");
+            }
+        });
+
+        employee.setEmail(newEmail);
         employeeDAO.update(employee);
     }
 }

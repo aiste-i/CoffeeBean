@@ -34,6 +34,13 @@
             <p:button value="Manage Employees" outcome="/admin/login.xhtml" icon="pi pi-users"
                       rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                       style="margin-right: 10px; margin-bottom: 10px;" />
+            <p:button value="Change E-mail"
+                      outcome="/admin/change-email.xhtml"
+                      icon="pi pi-envelope"
+                      rendered="#{sessionScope.loggedInUserRole == 'ADMIN'
+                     or sessionScope.loggedInUserRole == 'EMPLOYEE'}"
+                      style="margin-right:10px; margin-bottom:10px;"/>
+
         </p:panelGrid>
 
         <hr style="margin-top: 20px;"/>
