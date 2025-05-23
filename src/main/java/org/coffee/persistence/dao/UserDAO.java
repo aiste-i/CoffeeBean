@@ -1,9 +1,9 @@
 package org.coffee.persistence.dao;
 
-import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class UserDAO extends BaseDAO<User> {
@@ -17,5 +17,13 @@ public class UserDAO extends BaseDAO<User> {
                         User.class)
                 .setParameter("email", email)
                 .getSingleResult();
+    }
+
+    public User findById(Long id) {
+        return em.find(User.class, id);
+    }
+
+    public User merge(User user) {
+        return em.merge(user);
     }
 }

@@ -2,28 +2,36 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-<title>Welcome to The Daily Grind!</title>
+   <title>Welcome to The Daily Grind!</title>
 </h:head>
 <h:body>
    <p:menubar>
       <p:menuitem value="Employee/Admin Login"
                   outcome="/admin/login.xhtml"
                   icon="pi pi-briefcase" />
-      <p:menuitem rendered="#{empty sessionScope.loggedInUserId}" value="User Login"
+
+      <!-- User not logged in -->
+      <p:menuitem rendered="#{empty sessionScope.loggedInUserId}"
+                  value="User Login"
                   outcome="/user/login.xhtml"
                   icon="pi pi-sign-in" />
-      <p:menuitem rendered="#{not empty sessionScope.loggedInUserId}" value="Logout"
-                  outcome="#{userLoginBean.logout()}"
+
+      <!-- User is logged in -->
+      <p:menuitem rendered="#{not empty sessionScope.loggedInUserId}"
+                  value="Change Password"
+                  outcome="/user/change-password.xhtml"
+                  icon="pi pi-key" />
+
+      <p:menuitem rendered="#{not empty sessionScope.loggedInUserId}"
+                  value="Logout"
+                  action="#{userLoginBean.logout}"
                   icon="pi pi-sign-out" />
    </p:menubar>
+
    <div style="padding: 20px;">
       <h1>Welcome to The Daily Grind!</h1>
-      <p>
-         Your neighborhood spot for the best coffee, pastries, and good vibes.
-      </p>
-      <p>
-         Please use the links above to log in.
-      </p>
+      <p>Your neighborhood spot for the best coffee, pastries, and good vibes.</p>
+      <p>Please use the links above to log in.</p>
       <br/>
       <p>Enjoy your visit!</p>
    </div>
