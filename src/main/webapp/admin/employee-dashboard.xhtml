@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Employee Order Dashboard</title>
     <h:outputScript library="js" name="websockets.js" target="body"/>
@@ -46,6 +47,13 @@
                 <p:column headerText="Customer"><h:outputText value="#{order.customerName}" /></p:column>
                 <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="$"/></h:outputText></p:column>
                 <p:column headerText="Received" sortBy="#{order.created}"><h:outputText value="#{order.created}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{employeeDashboardBean.viewOrderItems(order)}"/>
+                </p:column>
                 <p:column headerText="Actions" style="width:220px">
                     <p:commandButton value="Accept" actionListener="#{employeeDashboardBean.acceptOrder(order)}"
                                      update="@form:pendingOrdersPanel @form:acceptedOrdersPanel @form:dashMessages" process="@this"
@@ -65,11 +73,20 @@
                          rowsPerPageTemplate="5,10,15">
                 <p:column headerText="ID" sortBy="#{order.id}"><h:outputText value="#{order.id}" /></p:column>
                 <p:column headerText="Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="$"/></h:outputText></p:column>
                 <p:column headerText="Updated" sortBy="#{order.updated}"><h:outputText value="#{order.updated}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{employeeDashboardBean.viewOrderItems(order)}"/>
+                </p:column>
                 <p:column headerText="Actions" style="width:180px">
-                    <p:commandButton value="Start Processing" actionListener="#{employeeDashboardBean.startProcessingOrder(order)}"
+                    <p:commandButton value="Complete" actionListener="#{employeeDashboardBean.completeOrder(order)}"
                                      update="@form:acceptedOrdersPanel @form:dashMessages" process="@this"
-                                     icon="pi pi-cog" styleClass="ui-button-info"/>
+                                     icon="pi pi-check" styleClass="ui-button-success"/>
                 </p:column>
             </p:dataTable>
         </p:panel>
@@ -78,6 +95,23 @@
             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
             <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
         </p:confirmDialog>
+
     </h:form>
+
+    <p:dialog header="Order Items" widgetVar="orderItemsDlg" modal="true" closable="true" resizable="false">
+        <h:form id="orderItemsForm">
+            <p:dataTable var="item" value="#{employeeDashboardBean.selectedOrderItems}" emptyMessage="No items found.">
+                <p:column headerText="Item Name">
+                    <h:outputText value="#{item.name}" />
+                </p:column>
+                <p:column headerText="Quantity">
+                    <h:outputText value="#{item.quantity}" />
+                </p:column>
+                <p:column headerText="Addons">
+                    <h:outputText value="#{item.addonNames}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
 </h:body>
 </html>
