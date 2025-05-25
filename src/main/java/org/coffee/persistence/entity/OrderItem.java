@@ -8,9 +8,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -43,7 +42,7 @@ public class OrderItem implements Serializable {
             joinColumns = @JoinColumn(name = "order_item_id"),
             inverseJoinColumns = @JoinColumn(name = "addon_ingredient_id")
     )
-    private List<Ingredient> addons = new ArrayList<>();
+    private Set<Ingredient> addons = new HashSet<>();
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 1;
@@ -77,6 +76,12 @@ public class OrderItem implements Serializable {
         } else {
             return BigDecimal.ZERO;
         }
+    }
+
+    public String getAddonNames() {
+        return addons.stream()
+                .map(Ingredient::getName)
+                .collect(Collectors.joining(", "));
     }
 
     @PrePersist

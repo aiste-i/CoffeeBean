@@ -35,4 +35,14 @@ public class OrderDAO extends BaseDAO<Order>{
                 "SELECT o FROM Order o WHERE o.orderStatus IN (org.coffee.persistence.entity.enums.OrderStatus.PENDING, org.coffee.persistence.entity.enums.OrderStatus.ACCEPTED) ORDER BY o.created ASC", Order.class);
         return query.getResultList();
     }
+
+    public Order findOrderWithItems(Long orderId) {
+        TypedQuery<Order> query = em.createQuery(
+                "SELECT o FROM Order o " +
+                        "LEFT JOIN FETCH o.items i " +
+                        "LEFT JOIN FETCH i.addons " +
+                        "WHERE o.id = :id", Order.class);
+        query.setParameter("id", orderId);
+        return query.getResultStream().findFirst().orElse(null);
+    }
 }
