@@ -44,8 +44,10 @@ public class Ingredient {
     @Column(name = "date_deleted")
     private LocalDateTime deleted;
 
-    @Column(name = "date_deleted")
-    private LocalDateTime deleted;
+    @Version
+    @Column(name = "opt_lock_version")
+    @JsonbTransient
+    private Integer version;
 
     @PrePersist
     protected void onCreate() {

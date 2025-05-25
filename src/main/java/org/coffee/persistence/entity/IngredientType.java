@@ -6,9 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,6 +37,9 @@ public class IngredientType {
 
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "addonIngredientTypes")
+    private Set<ProductCategory> categories = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ public class Product implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonbTransient
     private ProductCategory category;
 
     @Column(name = "price",nullable = false, precision = 10, scale = 2)
@@ -41,6 +43,7 @@ public class Product implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
     @PrePersist
@@ -53,18 +56,15 @@ public class Product implements Serializable {
         updated = LocalDateTime.now();
     }
 
-    public List<IngredientType> getValidAddonIngredientTypes(){
-        if(category == null) {
-            return null;
+    @JsonbTransient
+    public List<IngredientType> getValidAddonIngredientTypes() {
+        if (category == null || category.getAddonIngredientTypes() == null) {
+            return Collections.emptyList();
         }
 
-        List<IngredientType> validTypes = category.getAddonIngredientTypes();
-        if(validTypes != null) {
-            return validTypes;
-        }
-
-        return new ArrayList<>();
+        return new ArrayList<>(category.getAddonIngredientTypes());
     }
+
 
     @Override
     public boolean equals(Object o) {
