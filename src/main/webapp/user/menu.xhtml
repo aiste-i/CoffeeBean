@@ -7,6 +7,35 @@
 
 <h:head>
    <title>Menu</title>
+    <h:outputScript library="js" name="websockets.js" target="body"/>
+    <script type="text/javascript">
+        // Define the handler function globally
+        window.handleUserOrderNotification = function(notification) {
+            console.log("User Dashboard Page: handleUserOrderNotification called with type: ", notification.type, "Data:", notification);
+            if (PF &amp;&amp; PF('pageGrowl')) {
+                PF('pageGrowl').show([
+                    {
+                        severity: 'info',
+                        summary: 'Order Update',
+                        detail: `Order #${notification.type} is now ${notification.status}. Message: ${notification.message || ''}`
+                    }
+                ]);
+            }
+            console.log('Order status updated:', notification);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // IMPORTANT: Get the userId from your JSF backing bean
+            // Assuming userLoginBean.loggedInUserId holds the ID (e.g., Long)
+            // Make sure userLoginBean is accessible and loggedInUserId is populated
+            if ('#{userSessionBean.isLoggedIn()}') { // Check if it's not null/empty string from EL
+                connectUserWebSocket('#{userSessionBean.getLoggedInUserId()}');
+            } else {
+                console.warn("Could not determine logged-in user ID for WebSocket connection.");
+                // Potentially redirect to login or show an error
+            }
+        });
+    </script>
 </h:head>
 
 <h:body>

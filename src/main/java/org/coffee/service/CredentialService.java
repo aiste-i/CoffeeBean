@@ -10,12 +10,10 @@ import java.util.Optional;
 @RequestScoped
 public class CredentialService implements Serializable {
 
-    // Helper method to reduce duplication and add null safety
     private Optional<Object> getSessionAttribute(String attributeName) {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context == null) {
-            // Log error or handle appropriately if this service can be called outside JSF context
-            System.err.println("CredentialService: FacesContext is null. Cannot access session attributes.");
+
             return Optional.empty();
         }
 
@@ -25,9 +23,8 @@ public class CredentialService implements Serializable {
             return Optional.empty();
         }
 
-        HttpSession session = request.getSession(false); // Pass 'false' to NOT create a new session if none exists
+        HttpSession session = request.getSession(false);
         if (session == null) {
-            // User is not logged in or session has expired/invalidated
             return Optional.empty();
         }
         return Optional.ofNullable(session.getAttribute(attributeName));
@@ -35,26 +32,24 @@ public class CredentialService implements Serializable {
 
     public Optional<String> getCurrentUsernameOpt() {
         return getSessionAttribute("loggedInUsername")
-                .map(Object::toString); // Convert to String if present
+                .map(Object::toString);
     }
 
     public String getCurrentUsername() {
-        return getCurrentUsernameOpt().orElse(""); // Or .orElse("") if you must return String
+        return getCurrentUsernameOpt().orElse("");
     }
 
 
     public Optional<String> getCurrentRoleOpt() {
-        // Assuming role is stored as an Enum or String that can be .toString()'d
         return getSessionAttribute("loggedInUserRole")
                 .map(Object::toString);
     }
 
     public String getCurrentRole() {
-        return getCurrentRoleOpt().orElse(null); // Or .orElse("")
+        return getCurrentRoleOpt().orElse(null);
     }
 
-    // Example for getting the actual Role Enum if stored as such
-    public Optional<String> getCurrentActualRole() { // Assuming EmployeeRole is your enum
+    public Optional<String> getCurrentActualRole() {
         return getSessionAttribute("loggedInUserRole")
                 .map(Object::toString);
     }

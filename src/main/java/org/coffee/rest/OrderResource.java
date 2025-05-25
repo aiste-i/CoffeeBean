@@ -21,6 +21,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
+import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USER_ID;
+
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,7 +38,7 @@ public class OrderResource {
     private Long getAuthenticatedUserIdFromSession() {
         HttpSession session = httpRequest.getSession(false);
         if (session != null) {
-            Object userIdObj = session.getAttribute("loggedInUserId");
+            Object userIdObj = session.getAttribute(LOGGED_IN_USER_ID);
             if (userIdObj instanceof Long) {
                 return (Long) userIdObj;
             }
@@ -52,7 +54,7 @@ public class OrderResource {
     public Response createOrder(@Valid OrderCreationDto request) {
         try {
             Long userId = getAuthenticatedUserIdFromSession();
-            Order newOrder = orderService.createOrder(request, userId);
+            Order newOrder = orderService.createOrder(request, request.getCustomerId());
             return Response.status(Response.Status.CREATED).entity(newOrder).build();
         }
         catch (IllegalArgumentException e) {
@@ -83,11 +85,7 @@ public class OrderResource {
     @Path("/{id}/modify")
     public Response modifyOrderByUser(@PathParam("id") Long orderId, @Valid OrderModificationDto modRequest) {
         try {
-            Long userId = getAuthenticatedUserIdFromSession();
-            if(userId == null) {
-                return Response.status(Response.Status.UNAUTHORIZED).entity(new ClientMessageDto("Authentication required.")).build();
-            }
-            Order modifiedOrder = orderService.modifyOrderByUser(orderId, modRequest, userId);
+            Order modifiedOrder = orderService.modifyOrderByUser(orderId, modRequest, modRequest.getCustomerId());
             return Response.ok(modifiedOrder).build();
         }
         catch (OrderNotFoundException e) {

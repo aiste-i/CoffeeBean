@@ -15,12 +15,17 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
+
 @Named
 @RequestScoped
 public class UserLoginBean {
 
     @Inject
-    private UserDAO userDAO; // Your DAO for Employee data
+    private UserDAO userDAO;
+
+    @Inject
+    private UserSessionBean userSession;
 
     @Getter
     @Setter
@@ -29,6 +34,9 @@ public class UserLoginBean {
     @Getter
     @Setter
     private String password;
+    @Named
+    @Inject
+    private UserSessionBean userSessionBean;
 
 
     public String login() {
@@ -38,13 +46,17 @@ public class UserLoginBean {
         try {
             User user = userDAO.findByUsername(email);
 
-            if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) { // Check hashed password!
-                HttpSession session = request.getSession(); // Get or create session
-                session.setAttribute("loggedInUserId", user.getId()); // Store ID
-                session.setAttribute("loggedInUserRole", UserRole.CUSTOMER); // Store role
-                System.out.println(session.getAttribute("loggedInUserRole").toString());
-                session.setAttribute("loggedInUserEmail", user.getEmail());
+            if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) {
+                HttpSession oldSession = request.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
+                HttpSession session = request.getSession();
+                session.setAttribute(LOGGED_IN_USER_ID, user.getId());
+                session.setAttribute(LOGGED_IN_USER_ROLE, UserRole.CUSTOMER);
+                session.setAttribute(LOGGED_IN_USER_EMAIL, user.getEmail());
 
+                userSessionBean.establishSession(user);
                 return "/user/menu.xhtml?faces-redirect=true";
 
             } else {
@@ -62,7 +74,8 @@ public class UserLoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         HttpSession session = request.getSession(false);
         if (session != null) {
-            session.invalidate(); // Invalidate session
+            session.invalidate();
+            userSessionBean.clearSessionData();
         }
         return "/index.xhtml?faces-redirect=true";
     }

@@ -4,16 +4,23 @@ import org.coffee.event.*;
 import org.coffee.persistence.entity.Order;
 import org.coffee.persistence.entity.OrderItem;
 import org.coffee.util.JsonbUtil;
+import org.coffee.web.UserSessionBean;
 import org.hibernate.Hibernate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @ApplicationScoped
 public class WebSocketNotificationHandler {
+
+    @Named
+    @Inject
+    private UserSessionBean userSessionBean;
 
     private String createNotificationJson(String type, Order order) {
         // IMPORTANT: Ensure any lazy-loaded parts of Order needed by client are initialized
@@ -56,7 +63,8 @@ public class WebSocketNotificationHandler {
     }
 
     private void notifyUser(Order order, String eventType) {
-        if (order != null && order.getUser() != null && order.getUser().getId() != null) {
+        if (order != null) {
+            Hibernate.initialize(order.getUser().getId());
             String message = createNotificationPayload(eventType, order);
             if (message != null) {
                 UserWebSocketEndpoint.sendToUser(order.getUser().getId().toString(), message);

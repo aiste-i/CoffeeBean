@@ -72,6 +72,7 @@ public class CheckoutConfirmBean implements Serializable {
         creationDto.setOrderName(this.orderNameInput);
         creationDto.setCustomerName(this.customerNameInput);
         creationDto.setCustomerEmail(this.customerEmailInput);
+        creationDto.setCustomerId(orderFromSession.getUser().getId());
 
         creationDto.setItems(
                 orderFromSession.getItems().stream().map(oi -> {

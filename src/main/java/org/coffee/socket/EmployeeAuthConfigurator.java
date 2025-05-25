@@ -21,7 +21,6 @@ public class EmployeeAuthConfigurator extends ServerEndpointConfig.Configurator 
                 if (role == UserRole.EMPLOYEE || role == UserRole.ADMIN) {
                     sec.getUserProperties().put("employeeUsername", employeeUsernameObj);
                     sec.getUserProperties().put("employeeRole", employeeRoleObj);
-                    System.out.println("EmployeeAuthConfigurator: Employee " + employeeUsernameObj + " authorized for WebSocket.");
                 }
             }
         }

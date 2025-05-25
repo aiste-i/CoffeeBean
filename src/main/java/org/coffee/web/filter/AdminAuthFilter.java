@@ -20,6 +20,11 @@ public class AdminAuthFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         FILTERED_PATHS.add("/admin/add-employee.xhtml");
         FILTERED_PATHS.add("/admin/change-password.xhtml");
+        FILTERED_PATHS.add("/admin/dashboard.xhtml");
+        FILTERED_PATHS.add("/admin/productManagement.xhtml");
+        FILTERED_PATHS.add("/admin/categoryManagement.xhtml");
+        FILTERED_PATHS.add("/admin/ingredientManagement.xhtml");
+        FILTERED_PATHS.add("/admin/ingTypeManagement.xhtml");
     }
 
     @Override
@@ -47,6 +52,7 @@ public class AdminAuthFilter implements Filter {
 
         String contextPath = httpRequest.getContextPath();
         String loginURI = contextPath + "/admin/login.xhtml";
+        String dashboardURI = contextPath + "/admin/";
         String requestedURI = httpRequest.getRequestURI();
         String pathWithinContext = requestedURI.substring(contextPath.length());
 
@@ -71,7 +77,7 @@ public class AdminAuthFilter implements Filter {
             if (userRole == UserRole.ADMIN) {
                 chain.doFilter(request, response);
             } else {
-                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+                httpResponse.sendRedirect(dashboardURI);
             }
         }
         else if (userRole == UserRole.ADMIN || userRole == UserRole.EMPLOYEE) {

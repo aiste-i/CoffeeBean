@@ -21,6 +21,9 @@ public class OrderCreationDto implements Serializable {
     @Size(min = 1, max = 255, message = "Order name must be between 1 and 255 characters")
     private String orderName;
 
+    @NotNull
+    private Long customerId;
+
     @Size(max = 100, message = "Customer name cannot exceed 100 characters")
     private String customerName;
 

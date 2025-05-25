@@ -23,6 +23,9 @@ public class OrderModificationDto implements Serializable {
     @Valid
     private List<OrderItemDto> updatedItems;
 
+    @NotNull
+    private Long customerId;
+
     @Size(max = 100, message = "Customer name cannot exceed 100 characters")
     private String customerName;
 

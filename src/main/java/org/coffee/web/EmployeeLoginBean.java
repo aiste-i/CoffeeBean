@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
+import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.service.EmployeeService;
 import org.coffee.util.PasswordUtil;
 
@@ -15,6 +16,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
 
 @Named
 @RequestScoped
@@ -40,23 +43,31 @@ public class EmployeeLoginBean {
 
         Optional<Employee> employeeOpt = employeeService.getEmployee(this.username);
 
-        if (employeeOpt.isPresent()) {
-            Employee employee = employeeOpt.get();
-            if (PasswordUtil.checkPassword(password, employee.getPassword())) {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("loggedInUserId", employee.getId());
-                session.setAttribute("loggedInUserRole", employee.getRole());
-                session.setAttribute("loggedInUsername", employee.getUsername());
-
-                return "/admin/dashboard.xhtml?faces-redirect=true";
-            } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
-                return null;
-            }
-        } else {
+        if (!employeeOpt.isPresent()) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
             return null;
         }
+
+        Employee employee = employeeOpt.get();
+
+        if (PasswordUtil.checkPassword(password, employee.getPassword())) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Failed", "Invalid username/email or password."));
+            return null;
+        }
+
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+        HttpSession session = request.getSession(true);
+        session.setAttribute(LOGGED_IN_USER_ID, employee.getId());
+        session.setAttribute(LOGGED_IN_USER_ROLE, employee.getRole());
+        session.setAttribute(LOGGED_IN_USERNAME, employee.getUsername());
+
+        if(employee.getRole().equals(UserRole.EMPLOYEE))
+            return "/admin/index.xhtml?faces-redirect=true";
+
+        return "/admin/dashboard.xhtml?faces-redirect=true";
     }
 
     public String logout() {
