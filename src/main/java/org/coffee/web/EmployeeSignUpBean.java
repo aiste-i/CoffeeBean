@@ -61,7 +61,7 @@ public class EmployeeSignUpBean {
 
     public List<UserRole> getAvailableRoles() {
         return Arrays.stream(UserRole.values())
-                .filter(role -> role != UserRole.ADMIN)
+                .filter(role -> role != UserRole.ADMIN && role != UserRole.EMPLOYEE)
                 .collect(Collectors.toList());
     }
 }
