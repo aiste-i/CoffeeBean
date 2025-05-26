@@ -238,7 +238,7 @@ public class OrderService implements Serializable {
             System.out.println("OrderService.createOrder: OrderItem entity populated with Product: " + orderItemEntity.getProduct().getName());
 
             if (itemDto.getAddonIngredientIds() != null && !itemDto.getAddonIngredientIds().isEmpty()) {
-                List<Ingredient> addons = new ArrayList<>();
+                Set<Ingredient> addons = new HashSet<>();
                 for (Long addonId : itemDto.getAddonIngredientIds()) {
                     if (addonId == null) {
                         continue;
@@ -314,7 +314,7 @@ public class OrderService implements Serializable {
                 orderItem.setQuantity(itemDto.getQuantity());
 
                 if (itemDto.getAddonIngredientIds() != null && !itemDto.getAddonIngredientIds().isEmpty()) {
-                    List<Ingredient> addons = new ArrayList<>();
+                    Set<Ingredient> addons = new HashSet<>();
                     for (Long addonId : itemDto.getAddonIngredientIds()) {
                         Ingredient addon = ingredientDAO.find(addonId);
                         if (addon == null || addon.isDeleted()) {
@@ -366,6 +366,15 @@ public class OrderService implements Serializable {
             Hibernate.initialize(order.getUser());
         }
          Hibernate.initialize(order.getPayments());
+        return order;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Order getOrderDetails(Long orderId) throws OrderNotFoundException {
+        Order order = orderDAO.findOrderWithItems(orderId); // Use custom query in DAO
+        if (order == null) {
+            throw new OrderNotFoundException("Order not found for ID: " + orderId);
+        }
         return order;
     }
 }

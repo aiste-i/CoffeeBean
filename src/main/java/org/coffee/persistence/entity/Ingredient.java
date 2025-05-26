@@ -6,21 +6,20 @@ import lombok.Setter;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "ingredients")
-public class Ingredient implements Serializable {
+public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;

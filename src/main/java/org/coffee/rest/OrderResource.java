@@ -80,6 +80,19 @@ public class OrderResource {
         }
     }
 
+    @GET
+    @Path("/{id}/details")
+    public Response getOrderDetails(@PathParam("id") Long orderId) {
+        try {
+            Order orderDetails = orderService.getOrderDetails(orderId);
+            return Response.ok(orderDetails).build();
+        } catch (OrderNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Order not found for ID: " + orderId)
+                    .build();
+        }
+    }
+
 
     @PUT
     @Path("/{id}/modify")
@@ -188,7 +201,7 @@ public class OrderResource {
     }
 
     @GET
-    @Path("/dashboard") // New endpoint path
+    @Path("/dashboard")
     public Response getDashboardOrdersForEmployee() {
         try {
             Map<OrderStatus, List<Order>> dashboardOrders = orderService.getDashboardOrders();

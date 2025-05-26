@@ -11,9 +11,7 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -29,7 +27,7 @@ public class Order implements Serializable {
     private String name = null;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderItem> items = new ArrayList<>();
+    private Set<OrderItem> items = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -68,7 +66,6 @@ public class Order implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
-    @JsonbTransient
     private Integer version;
 
     public void addItem(OrderItem item) {

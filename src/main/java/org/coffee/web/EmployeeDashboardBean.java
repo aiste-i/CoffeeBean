@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.exception.OrderApiException;
 import org.coffee.persistence.entity.Order;
+import org.coffee.persistence.entity.OrderItem;
 import org.coffee.persistence.entity.enums.OrderStatus;
 import org.coffee.rest.OrderApiClient;
 
@@ -14,10 +15,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -32,6 +30,10 @@ public class EmployeeDashboardBean implements Serializable {
     @Setter
     @Getter
     private Order selectedOrder;
+
+    @Getter
+    @Setter
+    private Set<OrderItem> selectedOrderItems;
 
     @PostConstruct
     public void init() {
@@ -91,18 +93,6 @@ public class EmployeeDashboardBean implements Serializable {
         }
     }
 
-    public void startProcessingOrder(Order order) {
-        if (order == null) return;
-        try {
-            orderApiClient.processOrderAsEmployee(order.getId());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Order Processing", "Order ID: " + order.getId()));
-            loadOrders();
-        } catch (Exception e) {
-            handleActionError("Start Processing", e, order.getId());
-        }
-    }
-
     public void completeOrder(Order order) {
         if (order == null) return;
         try {
@@ -124,6 +114,16 @@ public class EmployeeDashboardBean implements Serializable {
             loadOrders();
         } catch (Exception e) {
             handleActionError("Cancel Order", e, order.getId());
+        }
+    }
+
+    public void viewOrderItems(Order order) {
+        try {
+            Order detailedOrder = orderApiClient.getOrderDetails(order.getId());
+            this.selectedOrderItems = detailedOrder.getItems();
+        } catch (OrderApiException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Failed to Retrieve Items", "Order ID: " + order.getId()));
         }
     }
 

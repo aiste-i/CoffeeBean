@@ -67,6 +67,17 @@ public class OrderApiClient {
         }
     }
 
+    public Order getOrderDetails(Long orderId) throws OrderApiException {
+        WebTarget getOrderDetailsTarget = baseTarget.path("orders").path(String.valueOf(orderId)).path("details");
+        try (Response response = getOrderDetailsTarget
+                .request(MediaType.APPLICATION_JSON)
+                .get()) {
+            return handleResponse(response, Order.class, "Get Order Details");
+        } catch (ProcessingException e) {
+            throw new OrderApiException("Network or processing error during get order details: " + e.getMessage(), 0, e);
+        }
+    }
+
     public List<Order> getAllOrders() throws OrderApiException {
         WebTarget getAllOrdersTarget = baseTarget.path("orders");
         try (Response response = getAllOrdersTarget
@@ -119,16 +130,6 @@ public class OrderApiClient {
         }
     }
 
-    public Order processOrderAsEmployee(Long orderId) throws OrderApiException {
-        WebTarget target = baseTarget.path("orders").path(String.valueOf(orderId)).path("process-by-employee");
-        try (Response response = target
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.json(null))) {
-            return handleResponse(response, Order.class, "Process Order (Employee)");
-        } catch (ProcessingException e) {
-            throw new OrderApiException("Network or processing error processing order: " + e.getMessage(), 0, e);
-        }
-    }
 
 
     public Order completeOrderAsEmployee(Long orderId, Integer version) throws OrderApiException {
@@ -146,6 +147,8 @@ public class OrderApiClient {
     public Order cancelOrderAsEmployee(Long orderId, Integer version) throws OrderApiException {
         WebTarget target = baseTarget.path("orders").path(String.valueOf(orderId)).path("cancel-by-employee")
                 .queryParam("version", version);
+        System.out.println("Cancel API Call - Order ID: " + orderId + ", Version: " + version);
+
         try (Response response = target
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.json(null))) {
