@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USERNAME;
+import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USER_ROLE;
+
 @WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/admin/*"})
 public class AdminAuthFilter implements Filter {
 
@@ -39,8 +42,8 @@ public class AdminAuthFilter implements Filter {
         boolean loggedIn = false;
 
         if (session != null) {
-            Object loggedInUsernameObj = session.getAttribute("loggedInUsername");
-            Object loggedInUserRoleObj = session.getAttribute("loggedInUserRole");
+            Object loggedInUsernameObj = session.getAttribute(LOGGED_IN_USERNAME );
+            Object loggedInUserRoleObj = session.getAttribute(LOGGED_IN_USER_ROLE);
 
             if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&
                     !loggedInUsernameObj.toString().isEmpty() && loggedInUserRoleObj instanceof UserRole) {
