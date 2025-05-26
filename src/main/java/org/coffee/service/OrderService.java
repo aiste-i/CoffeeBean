@@ -10,7 +10,7 @@ import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderModificationDto;
 import org.hibernate.Hibernate;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
@@ -18,7 +18,7 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.*;
 
-@ApplicationScoped
+@Stateless
 public class OrderService implements Serializable {
 
     @Inject

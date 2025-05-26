@@ -3,7 +3,7 @@ package org.coffee.validator;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -14,7 +14,7 @@ import javax.inject.Named;
 import java.util.Optional;
 
 @Named
-@ApplicationScoped
+@Stateless
 public class UsernameExistenceValidator implements Validator<String>  {
 
     @Inject

@@ -21,10 +21,10 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
+import static org.coffee.constants.Constants.API_BASE_URL;
+
 @ApplicationScoped
 public class OrderApiClient {
-
-    private final String apiBaseUrl = "http://localhost:9080/coffee-1.0-SNAPSHOT/api";
 
     private Client client;
 
@@ -33,7 +33,7 @@ public class OrderApiClient {
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
-        this.baseTarget = client.target(apiBaseUrl);
+        this.baseTarget = client.target(API_BASE_URL);
     }
 
     @PreDestroy

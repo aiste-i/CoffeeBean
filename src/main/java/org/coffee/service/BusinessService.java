@@ -3,11 +3,12 @@ package org.coffee.service;
 import org.coffee.persistence.dao.BusinessDAO;
 import org.coffee.persistence.entity.Business;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-@ApplicationScoped
+@Stateless
 public class BusinessService {
 
     @Inject
