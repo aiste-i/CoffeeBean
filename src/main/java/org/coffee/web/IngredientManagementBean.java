@@ -67,7 +67,6 @@ public class IngredientManagementBean implements Serializable {
 
                 if (selectedIngredient.getId() == null) {
                     ingredientDAO.persist(selectedIngredient);
-                    System.out.println("--------------------------------------------------------------------------------- no e");
 
                     getIngredientList();
                 }

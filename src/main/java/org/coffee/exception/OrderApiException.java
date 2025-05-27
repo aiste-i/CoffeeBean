@@ -2,7 +2,7 @@ package org.coffee.exception;
 
 public class OrderApiException extends Exception {
 
-    private static final long serialVersionUID = 1L; // Good practice for Serializable classes
+    private static final long serialVersionUID = 1L;
 
     private final int httpStatusCode;
 

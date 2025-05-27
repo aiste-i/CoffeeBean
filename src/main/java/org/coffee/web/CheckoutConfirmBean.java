@@ -107,10 +107,6 @@ public class CheckoutConfirmBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Order Submitted Successfully!",
                             "Your Order ID is: " + persistedOrder.getId()));
 
-            //orderBean.clearOrder();
-
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("submittedOrderId", persistedOrder.getId());
-
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL, "Order Submission Failed",

@@ -31,7 +31,6 @@ public class PaymentController {
 
 
         if (orderTotal == null) {
-            System.err.println("orderTotal is null");
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "Field 'orderTotal' is required and must not be null."))
                     .build();

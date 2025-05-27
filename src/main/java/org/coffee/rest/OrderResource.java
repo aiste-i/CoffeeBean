@@ -73,7 +73,6 @@ public class OrderResource {
     public Response updateOrder(@PathParam("id") Long orderId) {
         try {
             Order updatedOrder = orderService.updateOrder(orderId);
-            System.out.println("Update API resource call - Order ID: " + orderId);
             return Response.ok(updatedOrder).build();
         }
         catch (OrderNotFoundException e) {
