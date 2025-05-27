@@ -65,7 +65,7 @@ public class EmailSenderBean {
             Transport.send(message);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Log properly in production
+            e.printStackTrace();
         }
     }
 

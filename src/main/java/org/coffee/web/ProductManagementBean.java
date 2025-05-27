@@ -64,7 +64,6 @@ public class ProductManagementBean implements Serializable {
 
                 if(selectedProduct.getId() == null) {
                     productDAO.persist(selectedProduct);
-                    System.out.println("--------------------------------------------------------------------------------- no e");
                     getProductList();
                 }
                 else {

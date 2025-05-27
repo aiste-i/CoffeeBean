@@ -1,11 +1,9 @@
-// src/main/webapp/resources/js/websockets.js
+let userSocketConnection;
+let employeeSocketConnection;
 
-let userSocketConnection;    // Renamed to avoid conflict with p:socket if used elsewhere
-let employeeSocketConnection; // Renamed
+const APP_CONTEXT_PATH = '/coffee-1.0-SNAPSHOT';
 
-const APP_CONTEXT_PATH = '/coffee-1.0-SNAPSHOT'; // IMPORTANT: SET YOUR ACTUAL APPLICATION CONTEXT PATH!
 
-// --- User WebSocket ---
 function connectUserWebSocket(userId) {
     if (!userId) {
         console.warn("UserWS: No userId provided, cannot connect.");
@@ -57,11 +55,9 @@ function connectUserWebSocket(userId) {
 
     userSocketConnection.onerror = function(error) {
         console.error(`UserWS error for ${userId}: `, error);
-        // onerror is usually followed by onclose.
     };
 }
 
-// --- Employee WebSocket ---
 function connectEmployeeWebSocket() {
     if (employeeSocketConnection && (employeeSocketConnection.readyState === WebSocket.OPEN || employeeSocketConnection.readyState === WebSocket.CONNECTING)) {
         console.log('EmployeeWS: Already connected or connecting.');
@@ -91,7 +87,6 @@ function connectEmployeeWebSocket() {
                 window.handleEmployeeOrderNotification(notification);
             } else {
                 console.warn('EmployeeWS: Global function not found on page.');
-                // Default action: alert("Employee Notification: " + notification.type);
             }
         } catch (e) {
             console.error('EmployeeWS: Error parsing message:', e, "Raw data:", event.data);
@@ -100,9 +95,8 @@ function connectEmployeeWebSocket() {
 
     employeeSocketConnection.onclose = function(event) {
         console.log(`EmployeeWS disconnected. Code: ${event.code}, Reason: "${event.reason}", Clean: ${event.wasClean}`);
-        employeeSocketConnection = null; // Clear reference
-        // Optional: More robust reconnect logic for employees
-        if (!event.wasClean) { // e.g. server restart, network drop
+        employeeSocketConnection = null;
+        if (!event.wasClean) {
             console.log("EmployeeWS: Attempting to reconnect in 5 seconds...");
             setTimeout(connectEmployeeWebSocket, 5000);
         }

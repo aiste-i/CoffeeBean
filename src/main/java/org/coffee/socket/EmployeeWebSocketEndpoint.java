@@ -26,9 +26,6 @@ public class EmployeeWebSocketEndpoint {
         employeeSessions.add(session);
         session.getUserProperties().put("employeeUsername", employeeUsername);
 
-        // TODO: Optionally send initial data (e.g., list of PENDING orders)
-        // String initialPendingOrders = orderService.getPendingOrdersAsJson();
-        // if (initialPendingOrders != null) session.getAsyncRemote().sendText(initialPendingOrders);
     }
 
     @OnMessage

@@ -89,7 +89,7 @@ public class PasswordResetBean implements Serializable {
         }
         catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Password reset failed.", "An unexpected error occurred."));
-            return null; // Stay on the same page
+            return null;
         }
     }
 }

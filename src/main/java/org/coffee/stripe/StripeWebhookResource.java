@@ -38,7 +38,6 @@ public class StripeWebhookResource {
                         .getRawJson();
 
                 if (rawSessionJson == null) {
-                    System.out.println("Raw session data is null.");
                     return Response.status(400).entity("Missing session data").build();
                 }
 
@@ -53,14 +52,8 @@ public class StripeWebhookResource {
                     if (metadata.has("orderId")) {
                         String orderIdStr = metadata.getString("orderId");
                         Long orderId = Long.parseLong(orderIdStr);
-                        System.out.println("Extracted Order ID: " + orderId);
-
                         orderApiClient.updateOrder(orderId);
-                    } else {
-                        System.out.println("Metadata found, but 'orderId' is missing.");
                     }
-                } else {
-                    System.out.println("Session metadata is null or missing.");
                 }
             }
 

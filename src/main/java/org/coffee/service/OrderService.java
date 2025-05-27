@@ -187,7 +187,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public Order completeOrderByEmployee(Long orderId, Integer clientVersion /*, String employeeId */)
+    public Order completeOrderByEmployee(Long orderId, Integer clientVersion )
             throws OrderNotFoundException, OrderActionException, OrderConflictException {
         try {
             Order order = findOrderByIdAndEnsureInitialized(orderId);
@@ -417,7 +417,6 @@ public class OrderService implements Serializable {
             order.setOrderStatus(OrderStatus.PENDING);
             Order mergedOrder = orderDAO.update(order);
             orderDAO.flush();
-            System.out.println("ordersubmiteed id= " + mergedOrder.getId());
 
             orderSubmittedEvent.fire(new OrderSubmittedEvent(initializeOrder(mergedOrder)));
             return mergedOrder;
