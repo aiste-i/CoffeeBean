@@ -1,5 +1,6 @@
 package org.coffee.service;
 
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Employee;
@@ -8,14 +9,14 @@ import org.coffee.exception.RegistrationException;
 import org.coffee.service.interfaces.RegistrationService;
 import org.coffee.util.PasswordUtil;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 
 @Named
-@RequestScoped
+@ApplicationScoped
 public class RegistrationServiceImpl implements RegistrationService {
 
     @Inject
@@ -26,6 +27,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
+    @Logged
     public void registerUser(User user, String plainPassword) throws RegistrationException {
         try {
             user.setPassword(PasswordUtil.hashPassword(plainPassword));
@@ -42,6 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
+    @Logged
     public void registerEmployee(Employee employee, String plainPassword) throws RegistrationException {
         try {
             employee.setPassword(PasswordUtil.hashPassword(plainPassword));

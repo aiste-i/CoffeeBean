@@ -21,7 +21,7 @@ import static org.coffee.constants.Constants.SessionAttributeKeys.*;
 
 @Named
 @RequestScoped
-public class EmployeeLoginBean implements Serializable {
+public class EmployeeLoginBean {
 
     @Inject
     @EmployeeAuth

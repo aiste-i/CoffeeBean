@@ -1,5 +1,6 @@
 package org.coffee.service;
 
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.exception.CredentialChangeException;
@@ -24,11 +25,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public Optional<Employee> getEmployee(String usernameOrEmailInput) {
         return employeeDAO.findByUsername(usernameOrEmailInput)
-                .map(Optional::of)
-                .orElseGet(() -> employeeDAO.findByEmail(usernameOrEmailInput));
+                .or(() -> employeeDAO.findByEmail(usernameOrEmailInput));
     }
 
     @Transactional
+    @Logged
     public boolean changePassword(Employee employee, String oldPassword, String password)
             throws CredentialChangeException, OptimisticLockException {
 

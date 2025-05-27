@@ -27,6 +27,9 @@ import static org.coffee.constants.Constants.API_BASE_URL;
 @ApplicationScoped
 public class OrderApiClient {
 
+    // port may differ between thangs
+    private final String apiBaseUrl = "http://localhost:8080/coffee-1.0-SNAPSHOT/api";
+
     private Client client;
 
     private WebTarget baseTarget;
@@ -56,6 +59,7 @@ public class OrderApiClient {
             throw new OrderApiException("Network or processing error during create order: " + e.getMessage(), 0, e);
         }
     }
+
 
     public Order getOrderById(Long orderId) throws OrderApiException {
         WebTarget getOrderTarget = baseTarget.path("orders").path(String.valueOf(orderId));

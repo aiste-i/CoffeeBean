@@ -17,9 +17,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
-import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class OrderServiceImpl implements OrderService {

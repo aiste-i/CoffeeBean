@@ -1,6 +1,7 @@
 package org.coffee.service;
 
 import org.coffee.annotations.Development;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.PasswordResetDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.PasswordReset;
@@ -13,6 +14,7 @@ import org.coffee.service.interfaces.UserService;
 import org.coffee.util.PasswordUtil;
 import org.coffee.util.UrlProvider;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Inject
     private TokenService tokenService;
 
-    @Inject
+    @EJB
     private EmailService emailService;
 
     @Inject
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    @Logged
     public boolean requestPasswordReset(String email) throws CredentialChangeException {
         try {
             Optional<User> optUser = userDAO.findUserByEmail(email);
@@ -56,7 +59,6 @@ public class UserServiceImpl implements UserService {
 
                 resetDAO.persist(reset);
 
-                // change later to BaseUrlProvider.getBaseUrl() + "/user/reset-password.xhtml?token=" + token
                 String resetUrl = urlProvider.getBaseUrl() + "/user/reset-password.xhtml?token=" + token;
                 String subject = "CoffeeBean: Reset Your Password";
                 String body = "Click to reset your password: " + resetUrl;
@@ -133,6 +135,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    @Logged
     public void updatePassword(Long userId, String currentPassword, String newPassword) {
         User user = userDAO.find(userId);
         if (user == null) {

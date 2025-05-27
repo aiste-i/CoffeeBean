@@ -66,6 +66,7 @@ public class CustomerAuthFilter implements Filter {
                 httpResponse.sendRedirect(userLoginURI);
             }
         }
+        // Requested page is not limited to registered access, hence further filters are applied
         else {
             chain.doFilter(request, response);
         }
