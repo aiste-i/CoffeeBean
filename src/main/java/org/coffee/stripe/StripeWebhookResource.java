@@ -21,7 +21,7 @@ public class StripeWebhookResource {
     @Inject
     private OrderApiClient orderApiClient;
 
-    private static final String STRIPE_WEBHOOK_SECRET = null; // ideti webhook secret
+    private static final String STRIPE_WEBHOOK_SECRET = "whsec_5b2646f0b0071125d862bb3ba50d3f4c253a7d082a843e43de012a9ad0ff7a38";
 
 
 
