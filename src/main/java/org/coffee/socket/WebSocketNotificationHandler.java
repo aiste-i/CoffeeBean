@@ -81,7 +81,6 @@ public class WebSocketNotificationHandler {
 
     public void onOrderAccepted(@Observes OrderAcceptedByEmployeeEvent event) {
         notifyUser(event.getOrder(), "ORDER_ACCEPTED");
-        // Also notify all employees that this order's status changed
         notifyAllEmployees(event.getOrder(), "ORDER_STATUS_UPDATED_BY_EMPLOYEE");
     }
 

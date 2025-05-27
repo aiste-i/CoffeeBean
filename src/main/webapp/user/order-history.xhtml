@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Order History</title>
+    <h:outputScript library="js" name="websockets.js" target="body"/>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+
+            if ('#{userSessionBean.isLoggedIn()}') {
+                connectUserWebSocket('#{userSessionBean.getLoggedInUserId()}');
+            } else {
+                console.warn("Could not determine logged-in user ID for WebSocket connection.");
+            }
+        });
+
+
+        window.handleUserOrderNotification = function(notification) {
+                console.log("User Dashboard Page: handleUserOrderNotification called with type:", notification.type, "Data:", notification);
+
+                if (notification &amp;&amp; notification.type &amp;&amp; (
+                    notification.type === 'ORDER_ACCEPTED' ||
+                    notification.type === 'ORDER_CANCELLED_BY_EMPLOYEE' ||
+                    notification.type === 'ORDER_COMPLETED'
+                )) {
+
+                    console.log("Order History Page: Detected relevant order update event -", notification.type);
+
+
+                    if (typeof rcRefreshDashboard === 'function') {
+                        rcRefreshDashboard();
+                    } else {
+                        console.error("Order History Page: rcRefreshDashboard function not found!");
+                    }
+                }
+
+
+                if (notification.payload) {
+                    let updatedDate = new Date(notification.payload.updated);
+                    let formattedDate = updatedDate.toLocaleString('en-UK', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+
+                    if (PF &amp;&amp; PF('pageGrowl')) {
+                        PF('pageGrowl').show([
+                            {
+                                severity: 'info',
+                                summary: 'Order Update',
+                                detail: "Order #" + notification.payload.name +
+                                    " is now " + notification.payload.orderStatus +
+                                    ". Customer name: " + notification.payload.customerName +
+                                    ". Updated: " + formattedDate
+                            }
+                        ]);
+                    } else {
+                        console.warn("PrimeFaces Growl: 'pageGrowl' not available on this page.");
+                    }
+                }
+        };
+    </script>
+</h:head>
+
+<h:body>
+    <p:growl id="pageGrowl" widgetVar="pageGrowl" showDetail="true" sticky="true" globalOnly="false"/>
+    <h:form id="dashboardForm">
+        <p:toolbar>
+            <p:toolbarGroup align="right">
+                <p:button value="Back to Menu" outcome="/user/menu.xhtml" icon="pi pi-home" />
+            </p:toolbarGroup>
+        </p:toolbar>
+
+        <p:remoteCommand name="rcRefreshDashboard"
+                         update="activeOrdersPanel pastOrdersPanel pageGrowl"
+                         actionListener="#{orderHistoryBean.loadOrdersForUser(userSessionBean.loggedInUserId)}" />
+
+        <p:panel id="activeOrdersPanel" header="Active Orders (#{orderHistoryBean.activeOrders.size()})">
+            <p:dataTable var="order" value="#{orderHistoryBean.activeOrders}" widgetVar="activeTable"
+                         emptyMessage="No active orders." rows="5" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <p:column headerText="Order name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
+                <p:column headerText="Order Status" sortBy="#{order.orderStatus}">
+                    <h:outputText value="#{order.orderStatus}" />
+                </p:column>
+                <p:column headerText="Created" sortBy="#{order.created}"><h:outputText value="#{order.created}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{orderHistoryBean.viewOrderItemsByUser(order)}"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:panel id="pastOrdersPanel" header="Past Orders (#{orderHistoryBean.pastOrders.size()})" style="margin-top:20px;">
+            <p:dataTable var="order" value="#{orderHistoryBean.pastOrders}" emptyMessage="No past orders." rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,20,30">
+                <p:column headerText="Order Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer Name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
+                <p:column headerText="Order Status" sortBy="#{order.orderStatus}">
+                    <h:outputText value="#{order.orderStatus}" />
+                </p:column>
+                <p:column headerText="Completed" sortBy="#{order.updated}"><h:outputText value="#{order.updated}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{orderHistoryBean.viewOrderItemsByUser(order)}"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+    </h:form>
+
+    <p:dialog header="Order Items" widgetVar="orderItemsDlg" modal="true" closable="true" resizable="false">
+        <h:form id="orderItemsForm">
+            <p:dataTable var="item" value="#{orderHistoryBean.selectedOrderItems}" emptyMessage="No items found.">
+                <p:column headerText="Item Name">
+                    <h:outputText value="#{item.name}" />
+                </p:column>
+                <p:column headerText="Quantity">
+                    <h:outputText value="#{item.quantity}" />
+                </p:column>
+                <p:column headerText="Ingredients">
+                    <h:outputText value="#{item.addonNames}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+
+</h:body>
+</html>

@@ -118,6 +118,25 @@ public class OrderApiClient {
         }
     }
 
+    public Map<OrderStatus, List<Order>> getDashboardOrdersByUserId(Long userId) throws OrderApiException {
+        WebTarget target = baseTarget.path("orders").path("dashboard").path("user").path(String.valueOf(userId));
+        try (Response response = target.request(MediaType.APPLICATION_JSON).get()){
+
+            if (response.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL) {
+                if(response.hasEntity()){
+                    return response.readEntity(new GenericType<Map<OrderStatus,List<Order>>>() {});
+                }
+                return java.util.Collections.emptyMap();
+            } else {
+                handleErrorResponse(response, "Get Dashboard Orders for User ID " + userId);
+                return null;
+            }
+
+        } catch (ProcessingException e) {
+            throw new OrderApiException("Error fetching dashboard orders for user ID " + userId, 0,e);
+        }
+    }
+
 
     public Order acceptOrderAsEmployee(Long orderId) throws OrderApiException {
         WebTarget target = baseTarget.path("orders").path(String.valueOf(orderId)).path("accept-by-employee");

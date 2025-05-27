@@ -211,6 +211,17 @@ public class OrderResource {
             return Response.serverError().entity(new ClientMessageDto("Error fetching dashboard orders: " + e.getMessage())).build();
         }
     }
+    @GET
+    @Path("/dashboard/user/{id}")
+    public Response getDashboardOrdersForUser(@PathParam("id") Long userId) {
+        try {
+            Map<OrderStatus, List<Order>> dashboardOrders = orderService.getDashboardOrdersForUser( userId);
+            return Response.ok(dashboardOrders).build();
+        }
+        catch (Exception e) {
+            return Response.serverError().entity(new ClientMessageDto("Error fetching dashboard orders for User ID: " + userId)).build();
+        }
+    }
 
     @PUT
     @Path("/{id}/complete-by-employee")
