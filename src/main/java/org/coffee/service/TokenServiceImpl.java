@@ -2,8 +2,8 @@ package org.coffee.service;
 
 import org.coffee.service.interfaces.TokenService;
 
+
 import javax.enterprise.context.RequestScoped;
-import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Base64;
 
