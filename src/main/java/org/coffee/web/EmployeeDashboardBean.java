@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.exception.OrderApiException;
 import org.coffee.persistence.entity.Order;
 import org.coffee.persistence.entity.OrderItem;
@@ -14,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.*;
 
@@ -25,6 +27,7 @@ public class EmployeeDashboardBean implements Serializable {
     private OrderApiClient orderApiClient;
 
     private List<Order> pendingOrders;
+
     private List<Order> acceptedOrders;
 
     @Setter
@@ -81,6 +84,8 @@ public class EmployeeDashboardBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, actionName + " Failed" + (orderId != null ? " (Order ID: " + orderId + ")" : ""), detail));
     }
 
+    @Transactional
+    @Logged
     public void acceptOrder(Order order) {
         if (order == null) return;
         try {
@@ -93,6 +98,8 @@ public class EmployeeDashboardBean implements Serializable {
         }
     }
 
+    @Transactional
+    @Logged
     public void completeOrder(Order order) {
         if (order == null) return;
         try {

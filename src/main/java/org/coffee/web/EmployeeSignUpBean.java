@@ -2,12 +2,12 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.service.BusinessService;
-import org.coffee.util.PasswordUtil;
+import org.coffee.service.interfaces.BusinessService;
+import org.coffee.service.interfaces.RegistrationService;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class EmployeeSignUpBean {
 
-    @Inject
+    @EJB
     private BusinessService businessService;
 
     @Inject
-    private EmployeeDAO employeeDAO;
+    private RegistrationService registrationService;
 
     @Getter
     @Setter
@@ -34,34 +34,39 @@ public class EmployeeSignUpBean {
 
     @Getter
     @Setter
-    private Employee newEmployee = new Employee();
+    private Employee employee = new Employee();
 
     @Transactional
     public String signUp() {
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
-            newEmployee.setPassword(PasswordUtil.hashPassword(plainPassword));
-            newEmployee.setBusiness(businessService.getActiveBusiness());
-            employeeDAO.persist(newEmployee);
+            employee.setBusiness(businessService.getActiveBusiness());
 
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sign Up Successful",
-                    "Employee '" + newEmployee.getUsername() + "' created."));
+            registrationService.registerEmployee(employee, plainPassword);
 
-            newEmployee = new Employee();
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Sign Up Successful.",
+                            "Employee '" + employee.getUsername() + "' created."));
+
+            employee = new Employee();
             plainPassword = null;
 
             return null;
 
         } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign Up Failed", "An unexpected error occurred."));
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Sign Up Failed",
+                            e.getCause().getMessage()));
             return null;
         }
     }
 
     public List<UserRole> getAvailableRoles() {
         return Arrays.stream(UserRole.values())
-                .filter(role -> role != UserRole.ADMIN && role != UserRole.EMPLOYEE)
+                .filter(role -> role != UserRole.ADMIN && role != UserRole.CUSTOMER)
                 .collect(Collectors.toList());
     }
 }

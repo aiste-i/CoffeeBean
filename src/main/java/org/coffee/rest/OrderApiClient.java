@@ -1,5 +1,6 @@
 package org.coffee.rest;
 
+import org.coffee.annotations.Logged;
 import org.coffee.dto.ClientConflictMessageDto;
 import org.coffee.dto.ClientMessageDto;
 import org.coffee.dto.OrderCreationDto;
@@ -26,6 +27,9 @@ import static org.coffee.constants.Constants.API_BASE_URL;
 @ApplicationScoped
 public class OrderApiClient {
 
+    // port may differ between thangs
+    private final String apiBaseUrl = "http://localhost:8080/coffee-1.0-SNAPSHOT/api";
+
     private Client client;
 
     private WebTarget baseTarget;
@@ -43,6 +47,7 @@ public class OrderApiClient {
         }
     }
 
+    @Logged
     public Order createOrder(OrderCreationDto dto) throws OrderApiException {
         WebTarget createOrderTarget = baseTarget.path("orders");
         try (Response response = createOrderTarget

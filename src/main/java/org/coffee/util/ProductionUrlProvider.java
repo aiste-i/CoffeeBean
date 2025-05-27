@@ -1,10 +1,14 @@
 package org.coffee.util;
 
+import org.coffee.annotations.Production;
+
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-
-public final class BaseUrlProvider {
+@Production
+@RequestScoped
+public final class ProductionUrlProvider implements UrlProvider {
 
     public String getBaseUrl() {
         FacesContext context = FacesContext.getCurrentInstance();
