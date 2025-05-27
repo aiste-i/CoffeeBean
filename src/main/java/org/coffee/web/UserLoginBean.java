@@ -2,10 +2,11 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.UserAuth;
 import org.coffee.persistence.entity.User;
 import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.dto.UserAuthResult;
-import org.coffee.service.interfaces.AuthenticationServiceInterface;
+import org.coffee.service.interfaces.AuthenticationService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -16,12 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
+
 @Named
 @RequestScoped
 public class UserLoginBean implements Serializable {
 
     @Inject
-    private AuthenticationServiceInterface authService;
+    @UserAuth
+    private AuthenticationService authService;
 
     @Getter
     @Setter
@@ -37,14 +41,14 @@ public class UserLoginBean implements Serializable {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            UserAuthResult result = authService.authenticateUser(email, password);
+            UserAuthResult result = (UserAuthResult) authService.authenticate(email, password);
 
             if (result.isSuccess()) {
                 User user = result.getUser();
                 HttpSession session = request.getSession(true);
-                session.setAttribute("loggedInUserId", user.getId());
-                session.setAttribute("loggedInUserRole", UserRole.CUSTOMER);
-                session.setAttribute("loggedInUserEmail", user.getEmail());
+                session.setAttribute(LOGGED_IN_USER_ID, user.getId());
+                session.setAttribute(LOGGED_IN_USER_ROLE, UserRole.CUSTOMER);
+                session.setAttribute(LOGGED_IN_USER_EMAIL, user.getEmail());
 
                 return "/user/menu.xhtml?faces-redirect=true";
             }

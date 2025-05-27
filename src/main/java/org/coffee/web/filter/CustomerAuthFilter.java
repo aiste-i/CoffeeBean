@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USERNAME;
-import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USER_ROLE;
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
 
 @WebFilter(filterName = "CustomerAuthenticationFilter", urlPatterns = {"/user/*"})
 public class CustomerAuthFilter implements Filter {
@@ -36,7 +35,7 @@ public class CustomerAuthFilter implements Filter {
         boolean loggedIn = false;
 
         if (session != null) {
-            Object loggedInUsernameObj = session.getAttribute(LOGGED_IN_USERNAME);
+            Object loggedInUsernameObj = session.getAttribute(LOGGED_IN_USER_EMAIL);
             Object loggedInUserRoleObj = session.getAttribute(LOGGED_IN_USER_ROLE);
 
             if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&

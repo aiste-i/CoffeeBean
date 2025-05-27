@@ -3,14 +3,15 @@ package org.coffee.service;
 import javax.enterprise.context.RequestScoped;
 import lombok.Setter;
 import org.coffee.exception.EmailException;
-import org.coffee.service.interfaces.EmailServiceInterface;
+import org.coffee.service.interfaces.EmailService;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @RequestScoped
-public class EmailService implements EmailServiceInterface {
+public class EmailServiceImpl implements EmailService {
 
     private final String defaultSender = "coffeebean@sandboxed93749178dd48e6ba10314f32bcd44a.mailgun.org";
     private final String defaultPass = "coffeebean12345";

@@ -22,8 +22,8 @@ public class EmployeeAuthService implements AuthenticationService {
     @Inject
     private EmployeeDAO employeeDAO;
 
-    @EmployeeAuth
     @Inject
+    @EmployeeAuth
     private AuthResultFactory factory;
 
     @Override

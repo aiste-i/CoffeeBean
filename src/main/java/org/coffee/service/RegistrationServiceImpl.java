@@ -5,7 +5,7 @@ import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
 import org.coffee.exception.RegistrationException;
-import org.coffee.service.interfaces.RegistrationServiceInterface;
+import org.coffee.service.interfaces.RegistrationService;
 import org.coffee.util.PasswordUtil;
 
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +16,7 @@ import javax.transaction.Transactional;
 
 @Named
 @RequestScoped
-public class RegistrationService implements RegistrationServiceInterface {
+public class RegistrationServiceImpl implements RegistrationService {
 
     @Inject
     private UserDAO userDAO;

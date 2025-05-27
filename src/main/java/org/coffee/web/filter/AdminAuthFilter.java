@@ -41,9 +41,12 @@ public class AdminAuthFilter implements Filter {
         UserRole userRole = null;
         boolean loggedIn = false;
 
+
         if (session != null) {
             Object loggedInUsernameObj = session.getAttribute(LOGGED_IN_USERNAME );
             Object loggedInUserRoleObj = session.getAttribute(LOGGED_IN_USER_ROLE);
+            System.out.println(loggedInUsernameObj);
+            System.out.println(loggedInUserRoleObj);
 
             if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&
                     !loggedInUsernameObj.toString().isEmpty() && loggedInUserRoleObj instanceof UserRole) {

@@ -3,7 +3,7 @@ package org.coffee.service;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.exception.CredentialChangeException;
-import org.coffee.service.interfaces.EmployeeServiceInterface;
+import org.coffee.service.interfaces.EmployeeService;
 import org.coffee.util.PasswordUtil;
 
 import javax.ejb.Stateless;
@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Stateless
-public class EmployeeService implements EmployeeServiceInterface {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Inject
     private EmployeeDAO employeeDAO;

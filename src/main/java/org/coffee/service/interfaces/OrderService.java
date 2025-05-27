@@ -1,16 +1,11 @@
 package org.coffee.service.interfaces;
 
 import org.coffee.dto.OrderCreationDto;
-import org.coffee.dto.OrderItemDto;
 import org.coffee.dto.OrderModificationDto;
-import org.coffee.event.*;
 import org.coffee.exception.*;
 import org.coffee.persistence.entity.*;
 import org.coffee.persistence.entity.enums.OrderStatus;
-import org.hibernate.Hibernate;
 
-import javax.persistence.OptimisticLockException;
-import javax.transaction.Transactional;
 import java.util.*;
 
 public interface OrderService {
@@ -43,4 +38,6 @@ public interface OrderService {
             OrderConflictException;
 
     Order getOrderDetails(Long orderId) throws OrderNotFoundException;
+
+    public Map<OrderStatus, List<Order>> getDashboardOrdersForUser(Long userId);
 }

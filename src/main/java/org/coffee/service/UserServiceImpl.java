@@ -1,15 +1,17 @@
 package org.coffee.service;
 
+import org.coffee.annotations.Development;
 import org.coffee.persistence.dao.PasswordResetDAO;
 import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.PasswordReset;
 import org.coffee.persistence.entity.User;
 import org.coffee.exception.CredentialChangeException;
 import org.coffee.exception.EmailException;
-import org.coffee.service.interfaces.EmailServiceInterface;
-import org.coffee.service.interfaces.TokenServiceInterface;
-import org.coffee.service.interfaces.UserServiceInterface;
+import org.coffee.service.interfaces.EmailService;
+import org.coffee.service.interfaces.TokenService;
+import org.coffee.service.interfaces.UserService;
 import org.coffee.util.PasswordUtil;
+import org.coffee.util.UrlProvider;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +19,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Stateless
-public class UserService implements UserServiceInterface {
+public class UserServiceImpl implements UserService {
 
     @Inject
     private UserDAO userDAO;
@@ -26,11 +28,14 @@ public class UserService implements UserServiceInterface {
     private PasswordResetDAO resetDAO;
 
     @Inject
-    private TokenServiceInterface tokenService;
+    private TokenService tokenService;
 
     @Inject
-    private EmailServiceInterface emailService;
+    private EmailService emailService;
 
+    @Inject
+    @Development
+    private UrlProvider urlProvider;
 
     public User getUserById(Long id) {
         return userDAO.find(id);
@@ -52,7 +57,7 @@ public class UserService implements UserServiceInterface {
                 resetDAO.persist(reset);
 
                 // change later to BaseUrlProvider.getBaseUrl() + "/user/reset-password.xhtml?token=" + token
-                String resetUrl = "http://localhost:8080/coffee-1.0-SNAPSHOT/user/reset-password.xhtml?token=" + token;
+                String resetUrl = urlProvider.getBaseUrl() + "/user/reset-password.xhtml?token=" + token;
                 String subject = "CoffeeBean: Reset Your Password";
                 String body = "Click to reset your password: " + resetUrl;
 
@@ -127,4 +132,18 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    @Transactional
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userDAO.find(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!PasswordUtil.checkPassword(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        user.setPassword(PasswordUtil.hashPassword(newPassword));
+        userDAO.update(user);
+    }
 }
