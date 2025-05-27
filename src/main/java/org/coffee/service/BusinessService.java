@@ -1,10 +1,14 @@
 package org.coffee.service;
 
 import org.coffee.persistence.dao.BusinessDAO;
+import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.Business;
+import org.coffee.persistence.entity.User;
+import org.coffee.util.PasswordUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ApplicationScoped
@@ -12,6 +16,9 @@ public class BusinessService {
 
     @Inject
     private BusinessDAO businessDAO;
+
+    @Inject
+    private UserDAO userDAO;
 
     public Business getActiveBusiness() {
         List<Business> businesses = businessDAO.findAll();
@@ -28,5 +35,4 @@ public class BusinessService {
     public Long getActiveBusinessId() {
         return getActiveBusiness().getId();
     }
-
 }
