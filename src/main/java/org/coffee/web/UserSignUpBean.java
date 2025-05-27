@@ -49,8 +49,6 @@ public class UserSignUpBean implements Serializable {
             user.setEmail(email);
             registrationService.registerUser(user, plainPassword);
 
-            userDAO.persist(newUser);
-
             return userLoginBean.login();
 
         }
