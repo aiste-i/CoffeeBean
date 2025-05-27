@@ -3,7 +3,7 @@ package org.coffee.web;
 import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.entity.User;
-import org.coffee.service.interfaces.RegistrationServiceInterface;
+import org.coffee.service.interfaces.RegistrationService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class UserSignUpBean implements Serializable {
 
     @Inject
-    private RegistrationServiceInterface registrationService;
+    private RegistrationService registrationService;
 
     @Getter
     @Setter

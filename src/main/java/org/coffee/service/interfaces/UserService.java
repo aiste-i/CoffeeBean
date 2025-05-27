@@ -3,7 +3,7 @@ package org.coffee.service.interfaces;
 import org.coffee.persistence.entity.User;
 import org.coffee.exception.CredentialChangeException;
 
-public interface UserServiceInterface {
+public interface UserService {
 
     User getUserById(Long id);
 

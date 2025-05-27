@@ -2,7 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.service.interfaces.UserServiceInterface;
+import org.coffee.service.interfaces.UserService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class UserPasswordForgotBean implements Serializable {
 
     @EJB
-    private UserServiceInterface userService;
+    private UserService userService;
 
     @Getter
     @Setter

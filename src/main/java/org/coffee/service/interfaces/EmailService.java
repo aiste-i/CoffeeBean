@@ -6,7 +6,7 @@ import javax.mail.Authenticator;
 import javax.mail.Session;
 import java.util.Properties;
 
-public interface EmailServiceInterface {
+public interface EmailService {
 
     void sendEmail(String to, String from, String subject, String body) throws EmailException;
 

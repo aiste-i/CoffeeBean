@@ -3,14 +3,14 @@ package org.coffee.rest;
 import org.coffee.exception.*;
 import org.coffee.persistence.entity.Order;
 import org.coffee.persistence.entity.enums.OrderStatus;
-import org.coffee.service.OrderService;
 import org.coffee.dto.ClientMessageDto;
 import org.coffee.dto.ClientConflictMessageDto;
 import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderModificationDto;
+import org.coffee.service.interfaces.OrderService;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -27,7 +27,7 @@ import java.util.Map;
 @RequestScoped
 public class OrderResource {
 
-    @Inject
+    @EJB
     private OrderService orderService;
 
     @Context

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.coffee.persistence.entity.User;
-import org.coffee.service.interfaces.UserServiceInterface;
+import org.coffee.service.interfaces.UserService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -25,7 +25,7 @@ public class UserEmailChangeBean implements Serializable {
     private UserSessionBean userSessionBean;
 
     @EJB
-    private UserServiceInterface userService;
+    private UserService userService;
 
     @Getter
     @Setter

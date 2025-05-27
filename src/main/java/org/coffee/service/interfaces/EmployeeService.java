@@ -5,7 +5,7 @@ import org.coffee.exception.CredentialChangeException;
 
 import javax.persistence.OptimisticLockException;
 
-public interface EmployeeServiceInterface {
+public interface EmployeeService {
 
     Employee getEmployeeById(Long id);
 

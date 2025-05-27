@@ -3,7 +3,7 @@ package org.coffee.web;
 import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.entity.Employee;
-import org.coffee.service.interfaces.EmployeeServiceInterface;
+import org.coffee.service.interfaces.EmployeeService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -27,11 +27,10 @@ public class EmployeeChangePasswordBean {
     private String newPassword;
 
     @EJB
-    private EmployeeServiceInterface employeeService;
+    private EmployeeService employeeService;
 
     @Inject
     private UserSessionBean sessionBean;
-
 
     public String changePassword() {
         FacesContext context = FacesContext.getCurrentInstance();

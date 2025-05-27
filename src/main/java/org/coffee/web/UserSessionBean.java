@@ -1,12 +1,13 @@
 package org.coffee.web;
 
 import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.service.interfaces.EmployeeServiceInterface;
-import org.coffee.service.interfaces.UserServiceInterface;
+import org.coffee.service.interfaces.EmployeeService;
+import org.coffee.service.interfaces.UserService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,10 +19,10 @@ import java.util.Objects;
 public class UserSessionBean implements Serializable {
 
     @EJB
-    private UserServiceInterface userService;
+    private UserService userService;
 
     @EJB
-    private EmployeeServiceInterface employeeService;
+    private EmployeeService employeeService;
 
     public String logout() {
         FacesContext context = FacesContext.getCurrentInstance();

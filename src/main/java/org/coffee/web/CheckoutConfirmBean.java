@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderItemDto;
 import org.coffee.persistence.entity.Ingredient;
@@ -14,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.stream.Collectors;
 
@@ -59,6 +61,8 @@ public class CheckoutConfirmBean implements Serializable {
         this.customerEmailInput = this.orderToConfirm.getCustomerEmail();
     }
 
+    @Transactional
+    @Logged
     public String submitFinalOrder() {
         if (orderBean.isOrderEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,

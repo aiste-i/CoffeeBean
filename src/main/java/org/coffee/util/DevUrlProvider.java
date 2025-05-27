@@ -1,0 +1,11 @@
+package org.coffee.util;
+
+import org.coffee.annotations.Development;
+
+@Development
+public final class DevUrlProvider implements UrlProvider{
+
+    public String getBaseUrl() {
+        return "http://localhost:8080/coffee-1.0-SNAPSHOT";
+    }
+}

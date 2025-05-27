@@ -4,9 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.service.BusinessService;
-import org.coffee.service.interfaces.RegistrationServiceInterface;
+import org.coffee.service.interfaces.BusinessService;
+import org.coffee.service.interfaces.RegistrationService;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class EmployeeSignUpBean {
 
-    @Inject
+    @EJB
     private BusinessService businessService;
 
     @Inject
-    private RegistrationServiceInterface registrationService;
+    private RegistrationService registrationService;
 
     @Getter
     @Setter

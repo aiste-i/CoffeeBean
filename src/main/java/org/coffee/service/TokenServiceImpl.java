@@ -1,6 +1,6 @@
 package org.coffee.service;
 
-import org.coffee.service.interfaces.TokenServiceInterface;
+import org.coffee.service.interfaces.TokenService;
 
 import javax.enterprise.context.RequestScoped;
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @RequestScoped
-public class TokenService implements Serializable, TokenServiceInterface {
+public class TokenServiceImpl implements TokenService {
 
     private final SecureRandom secureRandom = new SecureRandom();
     private final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
