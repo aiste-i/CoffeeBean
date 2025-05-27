@@ -6,13 +6,14 @@ import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
 @Logged
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION) // Needed to activate the interceptor
-public class LoggingInterceptor {
+public class LoggingInterceptor implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(LoggingInterceptor.class.getName());
 
