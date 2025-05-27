@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+    <f:viewParam name="orderId" value="#{orderConfirmationBean.orderId}"/>
+    <f:viewAction action="#{orderConfirmationBean.loadOrder}"/>
+</f:metadata>
+
+<h:head>
+    <title>Order Confirmation</title>
+</h:head>
+<h:body>
+    <p:panel header="Order Confirmed!" style="width:500px; margin: 30px auto; text-align:center;">
+        <h:panelGroup rendered="#{orderConfirmationBean.order != null}">
+            <p>Thank you for your order!</p>
+            <p>Your Order ID is: <strong>#{orderConfirmationBean.order.id}</strong></p>
+            <p>Current Status: <strong>#{orderConfirmationBean.order.orderStatus}</strong></p>
+            <p>Total:
+                <h:outputText value="#{orderConfirmationBean.order.totalPrice}">
+                    <f:convertNumber type="currency" currencySymbol="$"/>
+                </h:outputText>
+            </p>
+            <p>You will receive updates via WebSocket (if enabled on this page) or check your order status later.</p>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{orderConfirmationBean.order == null and facesContext.postback}">
+            <p style="color:red;">Could not load order details for ID: #{orderConfirmationBean.orderId}.</p>
+        </h:panelGroup>
+
+        <p:button value="Back to Menu" outcome="/user/menu.xhtml" style="margin-top:20px;"/>
+    </p:panel>
+
+</h:body>
+</html>

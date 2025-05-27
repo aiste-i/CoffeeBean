@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -27,21 +27,22 @@ public class OrderItem implements Serializable {
     @Column(name = "requirements")
     private String specialRequirements;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonbTransient
     private Order order;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "order_item_addons",
             joinColumns = @JoinColumn(name = "order_item_id"),
             inverseJoinColumns = @JoinColumn(name = "addon_ingredient_id")
     )
-    private List<Ingredient> addons = new ArrayList<>();
+    private Set<Ingredient> addons = new HashSet<>();
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 1;
@@ -51,22 +52,36 @@ public class OrderItem implements Serializable {
 
     @Version
     @Column(name = "opt_lock_version")
+    @JsonbTransient
     private Integer version;
 
-    public BigDecimal calculatePrice() {
-        if (this.product != null && this.quantity != null) {
+    public BigDecimal calculateUnitPrice() {
+        if (this.product != null) {
             BigDecimal basePrice = this.product.getPrice() != null ? this.product.getPrice() : BigDecimal.ZERO;
 
             BigDecimal addonPrice = addons.stream()
                     .map(Ingredient::getPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            basePrice = basePrice.add(addonPrice);
-
-            return basePrice.multiply(new BigDecimal(this.quantity));
+            return basePrice.add(addonPrice);
         } else {
             return BigDecimal.ZERO;
         }
+    }
+
+    public BigDecimal calculatePrice() {
+        if (this.product != null && this.quantity != null) {
+            BigDecimal unitPrice = calculateUnitPrice();
+            return unitPrice.multiply(new BigDecimal(this.quantity));
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    public String getAddonNames() {
+        return addons.stream()
+                .map(Ingredient::getName)
+                .collect(Collectors.joining(", "));
     }
 
     @PrePersist

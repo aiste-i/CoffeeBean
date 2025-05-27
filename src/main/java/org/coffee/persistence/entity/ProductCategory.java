@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Getter
 @Setter
@@ -26,13 +26,38 @@ public class ProductCategory implements Serializable {
     @Column(name = "description", length = 500)
     private String description;
 
-    @ManyToMany
+    @Column(name = "date_created", updatable = false)
+    private LocalDateTime created;
+
+    @Column(name = "date_updated")
+    private LocalDateTime updated;
+
+    @Version
+    @Column(name = "opt_lock_version")
+    @JsonbTransient
+    private Integer version;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "category_addons",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_type_id")
     )
-    private List<IngredientType> addonIngredientTypes = new ArrayList<>();
+    @JsonbTransient
+    private Set<IngredientType> addonIngredientTypes = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

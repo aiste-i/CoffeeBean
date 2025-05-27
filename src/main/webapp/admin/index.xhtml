@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Employee Order Dashboard</title>
+    <h:outputScript library="js" name="websockets.js" target="body"/>
+    <script type="text/javascript">
+        window.handleEmployeeOrderNotification = function(notification) {
+            console.log("Employee Dashboard Page: handleEmployeeOrderNotification called with type: ", notification.type); // Add this
+            if (notification &amp;&amp; notification.type &amp;&amp; (
+                notification.type === 'NEW_ORDER_PENDING' ||
+                notification.type === 'ORDER_STATUS_UPDATED' ||
+                notification.type === 'ORDER_MODIFIED_BY_USER' ||
+                notification.type === 'ORDER_CANCELLED_BY_USER'
+            )) {
+                if (typeof rcRefreshDashboard === 'function') {
+                    rcRefreshDashboard();
+                } else {
+                    console.error("Employee Dashboard Page: rcRefreshDashboard function not found! Ensure p:remoteCommand is defined with this name.");
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            connectEmployeeWebSocket();
+        });
+    </script>
+</h:head>
+<h:body>
+    <h:form id="buttonForm">
+        <p:commandButton style="margin: 3px; float: right;" value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
+                         rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                         styleClass="ui-button-primary"/>
+        <p:commandButton style="margin: 3px; float: right;"
+                        value="Log Out"
+                         icon="pi pi-sign-out"
+                         action="#{employeeLoginBean.logout}"
+                         rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}"
+                         styleClass="ui-button-danger" ajax="false"/>
+    </h:form>
+    <p:growl id="dashMessages" showDetail="true" life="5000" sticky="false"/>
+    <h:form id="dashboardForm">
+
+        <p:remoteCommand name="rcRefreshDashboard"
+                         update="pendingOrdersPanel acceptedOrdersPanel dashMessages"
+                         actionListener="#{employeeDashboardBean.loadOrders}" />
+
+        <p:panel id="pendingOrdersPanel" header="Pending Orders (#{employeeDashboardBean.pendingOrders.size()})">
+            <p:dataTable var="order" value="#{employeeDashboardBean.pendingOrders}" widgetVar="pendingTable"
+                         emptyMessage="No pending orders." rows="5" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <p:column headerText="ID" sortBy="#{order.id}"><h:outputText value="#{order.id}" /></p:column>
+                <p:column headerText="Order Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer Name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
+                <p:column headerText="Received" sortBy="#{order.created}"><h:outputText value="#{order.created}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{employeeDashboardBean.viewOrderItems(order)}"/>
+                </p:column>
+                <p:column headerText="Actions" style="width:220px">
+                    <p:commandButton value="Accept" actionListener="#{employeeDashboardBean.acceptOrder(order)}"
+                                     update="@form:pendingOrdersPanel @form:acceptedOrdersPanel @form:dashMessages" process="@this"
+                                     icon="pi pi-check-circle" styleClass="ui-button-success"/>
+                    <p:commandButton value="Cancel" actionListener="#{employeeDashboardBean.cancelOrder(order)}"
+                                     update="@form:pendingOrdersPanel @form:dashMessages" process="@this"
+                                     icon="pi pi-times-circle" styleClass="ui-button-danger" style="margin-left:5px;">
+                        <p:confirm header="Cancel Order" message="Are you sure you want to cancel order ##{order.id}?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:panel id="acceptedOrdersPanel" header="Accepted Orders (#{employeeDashboardBean.acceptedOrders.size()})" style="margin-top:20px;">
+            <p:dataTable var="order" value="#{employeeDashboardBean.acceptedOrders}" emptyMessage="No accepted orders." rows="5" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <p:column headerText="ID" sortBy="#{order.id}"><h:outputText value="#{order.id}" /></p:column>
+                <p:column headerText="Order Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer Name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
+                <p:column headerText="Updated" sortBy="#{order.updated}"><h:outputText value="#{order.updated}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
+                <p:column headerText="Items">
+                    <p:commandButton value="View Items"
+                                     oncomplete="PF('orderItemsDlg').show()"
+                                     update=":orderItemsForm"
+                                     icon="pi pi-eye"
+                                     actionListener="#{employeeDashboardBean.viewOrderItems(order)}"/>
+                </p:column>
+                <p:column headerText="Actions" style="width:180px">
+                    <p:commandButton value="Complete" actionListener="#{employeeDashboardBean.completeOrder(order)}"
+                                     update="@form:acceptedOrdersPanel @form:dashMessages" process="@this"
+                                     icon="pi pi-check" styleClass="ui-button-success"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+        </p:confirmDialog>
+
+    </h:form>
+
+    <p:dialog header="Order Items" widgetVar="orderItemsDlg" modal="true" closable="true" resizable="false">
+        <h:form id="orderItemsForm">
+            <p:dataTable var="item" value="#{employeeDashboardBean.selectedOrderItems}" emptyMessage="No items found.">
+                <p:column headerText="Item Name">
+                    <h:outputText value="#{item.name}" />
+                </p:column>
+                <p:column headerText="Quantity">
+                    <h:outputText value="#{item.quantity}" />
+                </p:column>
+                <p:column headerText="Ingredients">
+                    <h:outputText value="#{item.addonNames}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>

@@ -7,14 +7,17 @@
 <h:head>
     <title>Category Management</title>
 </h:head>
-<h:body>
+<h:body rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">
 
 
-    <p:menubar>
-        <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
-        <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
-        <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
-    </p:menubar>
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
+            <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
+            <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+            <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
+        </p:menubar>
+    </h:form>
 
 
     <h:outputText value="Categories"
@@ -35,7 +38,7 @@
         </p:toolbar>
 
         <p:dataTable id="dt-categories" widgetVar="dtCategories" var="category"
-                     value="#{categoryManagementBean.categoryList}" rowKey="#{category.id}" paginator="true" rows="10"
+                     value="#{categoryManagementBean.categoryList}" paginator="true" rows="10"
                      responsiveLayout="scroll">
 
             <p:column exportable="false" style="width: 3rem" />
@@ -60,7 +63,7 @@
         </p:dataTable>
     </h:form>
 
-    <!-- Dialog Form -->
+
     <h:form id="dialogs">
         <p:dialog header="Category Details" widgetVar="categoryDialog" modal="true" resizable="false"
                   id="categoryDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true"
@@ -73,6 +76,19 @@
 
                     <p:outputLabel for="description" value="Description:" />
                     <p:inputText id="description" value="#{categoryManagementBean.selectedCategory.description}" required="true" />
+
+                    <p:outputLabel for="addons" value="Addon Ingredient Types:" />
+                    <p:selectCheckboxMenu id="addons"
+                                          value="#{categoryManagementBean.selectedIngredientTypeIds}"
+                                          label="Select Addons"
+                                          multiple="true"
+                                          converter="javax.faces.Long">
+                        <f:selectItems value="#{categoryManagementBean.allIngredientTypes}"
+                                       var="addon"
+                                       itemLabel="#{addon.name}"
+                                       itemValue="#{addon.id}" />
+                    </p:selectCheckboxMenu>
+
 
                 </p:panelGrid>
 

@@ -6,13 +6,16 @@
 <h:head>
     <title>Product Management</title>
 </h:head>
-<h:body>
+<h:body rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}">
 
-    <p:menubar>
-        <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
+    <h:form>
+        <p:menubar>
+            <p:menuitem value="Products" outcome="productManagement.xhtml" icon="pi pi-box" />
             <p:menuitem value="Categories" outcome="categoryManagement.xhtml" icon="pi pi-tags" />
-        <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
-    </p:menubar>
+            <p:menuitem value="Ingredients" outcome="ingredientManagement.xhtml" icon="pi pi-apple" />
+            <p:menuitem value="Ingredient Types" outcome="ingTypeManagement.xhtml" icon="pi pi-tags" />
+        </p:menubar>
+    </h:form>
 
     <h:outputText value="Products"
                   style="display:block; font-size: 24px; font-weight: bold; color: #333;
@@ -32,7 +35,7 @@
         </p:toolbar>
 
         <p:dataTable id="dt-products" widgetVar="dtProducts" var="product"
-                     value="#{productManagementBean.productList}" rowKey="#{product.id}" paginator="true" rows="10"
+                     value="#{productManagementBean.productList}" paginator="true" rows="10"
                      responsiveLayout="scroll">
 
             <p:column  exportable="false" style="width: 3rem"/>
@@ -45,12 +48,12 @@
                 <h:outputText value="#{product.description}"/>
             </p:column>
 
-            <p:column headerText="Category" sortBy="#{product.category}" filterBy="#{product.category}">
-                <h:outputText value="#{product.category}"/>
-            </p:column>
-
             <p:column headerText="Price" sortBy="#{product.price}" filterBy="#{product.price}">
                 <h:outputText value="#{product.price}"/>
+            </p:column>
+
+            <p:column headerText="Category" sortBy="#{product.category.name}" filterBy="#{product.category.name}">
+                <h:outputText value="#{product.category.name}"/>
             </p:column>
 
 
@@ -81,6 +84,12 @@
 
                     <p:outputLabel for="price" value="Price:" />
                     <p:inputText id="price" value="#{productManagementBean.selectedProduct.price}" required="true"/>
+
+                    <p:outputLabel for="category" value="Product Category:" />
+                    <p:selectOneMenu id="category" value="#{productManagementBean.productCategoryId}" required="true">
+                        <f:selectItems value="#{productManagementBean.productCategoryDictionary.values()}" var="category"
+                                       itemValue="#{category.id}" itemLabel="#{category.name}" />
+                    </p:selectOneMenu>
 
                 </p:panelGrid>
 

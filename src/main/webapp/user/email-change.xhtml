@@ -14,12 +14,12 @@
             <h:panelGrid columns="1" cellpadding="5" style="width: 100%;">
 
                 <p:outputLabel for="email" value="E-mail:" style="display: block; margin-bottom: 3px;"/>
-                <p:inputText id="email" value="#{emailChangeBean.newEmail}" required="true" requiredMessage="E-mail is required." style="width: 95%;" label="E-mail"/>
+                <p:inputText id="email" value="#{userEmailChangeBean.newEmail}" required="true" requiredMessage="E-mail is required." style="width: 95%;" label="E-mail"/>
                 <p:message for="email"/>
 
 
                 <div style="margin-top: 15px; text-align: center;">
-                    <p:commandButton value="Update" action="#{emailChangeBean.submit}" update=":emailChangeForm:messages" icon="pi pi-check"/>
+                    <p:commandButton value="Update" action="#{userEmailChangeBean.submit}" update=":emailChangeForm:messages" icon="pi pi-check"/>
                 </div>
 
             </h:panelGrid>

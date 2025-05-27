@@ -5,14 +5,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.coffee.persistence.entity.enums.OrderStatus;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -27,11 +26,12 @@ public class Order implements Serializable {
     @Column(name = "order_name", nullable = false)
     private String name = null;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<OrderItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<OrderItem> items = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonbTransient
     private User user;
 
     @Column(name = "customer_name", length = 100)
@@ -52,6 +52,7 @@ public class Order implements Serializable {
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     @OneToMany( mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonbTransient
     private List<Payment> payments = new ArrayList<>();
 
     @Column(name = "order_date_created", updatable = false)
@@ -86,11 +87,13 @@ public class Order implements Serializable {
 
     @PrePersist
     protected void onCreate() {
+        totalPrice = calculateTotalPrice();
         created = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
+        totalPrice = calculateTotalPrice();
         updated = LocalDateTime.now();
     }
 

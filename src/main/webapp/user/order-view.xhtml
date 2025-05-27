@@ -2,36 +2,126 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-   <title>Review order</title>
+   <title>Review Your Order</title>
+   <style type="text/css">
+      body { margin: 0; padding-top: 10px; }
+      .order-item-row td { padding: 8px 5px; vertical-align: middle; border-bottom: 1px solid #eee; }
+      .total-row td { font-weight: bold; padding-top: 10px; }
+      .action-buttons { margin-top: 20px; text-align: right; }
+      .action-buttons .ui-button { margin-left: 10px; }
+      .empty-order-message { text-align: center; padding: 20px; font-style: italic; color: #666; }
+      .sixty-percent { width: 60%;}
+      .forty-percent-right-align { width: 40%; text-align: right;}
+   </style>
 </h:head>
 
 <h:body>
+   <p:growl id="pageMessages" autoUpdate="false" showDetail="true" life="3000"/>
 
-   <p:panel>
-      <f:facet name="header">
-         <h:panelGrid columns="2" style="width:100%">
-            <h:outputText value="Your order" style="font-weight:bold; font-size:1.2em" />
-            <p:commandButton icon="pi pi-arrow-left" type="button"
-                             onclick="PF('sidebar2').show()" style="float:right" />
-         </h:panelGrid>
-      </f:facet>
+   <h:form id="reviewOrderForm">
+      <p:panel style="width: 800px; margin: 20px auto;" header="Your Current Order">
 
-      <!-- use crud-->
+         <p:outputPanel id="orderContentsPanel">
+            <h:panelGroup rendered="#{orderBean.orderEmpty}">
+               <div class="empty-order-message">
+                  Your order is currently empty. <p:link outcome="/user/menu.xhtml" value="Browse Menu"/>
+               </div>
+            </h:panelGroup>
 
-   </p:panel>
+            <h:panelGroup rendered="#{not orderBean.orderEmpty}">
+               <p:dataTable var="item" value="#{orderBean.currentOrder.items}"
+                            emptyMessage="Your order is empty."
+                            style="margin-bottom: 20px;" rowIndexVar="idx">
+                  <p:column headerText="#" style="width:30px; text-align:center;">
+                     <h:outputText value="#{idx + 1}" />
+                  </p:column>
+                  <p:column headerText="Item">
+                     <h:outputText value="#{item.name}" /> <br/>
+                     <h:outputText value="Product: #{item.product.name}" style="font-size:0.9em; color:gray;"/>
+                     <h:panelGroup rendered="#{not empty item.addons}">
+                        <br/><h:outputText value="Addons: " style="font-style:italic;"/>
+                        <ui:repeat value="#{item.addons}" var="addon" varStatus="loop">
+                           <h:outputText value="#{addon.name} (#{addon.price})"/>
+                           <h:outputText value=", " rendered="#{!loop.last}"/>
+                        </ui:repeat>
+                     </h:panelGroup>
+                     <h:panelGroup rendered="#{not empty item.specialRequirements}">
+                        <br/><h:outputText value="Notes: #{item.specialRequirements}" style="font-style:italic;"/>
+                     </h:panelGroup>
+                  </p:column>
 
-   <p:sidebar widgetVar="sidebar2" position="right">
+                  <p:column headerText="Quantity" style="text-align:center; width:120px;">
+                     <p:spinner id="quantity" value="#{item.quantity}" min="1" max="99">
+                        <p:ajax update="totalItemPrice unitPrice :reviewOrderForm:orderTotal" process="@this" listener="#{orderBean.updateOrderTotal()}" />
+                     </p:spinner>
+                  </p:column>
+
+                  <p:column headerText="Unit Price (with addons)" style="text-align:right; width:100px;">
+                     <h:outputText id="unitPrice" value="#{item.calculateUnitPrice()}">
+                        <f:convertNumber type="currency" currencySymbol="€"/>
+                     </h:outputText>
+                  </p:column>
+
+                  <p:column headerText="Total Item Price" style="text-align:right; width:120px;">
+                     <h:outputText id="totalItemPrice" value="#{item.calculatePrice()}">
+                        <f:convertNumber type="currency" currencySymbol="€"/>
+                     </h:outputText>
+                  </p:column>
+
+                  <p:column style="width:60px;text-align:center">
+                     <p:commandButton icon="pi pi-trash" actionListener="#{orderBean.removeItemFromOrder(item)}"
+                                      update=":reviewOrderForm:orderContentsPanel :pageMessages" process="@this"
+                                      title="Remove item" styleClass="ui-button-danger ui-button-outlined"/>
+                  </p:column>
+               </p:dataTable>
+
+               <h:panelGrid columns="2" style="width:100%; margin-top:10px;" columnClasses="sixty-percent,forty-percent-right-align">
+                  <h:outputText value="" />
+                  <h:panelGroup style="text-align:right; font-size:1.2em;">
+                     <h:outputText value="Order Total: " style="font-weight:bold;" />
+                     <h:outputText id="orderTotal" value="#{orderBean.currentOrder.calculateTotalPrice()}" style="font-weight:bold;">
+                        <f:convertNumber type="currency" currencySymbol="€"/>
+                     </h:outputText>
+                  </h:panelGroup>
+               </h:panelGrid>
+
+               <div class="action-buttons">
+                  <p:commandButton value="Clear Order" actionListener="#{orderBean.clearOrder}"
+                                   update=":reviewOrderForm:orderContentsPanel :pageMessages" process="@this"
+                                   icon="pi pi-times-circle" styleClass="ui-button-warning"
+                                   rendered="#{not orderBean.orderEmpty}">
+                     <p:confirm header="Confirmation" message="Are you sure you want to clear your entire order?" icon="pi pi-exclamation-triangle"/>
+                  </p:commandButton>
+
+                  <p:commandButton value="Proceed to Checkout"
+                                   action="#{orderBean.proceedToFinalSubmission}"
+                                   icon="pi pi-arrow-right" styleClass="ui-button-success"
+                                   rendered="#{not orderBean.orderEmpty}"
+                                   ajax="false"/>
+               </div>
+            </h:panelGroup>
+         </p:outputPanel>
+      </p:panel>
+   </h:form>
+   <h:form>
+      <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+      </p:confirmDialog>
+   </h:form>
+
+   <p:sidebar widgetVar="optionsSidebar" position="right">
       <h3>Options</h3>
-      <h:form id="logoutForm">
-         <p:commandButton value="Logout" action="#{userLoginBean.logout}"
+      <h:form id="logoutFormSidebar">
+         <p:commandButton value="Logout" action="#{userSessionBean.logout}"
                           icon="pi pi-sign-out" ajax="false" immediate="true"
                           styleClass="ui-button-danger"/>
       </h:form>
       <div><p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-right: 10px; margin-top: 10px;" /></div>
-      <div><p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-right: 10px; margin-top: 10px;" /></div>
    </p:sidebar>
 
 </h:body>

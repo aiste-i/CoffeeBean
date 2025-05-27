@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-@WebFilter(filterName = "CustomerAuthenticationFilter", urlPatterns = {"/*"})
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
+
+@WebFilter(filterName = "CustomerAuthenticationFilter", urlPatterns = {"/user/*"})
 public class CustomerAuthFilter implements Filter {
 
     private static final Set<String> FILTERED_PATHS = new HashSet<>();
@@ -33,18 +35,12 @@ public class CustomerAuthFilter implements Filter {
         boolean loggedIn = false;
 
         if (session != null) {
-            System.out.println("---------------------Session not null");
-            Object loggedInUsernameObj = session.getAttribute("loggedInUserEmail");
-            Object loggedInUserRoleObj = session.getAttribute("loggedInUserRole");
-            System.out.println("loggedInUserRoleObj: " + loggedInUserRoleObj);
+            Object loggedInUsernameObj = session.getAttribute(LOGGED_IN_USER_EMAIL);
+            Object loggedInUserRoleObj = session.getAttribute(LOGGED_IN_USER_ROLE);
 
             if (loggedInUsernameObj != null && loggedInUserRoleObj != null &&
                     !loggedInUsernameObj.toString().isEmpty() && loggedInUserRoleObj instanceof UserRole) {
-
-                userRole = (UserRole) loggedInUserRoleObj;
-                System.out.println("userRole: " + userRole);
                 loggedIn = true;
-                System.out.println("loggedIn: " + loggedIn);
             }
         }
 
@@ -61,11 +57,7 @@ public class CustomerAuthFilter implements Filter {
             return;
         }
 
-        System.out.println("User role: " + userRole);
 
-
-        // We check if the user accessing the requested page (which requires login)
-        // is validated as a logged-in user. Otherwise, they are redirected to login page
         if (FILTERED_PATHS.contains(pathWithinContext)) {
             if(loggedIn) {
                 chain.doFilter(request, response);

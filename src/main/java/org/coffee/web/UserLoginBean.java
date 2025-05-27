@@ -2,10 +2,11 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.dao.UserDAO;
+import org.coffee.annotations.UserAuth;
 import org.coffee.persistence.entity.User;
 import org.coffee.persistence.entity.enums.UserRole;
-import org.coffee.util.PasswordUtil;
+import org.coffee.dto.UserAuthResult;
+import org.coffee.service.interfaces.AuthenticationService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -14,13 +15,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
+
+import static org.coffee.constants.Constants.SessionAttributeKeys.*;
 
 @Named
 @RequestScoped
-public class UserLoginBean {
+public class UserLoginBean implements Serializable {
 
     @Inject
-    private UserDAO userDAO; // Your DAO for Employee data
+    @UserAuth
+    private AuthenticationService authService;
 
     @Getter
     @Setter
@@ -36,34 +41,31 @@ public class UserLoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            User user = userDAO.findByUsername(email);
+            UserAuthResult result = (UserAuthResult) authService.authenticate(email, password);
 
-            if (user != null && PasswordUtil.checkPassword(password, user.getPassword())) { // Check hashed password!
-                HttpSession session = request.getSession(); // Get or create session
-                session.setAttribute("loggedInUserId", user.getId()); // Store ID
-                session.setAttribute("loggedInUserRole", UserRole.CUSTOMER); // Store role
-                System.out.println(session.getAttribute("loggedInUserRole").toString());
-                session.setAttribute("loggedInUserEmail", user.getEmail());
+            if (result.isSuccess()) {
+                User user = result.getUser();
+                HttpSession session = request.getSession(true);
+                session.setAttribute(LOGGED_IN_USER_ID, user.getId());
+                session.setAttribute(LOGGED_IN_USER_ROLE, UserRole.CUSTOMER);
+                session.setAttribute(LOGGED_IN_USER_EMAIL, user.getEmail());
 
                 return "/user/menu.xhtml?faces-redirect=true";
-
-            } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed.", "Invalid username or password."));
+            }
+            else {
+                context.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Login failed.",
+                                "Invalid credentials."));
                 return null;
             }
-        } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed.", "Invalid username or password."));
+        }
+        catch (Exception e) {
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Login failed.",
+                            e.getCause().getMessage()));
             return null;
         }
-    }
-
-    public String logout() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // Invalidate session
-        }
-        return "/index.xhtml?faces-redirect=true";
     }
 }

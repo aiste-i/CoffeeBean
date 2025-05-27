@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Confirm Your Order</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe('pk_test_51RTQGYRswKqOieK7YTkIYIOla4tIeBfW4n1QPS6VpblKzo6V6yKloKdjVzCxnszCxQ9RqNxyTSnuvi331m8VFMcS00cPLB2YrK');
+
+
+        function checkStripeAndContinue() {
+            const stripeReadyElement = document.querySelector('#finalCheckoutForm\\:stripeReady');
+
+            if (stripeReadyElement &amp;&amp; stripeReadyElement.value === 'true') {
+                initiateStripePayment();
+            } else {
+                console.warn("Stripe payment not initiated — order was not saved.");
+            }
+        }
+
+
+        function initiateStripePayment() {
+            const orderTotalElement = document.querySelector('#finalCheckoutForm\\:hiddenOrderTotalField');
+            const customerNameElement = document.querySelector('#finalCheckoutForm\\:finalCustName');
+            const customerEmailElement = document.querySelector('#finalCheckoutForm\\:finalCustEmail');
+            const orderIdElement = document.querySelector('#finalCheckoutForm\\:orderIdField')
+
+            if (!orderTotalElement || !customerNameElement || !customerEmailElement) {
+                alert("Missing required payment info.");
+                return;
+            }
+
+            const orderTotal = parseFloat(orderTotalElement.value);
+            const customerName = customerNameElement.value;
+            const customerEmail = customerEmailElement.value;
+            const orderId = orderIdElement.value;
+
+            fetch('http://localhost:9080/coffee-1.0-SNAPSHOT/api/payment/create-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    customerName: customerName,
+                    customerEmail: customerEmail,
+                    orderTotal: orderTotal,
+                    orderId: orderId,
+                    currency: "eur"
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sessionId) {
+                        stripe.redirectToCheckout({ sessionId: data.sessionId });
+                    } else {
+                        alert('Failed to create Stripe session.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Stripe session error:', err);
+                    alert('Unexpected error while initiating payment.');
+                });
+        }
+    </script>
+
+
+</h:head>
+<h:body>
+    <p:growl id="checkoutConfirmMessages" showDetail="true" life="5000" />
+
+    <h:form id="finalCheckoutForm" rendered="#{checkoutConfirmBean.orderToConfirm != null and not empty checkoutConfirmBean.orderToConfirm.items}">
+        <p:panel header="Final Order Confirmation" style="width:700px; margin: 20px auto;">
+            <h3>Review Your Items:</h3>
+            <p:dataTable var="item" value="#{checkoutConfirmBean.orderToConfirm.items}" style="margin-bottom:20px;">
+                <p:column headerText="Item"><h:outputText value="#{item.name}" /></p:column>
+                <p:column headerText="Qty"><h:outputText value="#{item.quantity}" /></p:column>
+                <p:column headerText="Item Price"><h:outputText value="#{item.calculateUnitPrice()}"><f:convertNumber type="currency"/></h:outputText></p:column>
+                <p:column headerText="Total"><h:outputText value="#{item.calculatePrice()}"><f:convertNumber type="currency"/></h:outputText></p:column>
+            </p:dataTable>
+
+            <p:panelGrid columns="2" style="margin-bottom:20px;">
+                <p:outputLabel for="finalOrderName" value="Order Reference Name:"/>
+                <p:inputText id="finalOrderName" value="#{checkoutConfirmBean.orderNameInput}" required="true"/>
+
+                <p:outputLabel for="finalCustName" value="Your Name (for this order):"/>
+                <p:inputText id="finalCustName" value="#{checkoutConfirmBean.customerNameInput}" required="true"/>
+
+                <p:outputLabel for="finalCustEmail" value="Your Email (for this order):"/>
+                <p:inputText id="finalCustEmail" value="#{checkoutConfirmBean.customerEmailInput}" required="true" validatorMessage="Invalid email">
+                    <f:validateRegex pattern="[\w\.-]+@[\w\.-]+\.\w{2,4}" />
+                </p:inputText>
+            </p:panelGrid>
+
+            <p:separator />
+            <div style="text-align:right; font-size:1.3em; margin:15px 0;">
+                <strong>Order Total:
+                    <h:outputText value="#{checkoutConfirmBean.orderToConfirm.totalPrice}">
+                        <f:convertNumber type="currency" currencySymbol="€"/>
+                    </h:outputText>
+                </strong>
+            </div>
+
+            <h:inputHidden id="hiddenOrderTotalField" value="#{checkoutConfirmBean.orderToConfirm.totalPrice}" />
+            <h:inputHidden id="stripeReady" value="#{checkoutConfirmBean.stripeReady}" />
+            <h:inputHidden id="orderIdField" value="#{checkoutConfirmBean.orderId}" />
+
+
+
+            <div style="text-align:right;">
+                <p:button value="Back to Edit Order" outcome="/user/order-view.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary" style="margin-right:10px;"/>
+
+                <p:commandButton value="Submit and Pay"
+                                 action="#{checkoutConfirmBean.submitFinalOrder}"
+                                 update="@form checkoutConfirmMessages stripeReady"
+                                 process="@form"
+                                 icon="pi pi-check"
+                                 styleClass="ui-button-success"
+                                 oncomplete="checkStripeAndContinue();"/>
+
+            </div>
+        </p:panel>
+    </h:form>
+    <h:panelGroup rendered="#{checkoutConfirmBean.orderToConfirm == null or empty checkoutConfirmBean.orderToConfirm.items}">
+        <p>No order to confirm or your cart is empty. <p:link outcome="/user/menu.xhtml" value="Go to Menu"/></p>
+    </h:panelGroup>
+
+
+    <p:ajaxStatus widgetVar="finalSubmitStatusDialog" modal="true">
+        <f:facet name="start"><h:outputText value="Submitting Order..." /></f:facet>
+    </p:ajaxStatus>
+
+
+
+</h:body>
+</html>
