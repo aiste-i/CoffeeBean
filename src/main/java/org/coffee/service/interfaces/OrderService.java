@@ -39,5 +39,7 @@ public interface OrderService {
 
     Order getOrderDetails(Long orderId) throws OrderNotFoundException;
 
-    public Map<OrderStatus, List<Order>> getDashboardOrdersForUser(Long userId);
+    Map<OrderStatus, List<Order>> getDashboardOrdersForUser(Long userId);
+
+    Order updateOrder(Long orderId) throws OrderNotFoundException, OrderActionException, OrderConflictException;
 }

@@ -82,6 +82,7 @@ public class IngredientManagementBean implements Serializable {
         selectedIngredient = null;
     }
 
+    @Transactional
     public void deleteIngredient(Ingredient ingredient) {
         ingredientDAO.removeById(ingredient.getId());
         getIngredientList();

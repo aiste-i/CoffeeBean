@@ -99,7 +99,7 @@
           <p:button value="Order History" outcome="/user/order-history.xhtml" icon="pi pi-history" style="margin-bottom: 10px; display:block;"/>
          <p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-bottom: 10px; display:block;" />
          <p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-bottom: 10px; display:block;" />
-         <p:commandButton value="Logout" action="#{userLoginBean.logout}"
+         <p:commandButton value="Logout" action="#{userSessionBean.logout}"
                           icon="pi pi-sign-out" ajax="false" immediate="true"
                           styleClass="ui-button-danger" style="display:block;"/>
       </h:form>

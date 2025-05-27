@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +69,7 @@ public class CheckoutConfirmBean implements Serializable {
         this.customerEmailInput = this.orderToConfirm.getCustomerEmail();
     }
 
-
+    @Transactional
     public void submitFinalOrder() {
         if (orderBean.isOrderEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,

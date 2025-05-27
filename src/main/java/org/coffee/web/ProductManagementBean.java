@@ -78,6 +78,7 @@ public class ProductManagementBean implements Serializable {
         selectedProduct = null;
     }
 
+    @Transactional
     public void deleteProduct(Product product) {
         productDAO.removeById(product.getId());
         getProductList();

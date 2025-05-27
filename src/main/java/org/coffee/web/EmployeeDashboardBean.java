@@ -112,6 +112,7 @@ public class EmployeeDashboardBean implements Serializable {
         }
     }
 
+    @Transactional
     public void cancelOrder(Order order) {
         if (order == null) return;
         try {

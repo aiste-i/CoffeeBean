@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Inject
     private TokenService tokenService;
 
-    @EJB
+    @Inject
     private EmailService emailService;
 
     @Inject
