@@ -31,10 +31,11 @@
 </h:head>
 <h:body>
     <h:form id="buttonForm">
-        <p:commandButton value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
+        <p:commandButton style="margin: 3px; float: right;" value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
                          rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
                          styleClass="ui-button-primary"/>
-        <p:commandButton value="Log Out"
+        <p:commandButton style="margin: 3px; float: right;"
+                        value="Log Out"
                          icon="pi pi-sign-out"
                          action="#{employeeLoginBean.logout}"
                          rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}"

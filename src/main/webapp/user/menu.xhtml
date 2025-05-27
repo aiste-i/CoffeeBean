@@ -135,7 +135,7 @@
                             <p:selectOneRadio id="addonRadio_#{addonType.id}" value="#{showProductBean.selectedAddonsByType[addonType.id]}" layout="grid" columns="4">
                                 <f:selectItems value="#{showProductBean.getAvailableAddonsForType(addonType.id)}" 
                                               var="addon" 
-                                              itemLabel="#{addon.name} (+$#{addon.price})" 
+                                              itemLabel="#{addon.name} (+€#{addon.price})"
                                               itemValue="#{addon.id}" />
                                 <p:ajax listener="#{showProductBean.selectAddonForType(addonType.id)}" 
                                         update=":confirmForm:unitPricePanel :confirmForm:totalPricePanel" />
@@ -151,7 +151,7 @@
                     <div style="margin-bottom: 10px; font-weight: bold;">
                         <h:outputText value="Unit Price (with addons): " />
                         <h:outputText value="#{showProductBean.unitPrice}">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
+                            <f:convertNumber type="currency" currencySymbol="€"/>
                         </h:outputText>
                     </div>
                 </p:outputPanel>
@@ -160,7 +160,7 @@
                     <div style="margin-bottom: 10px; font-weight: bold; font-size: 1.2em; color: #2196F3;">
                         <h:outputText value="Total Price is: " />
                         <h:outputText value="#{showProductBean.calculateTotalPrice()}">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
+                            <f:convertNumber type="currency" currencySymbol="€"/>
                         </h:outputText>
                     </div>
                 </p:outputPanel>

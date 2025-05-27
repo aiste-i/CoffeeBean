@@ -15,6 +15,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Named
@@ -42,6 +43,14 @@ public class CheckoutConfirmBean implements Serializable {
     @Getter
     private Order orderToConfirm;
 
+    @Setter
+    @Getter
+    private boolean stripeReady = false;
+
+    @Getter
+    @Setter
+    private Long orderId;
+
     @PostConstruct
     public void init() {
         this.orderToConfirm = orderBean.getCurrentOrder();
@@ -59,11 +68,12 @@ public class CheckoutConfirmBean implements Serializable {
         this.customerEmailInput = this.orderToConfirm.getCustomerEmail();
     }
 
-    public String submitFinalOrder() {
+
+    public void submitFinalOrder() {
         if (orderBean.isOrderEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Order is Empty", "Cannot submit an empty order."));
-            return null;
+            return;
         }
 
         Order orderFromSession = orderBean.getCurrentOrder();
@@ -91,19 +101,20 @@ public class CheckoutConfirmBean implements Serializable {
 
         try {
             Order persistedOrder = orderApiClient.createOrder(creationDto);
+            this.stripeReady = true;
+            this.orderId = persistedOrder.getId();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Order Submitted Successfully!",
                             "Your Order ID is: " + persistedOrder.getId()));
-            orderBean.clearOrder();
+
+            //orderBean.clearOrder();
 
             FacesContext.getCurrentInstance().getExternalContext().getFlash().put("submittedOrderId", persistedOrder.getId());
-            return "/user/order-confirmation-page.xhtml?faces-redirect=true";
 
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL, "Order Submission Failed",
                             "Could not submit your order. Please try again. Error: " + e.getMessage()));
-            return null;
         }
     }
 }

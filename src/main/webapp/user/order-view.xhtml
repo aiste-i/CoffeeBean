@@ -62,13 +62,13 @@
 
                   <p:column headerText="Unit Price (with addons)" style="text-align:right; width:100px;">
                      <h:outputText id="unitPrice" value="#{item.calculateUnitPrice()}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
+                        <f:convertNumber type="currency" currencySymbol="€"/>
                      </h:outputText>
                   </p:column>
 
                   <p:column headerText="Total Item Price" style="text-align:right; width:120px;">
                      <h:outputText id="totalItemPrice" value="#{item.calculatePrice()}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
+                        <f:convertNumber type="currency" currencySymbol="€"/>
                      </h:outputText>
                   </p:column>
 
@@ -84,7 +84,7 @@
                   <h:panelGroup style="text-align:right; font-size:1.2em;">
                      <h:outputText value="Order Total: " style="font-weight:bold;" />
                      <h:outputText id="orderTotal" value="#{orderBean.currentOrder.calculateTotalPrice()}" style="font-weight:bold;">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
+                        <f:convertNumber type="currency" currencySymbol="€"/>
                      </h:outputText>
                   </h:panelGroup>
                </h:panelGrid>

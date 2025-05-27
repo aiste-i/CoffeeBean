@@ -238,7 +238,7 @@ public class OrderService implements Serializable {
         orderEntity.setUser(user);
         orderEntity.setCustomerName(request.getCustomerName());
         orderEntity.setCustomerEmail(request.getCustomerEmail() != null ? request.getCustomerEmail() : (user != null ? user.getEmail() : null));
-        orderEntity.setOrderStatus(OrderStatus.PENDING);
+        orderEntity.setOrderStatus(OrderStatus.NOT_PAYED);
 
         for (OrderItemDto itemDto : request.getItems()) {
             if (itemDto.getProductId() == null) {
@@ -290,8 +290,6 @@ public class OrderService implements Serializable {
             orderEntity.addItem(orderItemEntity);
         }
         orderDAO.persist(orderEntity);
-
-        orderSubmittedEvent.fire(new OrderSubmittedEvent(initializeOrder(orderEntity)));
         return orderEntity;
     }
 
@@ -403,4 +401,34 @@ public class OrderService implements Serializable {
         }
         return order;
     }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Order updateOrder(Long orderId)
+            throws OrderNotFoundException, OrderActionException, OrderConflictException {
+        try {
+            Order order = findOrderByIdAndEnsureInitialized(orderId);
+
+            if (order.getOrderStatus() != OrderStatus.NOT_PAYED ) {
+                throw new OrderActionException(
+                        "Order cannot be completed. Current status: " + order.getOrderStatus(),
+                        order.getOrderStatus(), order);
+            }
+
+            order.setOrderStatus(OrderStatus.PENDING);
+            Order mergedOrder = orderDAO.update(order);
+            orderDAO.flush();
+            System.out.println("ordersubmiteed id= " + mergedOrder.getId());
+
+            orderSubmittedEvent.fire(new OrderSubmittedEvent(initializeOrder(mergedOrder)));
+            return mergedOrder;
+        } catch (OptimisticLockException ole) {
+            Order currentDbOrder = findOrderByIdAndEnsureInitialized(orderId);
+            throw new OrderConflictException(
+                    "Could not complete the order as its state changed concurrently. Please refresh.",
+                    currentDbOrder);
+        }
+    }
+
+
+
 }
