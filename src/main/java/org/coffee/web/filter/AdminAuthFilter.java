@@ -55,7 +55,7 @@ public class AdminAuthFilter implements Filter {
 
         String contextPath = httpRequest.getContextPath();
         String loginURI = contextPath + "/admin/login.xhtml";
-        String dashboardURI = contextPath + "/admin/";
+        String dashboardURI = contextPath + "/admin/index.xhtml";
         String requestedURI = httpRequest.getRequestURI();
         String pathWithinContext = requestedURI.substring(contextPath.length());
 

@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USERNAME;
 import static org.coffee.constants.Constants.SessionAttributeKeys.LOGGED_IN_USER_ROLE;
 
-@WebFilter(filterName = "CustomerAuthenticationFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "CustomerAuthenticationFilter", urlPatterns = {"/user/*"})
 public class CustomerAuthFilter implements Filter {
 
     private static final Set<String> FILTERED_PATHS = new HashSet<>();

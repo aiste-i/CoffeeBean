@@ -56,7 +56,7 @@ public class WebSocketNotificationHandler {
 
         Map<String, Object> notification = new HashMap<>();
         notification.put("type", type);
-        notification.put("payload", order);
+//        notification.put("payload", order);
         notification.put("orderId", order.getId());
         notification.put("timestamp", LocalDateTime.now().toString());
         return JsonbUtil.toJson(notification);
