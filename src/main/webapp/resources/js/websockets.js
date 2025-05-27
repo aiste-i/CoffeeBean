@@ -32,26 +32,27 @@ function connectUserWebSocket(userId) {
         console.log(`UserWS connected for user ID: ${userId}`);
     };
 
+
     userSocketConnection.onmessage = function(event) {
-        console.log(`UserWS (generic handler) received for ${userId}: ${event.data.substring(0,150)}...`);
+        console.log(`UserWS received: ${event.data.substring(0, 150)}...`);
+
         try {
             const notification = JSON.parse(event.data);
+
             if (typeof window.handleUserOrderNotification === 'function') {
                 window.handleUserOrderNotification(notification);
             } else {
-                console.warn(`UserWS: Global 'window.handleUserOrderNotification' function not found on page.`);
-                // Default action: alert("User Notification: " + notification.type);
+                console.warn("UserWS: No handler found for incoming notification.");
             }
         } catch (e) {
-            console.error(`UserWS: Error parsing message for ${userId}:`, e, "Raw data:", event.data);
+            console.error("UserWS: Error parsing WebSocket message:", e, "Raw data:", event.data);
         }
     };
 
     userSocketConnection.onclose = function(event) {
         console.log(`UserWS disconnected for ${userId}. Code: ${event.code}, Reason: "${event.reason}", Clean: ${event.wasClean}`);
-        userSocketConnection = null; // Clear reference
-        // Optional: Reconnect logic for user
-        // if (!event.wasClean && userId) { setTimeout(() => connectUserWebSocket(userId), 5000); }
+        userSocketConnection = null;
+
     };
 
     userSocketConnection.onerror = function(error) {

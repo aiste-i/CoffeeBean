@@ -30,6 +30,16 @@
     </script>
 </h:head>
 <h:body>
+    <h:form id="buttonForm">
+        <p:commandButton value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
+                         rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                         styleClass="ui-button-primary"/>
+        <p:commandButton value="Log Out"
+                         icon="pi pi-sign-out"
+                         action="#{employeeLoginBean.logout}"
+                         rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}"
+                         styleClass="ui-button-danger" ajax="false"/>
+    </h:form>
     <p:growl id="dashMessages" showDetail="true" life="5000" sticky="false"/>
     <h:form id="dashboardForm">
 
@@ -43,9 +53,9 @@
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15">
                 <p:column headerText="ID" sortBy="#{order.id}"><h:outputText value="#{order.id}" /></p:column>
-                <p:column headerText="Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
-                <p:column headerText="Customer"><h:outputText value="#{order.customerName}" /></p:column>
-                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="$"/></h:outputText></p:column>
+                <p:column headerText="Order Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer Name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
                 <p:column headerText="Received" sortBy="#{order.created}"><h:outputText value="#{order.created}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
                 <p:column headerText="Items">
                     <p:commandButton value="View Items"
@@ -72,9 +82,9 @@
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15">
                 <p:column headerText="ID" sortBy="#{order.id}"><h:outputText value="#{order.id}" /></p:column>
-                <p:column headerText="Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
-                <p:column headerText="Customer"><h:outputText value="#{order.customerName}" /></p:column>
-                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="$"/></h:outputText></p:column>
+                <p:column headerText="Order Name" sortBy="#{order.name}"><h:outputText value="#{order.name}" /></p:column>
+                <p:column headerText="Customer Name"><h:outputText value="#{order.customerName}" /></p:column>
+                <p:column headerText="Total"><h:outputText value="#{order.totalPrice}"><f:convertNumber type="currency" currencySymbol="€"/></h:outputText></p:column>
                 <p:column headerText="Updated" sortBy="#{order.updated}"><h:outputText value="#{order.updated}"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm" /></h:outputText></p:column>
                 <p:column headerText="Items">
                     <p:commandButton value="View Items"
@@ -107,7 +117,7 @@
                 <p:column headerText="Quantity">
                     <h:outputText value="#{item.quantity}" />
                 </p:column>
-                <p:column headerText="Addons">
+                <p:column headerText="Ingredients">
                     <h:outputText value="#{item.addonNames}" />
                 </p:column>
             </p:dataTable>

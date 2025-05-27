@@ -12,7 +12,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 @Named
@@ -44,7 +43,7 @@ public class UserSignUpBean {
     @Transactional
     public String signUp() {
         FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest(); // Needed only for manual session/login
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
             newUser.setEmail(email);
@@ -56,7 +55,7 @@ public class UserSignUpBean {
 
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sign up failed.", "An unexpected error occurred."));
-            return null; // Stay on the same page
+            return null;
         }
     }
 }

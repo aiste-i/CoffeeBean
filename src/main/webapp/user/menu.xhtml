@@ -7,11 +7,44 @@
 
 <h:head>
    <title>Menu</title>
+    <h:outputScript library="js" name="websockets.js" target="body"/>
+    <script type="text/javascript">
+        window.handleUserOrderNotification = function(notification) {
+            console.log("User Dashboard Page: handleUserOrderNotification called with type: ", notification.type, "Data:", notification);
+            let updatedDate = new Date(notification.payload.updated);
+            let formattedDate = updatedDate.toLocaleString('en-UK', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: false
+            });
+
+            if (PF &amp;&amp; PF('pageGrowl')) {
+                PF('pageGrowl').show([
+                    {
+                        severity: 'info',
+                        summary: 'Order Update',
+                        detail: "Order #" + notification.payload.name + " is now " +notification.payload.orderStatus + ". Customer name: " + notification.payload.customerName + ". Updated: " + formattedDate
+                    }
+                ]);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('#{userSessionBean.isLoggedIn()}') {
+                connectUserWebSocket('#{userSessionBean.getLoggedInUserId()}');
+            } else {
+                console.warn("Could not determine logged-in user ID for WebSocket connection.");
+            }
+        });
+    </script>
 </h:head>
 
 <h:body>
-   <p:growl id="pageGrowl" showDetail="true" life="3000" globalOnly="false"/>
-
+   <p:growl id="pageGrowl" widgetVar="pageGrowl" showDetail="true" sticky="true" globalOnly="false"/>
    <p:panel id="menuPanel">
       <f:facet name="header">
          <h:panelGrid columns="2" style="width:100%">
@@ -63,6 +96,7 @@
             <h:outputText value="Items in Order: #{orderBean.currentOrder.items.size()}" />
          </p:outputPanel>
          <p:button value="View Order" outcome="/user/order-view.xhtml" icon="pi pi-shopping-cart" style="margin-bottom: 10px; display:block;"/>
+          <p:button value="Order History" outcome="/user/order-history.xhtml" icon="pi pi-history" style="margin-bottom: 10px; display:block;"/>
          <p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-bottom: 10px; display:block;" />
          <p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-bottom: 10px; display:block;" />
          <p:commandButton value="Logout" action="#{userLoginBean.logout}"
@@ -71,7 +105,7 @@
       </h:form>
    </p:sidebar>
 
-   <p:dialog header="Confirm Order" widgetVar="confirmDialog" modal="true" showEffect="fade" hideEffect="fade" width="500" position="center" resizable="false" draggable="false" closable="true" minHeight="200">
+   <p:dialog header="Confirm Order" widgetVar="confirmDialog" modal="true" showEffect="fade" hideEffect="fade" width="500" position="center" resizable="false" draggable="false" closable="true" minHeight="200" >
       <h:form id="confirmForm">
          <p:outputPanel id="confirmContent" style="text-align: center; max-height: 400px; overflow-y: auto;">
             <p class="m-0">How many #{showProductBean.selectedProduct.name} would you like to add to your cart?</p>

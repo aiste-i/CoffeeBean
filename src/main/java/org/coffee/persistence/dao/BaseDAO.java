@@ -33,6 +33,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
+    @Transactional(Transactional.TxType.SUPPORTS)
     public T find(Object id) {
         return em.find(entityClass, id);
     }
@@ -42,6 +43,7 @@ public abstract class BaseDAO<T> {
         return em.merge(entity);
     }
 
+    @Transactional(Transactional.TxType.SUPPORTS)
     public List<T> findAll() {
         return em.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
                 .getResultList();
@@ -52,6 +54,7 @@ public abstract class BaseDAO<T> {
         em.flush();
     }
 
+    @Transactional(Transactional.TxType.SUPPORTS)
     public List<T> findByIds(Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) return List.of();
 

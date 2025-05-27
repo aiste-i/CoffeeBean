@@ -21,10 +21,10 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
+import static org.coffee.constants.Constants.API_BASE_URL;
+
 @ApplicationScoped
 public class OrderApiClient {
-
-    private final String apiBaseUrl = "http://localhost:9080/coffee-1.0-SNAPSHOT/api";
 
     private Client client;
 
@@ -33,7 +33,7 @@ public class OrderApiClient {
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
-        this.baseTarget = client.target(apiBaseUrl);
+        this.baseTarget = client.target(API_BASE_URL);
     }
 
     @PreDestroy
@@ -115,6 +115,25 @@ public class OrderApiClient {
             }
         } catch (ProcessingException e) {
             throw new OrderApiException("Network or processing error during get dashboard orders: " + e.getMessage(), 0, e);
+        }
+    }
+
+    public Map<OrderStatus, List<Order>> getDashboardOrdersByUserId(Long userId) throws OrderApiException {
+        WebTarget target = baseTarget.path("orders").path("dashboard").path("user").path(String.valueOf(userId));
+        try (Response response = target.request(MediaType.APPLICATION_JSON).get()){
+
+            if (response.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL) {
+                if(response.hasEntity()){
+                    return response.readEntity(new GenericType<Map<OrderStatus,List<Order>>>() {});
+                }
+                return java.util.Collections.emptyMap();
+            } else {
+                handleErrorResponse(response, "Get Dashboard Orders for User ID " + userId);
+                return null;
+            }
+
+        } catch (ProcessingException e) {
+            throw new OrderApiException("Error fetching dashboard orders for user ID " + userId, 0,e);
         }
     }
 

@@ -45,4 +45,14 @@ public class OrderDAO extends BaseDAO<Order>{
         query.setParameter("id", orderId);
         return query.getResultStream().findFirst().orElse(null);
     }
+
+    public List<Order> findOrdersByUserId(Long userId) {
+        if (userId == null) {
+            return Collections.emptyList();
+        }
+        TypedQuery<Order> query = em.createQuery(
+                "SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.created ASC", Order.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
 }

@@ -10,15 +10,16 @@ import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderModificationDto;
 import org.hibernate.Hibernate;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
-@ApplicationScoped
+@Stateless
 public class OrderService implements Serializable {
 
     @Inject
@@ -62,6 +63,31 @@ public class OrderService implements Serializable {
             }
         }
         return dashboardOrders;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Map<OrderStatus, List<Order>> getDashboardOrdersForUser(Long userId) {
+        if (userId == null) {
+            return Collections.emptyMap();
+        }
+
+        List<Order> userOrders = orderDAO.findOrdersByUserId(userId);
+
+        Map<OrderStatus, List<Order>> dashboardOrders = new HashMap<>();
+        dashboardOrders.put(OrderStatus.PENDING, new ArrayList<>());
+        dashboardOrders.put(OrderStatus.ACCEPTED, new ArrayList<>());
+        dashboardOrders.put(OrderStatus.CANCELLED_BY_EMPLOYEE, new ArrayList<>());
+        dashboardOrders.put(OrderStatus.COMPLETED, new ArrayList<>());
+
+        for (Order order : userOrders) {
+            Order initializedOrder = initializeOrder(order);
+            if (initializedOrder != null && dashboardOrders.containsKey(initializedOrder.getOrderStatus())) {
+                dashboardOrders.get(initializedOrder.getOrderStatus()).add(initializedOrder);
+            }
+        }
+        return dashboardOrders;
+
+
     }
 
     public Order getOrderById(Long orderId) throws OrderNotFoundException {
@@ -371,7 +397,7 @@ public class OrderService implements Serializable {
 
     @Transactional(Transactional.TxType.REQUIRED)
     public Order getOrderDetails(Long orderId) throws OrderNotFoundException {
-        Order order = orderDAO.findOrderWithItems(orderId); // Use custom query in DAO
+        Order order = orderDAO.findOrderWithItems(orderId);
         if (order == null) {
             throw new OrderNotFoundException("Order not found for ID: " + orderId);
         }

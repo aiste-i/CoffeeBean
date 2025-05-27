@@ -6,12 +6,13 @@ import org.coffee.persistence.entity.Business;
 import org.coffee.persistence.entity.User;
 import org.coffee.util.PasswordUtil;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@ApplicationScoped
+@Stateless
 public class BusinessService {
 
     @Inject
