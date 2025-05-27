@@ -99,7 +99,7 @@
           <p:button value="Order History" outcome="/user/order-history.xhtml" icon="pi pi-history" style="margin-bottom: 10px; display:block;"/>
          <p:button value="Menu" outcome="/user/menu.xhtml" icon="pi pi-tags" style="margin-bottom: 10px; display:block;" />
          <p:button value="Change e-mail" outcome="/user/email-change.xhtml" icon="pi pi-envelope" style="margin-bottom: 10px; display:block;" />
-         <p:commandButton value="Logout" action="#{userSessionBean.logout}"
+         <p:commandButton value="Logout" action="#{userLoginBean.logout}"
                           icon="pi pi-sign-out" ajax="false" immediate="true"
                           styleClass="ui-button-danger" style="display:block;"/>
       </h:form>
@@ -133,11 +133,11 @@
                         <h3 class="addon-type-name">#{addonType.name}</h3>
                         <p:panelGrid columns="4" styleClass="ui-noborder" style="width:100%">
                             <p:selectOneRadio id="addonRadio_#{addonType.id}" value="#{showProductBean.selectedAddonsByType[addonType.id]}" layout="grid" columns="4">
-                                <f:selectItems value="#{showProductBean.getAvailableAddonsForType(addonType.id)}"
-                                              var="addon"
-                                              itemLabel="#{addon.name} (+$#{addon.price})"
+                                <f:selectItems value="#{showProductBean.getAvailableAddonsForType(addonType.id)}" 
+                                              var="addon" 
+                                              itemLabel="#{addon.name} (+€#{addon.price})"
                                               itemValue="#{addon.id}" />
-                                <p:ajax listener="#{showProductBean.selectAddonForType(addonType.id)}"
+                                <p:ajax listener="#{showProductBean.selectAddonForType(addonType.id)}" 
                                         update=":confirmForm:unitPricePanel :confirmForm:totalPricePanel" />
                             </p:selectOneRadio>
                         </p:panelGrid>
@@ -151,7 +151,7 @@
                     <div style="margin-bottom: 10px; font-weight: bold;">
                         <h:outputText value="Unit Price (with addons): " />
                         <h:outputText value="#{showProductBean.unitPrice}">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
+                            <f:convertNumber type="currency" currencySymbol="€"/>
                         </h:outputText>
                     </div>
                 </p:outputPanel>
@@ -160,21 +160,21 @@
                     <div style="margin-bottom: 10px; font-weight: bold; font-size: 1.2em; color: #2196F3;">
                         <h:outputText value="Total Price is: " />
                         <h:outputText value="#{showProductBean.calculateTotalPrice()}">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
+                            <f:convertNumber type="currency" currencySymbol="€"/>
                         </h:outputText>
                     </div>
                 </p:outputPanel>
             </div>
 
             <div class="mt-3">
-                <p:commandButton value="Add to Cart"
+                <p:commandButton value="Add to Cart" 
                                actionListener="#{showProductBean.updateSelectedAddonsList()}"
                                action="#{orderBean.addItemToOrder(showProductBean.selectedProduct, showProductBean.quantity, showProductBean.selectedAddons)}"
                                oncomplete="PF('confirmDialog').hide(); #{showProductBean.resetQuantity()}"
                                update=":pageGrowl :sidebarMenuForm:orderItemCountOutputPanel"
                                styleClass="ui-button-success mr-2"/>
-                <p:commandButton value="Cancel"
-                               onclick="PF('confirmDialog').hide()"
+                <p:commandButton value="Cancel" 
+                               onclick="PF('confirmDialog').hide()" 
                                type="button"
                                styleClass="ui-button-secondary"/>
             </div>
