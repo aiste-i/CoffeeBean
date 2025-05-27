@@ -15,9 +15,7 @@ import java.util.Map;
 @Path("/payment")
 public class PaymentController {
 
-//    public PaymentController() {
-//        Stripe.apiKey = "sk_test_51RTQGYRswKqOieK7ry83WR8BriFsRVchLK8rrVO1ZvgY5huTu0EDl9bZW86MtINRthSMpyBgWYAJADOGsvELCjnx00pJQVslOF";
-//    }
+
 
     @POST
     @Path("/create-session")
