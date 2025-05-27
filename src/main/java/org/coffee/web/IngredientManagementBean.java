@@ -67,7 +67,6 @@ public class IngredientManagementBean implements Serializable {
 
                 if (selectedIngredient.getId() == null) {
                     ingredientDAO.persist(selectedIngredient);
-                    System.out.println("--------------------------------------------------------------------------------- no e");
 
                     getIngredientList();
                 }
@@ -83,6 +82,7 @@ public class IngredientManagementBean implements Serializable {
         selectedIngredient = null;
     }
 
+    @Transactional
     public void deleteIngredient(Ingredient ingredient) {
         ingredientDAO.removeById(ingredient.getId());
         getIngredientList();

@@ -65,7 +65,6 @@ public class OrderBean implements Serializable {
         }
         int quantityToAdd = quantity > 0 ? quantity : 1;
 
-        // Check if we have the same product with the same addons
         Optional<OrderItem> existingItemOpt = currentOrder.getItems().stream()
                 .filter(oi -> oi.getProduct().getId().equals(product.getId()) &&
                         ((addons == null || addons.isEmpty()) && (oi.getAddons() == null || oi.getAddons().isEmpty()) ||

@@ -23,8 +23,6 @@ public class WebSocketNotificationHandler {
     private UserSessionBean userSessionBean;
 
     private String createNotificationJson(String type, Order order) {
-        // IMPORTANT: Ensure any lazy-loaded parts of Order needed by client are initialized
-        // This is crucial because the transaction from OrderService is likely committed by now.
         if (order != null) {
             Hibernate.initialize(order.getItems());
             if (order.getUser() != null) {
@@ -35,7 +33,7 @@ public class WebSocketNotificationHandler {
 
         Map<String, Object> notification = new HashMap<>();
         notification.put("type", type);
-//        notification.put("payload", order); // The Order object itself
+//        notification.put("payload", order);
         notification.put("orderId", order != null ? order.getId() : null);
         notification.put("timestamp", LocalDateTime.now().toString());
         return JsonbUtil.toJson(notification);

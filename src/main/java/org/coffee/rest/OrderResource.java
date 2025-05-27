@@ -68,6 +68,28 @@ public class OrderResource {
         }
     }
 
+    @PUT
+    @Path("/update/{id}")
+    public Response updateOrder(@PathParam("id") Long orderId) {
+        try {
+            Order updatedOrder = orderService.updateOrder(orderId);
+            return Response.ok(updatedOrder).build();
+        }
+        catch (OrderNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ClientMessageDto(e.getMessage())).build();
+        }
+        catch (OrderActionException e) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(new ClientConflictMessageDto("CONFLICT_CANNOT_ACCEPT", e.getMessage(), e.getConflictingOrderState()))
+                    .build();
+        }
+        catch (OrderConflictException e) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(new ClientConflictMessageDto("CONFLICT_STALE_DATA", e.getMessage(), e.getConflictingOrderState()))
+                    .build();
+        }
+    }
+
     @GET
     @Path("/{id}")
     public Response getOrder(@PathParam("id") Long orderId) {

@@ -64,7 +64,6 @@ public class ProductManagementBean implements Serializable {
 
                 if(selectedProduct.getId() == null) {
                     productDAO.persist(selectedProduct);
-                    System.out.println("--------------------------------------------------------------------------------- no e");
                     getProductList();
                 }
                 else {
@@ -79,6 +78,7 @@ public class ProductManagementBean implements Serializable {
         selectedProduct = null;
     }
 
+    @Transactional
     public void deleteProduct(Product product) {
         productDAO.removeById(product.getId());
         getProductList();

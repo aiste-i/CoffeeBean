@@ -60,6 +60,17 @@ public class OrderApiClient {
         }
     }
 
+    public void updateOrder(Long orderId) throws OrderApiException {
+        WebTarget updateOrderTarget = baseTarget.path("orders").path("update").path(String.valueOf(orderId));
+        try (Response response = updateOrderTarget
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.json(null))) {
+            return;
+        } catch (ProcessingException e) {
+            throw new OrderApiException("Network or processing error during update order: " + e.getMessage(), 0, e);
+        }
+    }
+
 
     public Order getOrderById(Long orderId) throws OrderApiException {
         WebTarget getOrderTarget = baseTarget.path("orders").path(String.valueOf(orderId));
