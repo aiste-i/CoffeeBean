@@ -16,7 +16,7 @@ import java.util.Map;
 public class PaymentController {
 
     public PaymentController() {
-        Stripe.apiKey = "sk_test_51RTQGYRswKqOieK7ry83WR8BriFsRVchLK8rrVO1ZvgY5huTu0EDl9bZW86MtINRthSMpyBgWYAJADOGsvELCjnx00pJQVslOF";
+        Stripe.apiKey = null; // ideti stripe api secret key
     }
 
     @POST
