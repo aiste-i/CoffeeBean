@@ -2,7 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.service.UserService;
+import org.coffee.service.interfaces.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;

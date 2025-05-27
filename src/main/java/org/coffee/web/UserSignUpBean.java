@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.persistence.dao.UserDAO;
 import org.coffee.persistence.entity.User;
 import org.coffee.service.interfaces.RegistrationService;
 
@@ -10,6 +11,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 
@@ -40,13 +43,13 @@ public class UserSignUpBean implements Serializable {
         User user = new User();
 
         FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest(); // Needed only for manual session/login
 
         try {
             user.setEmail(email);
             registrationService.registerUser(user, plainPassword);
 
-            userLoginBean.setEmail(email);
-            userLoginBean.setPassword(plainPassword);
+            userDAO.persist(newUser);
 
             return userLoginBean.login();
 

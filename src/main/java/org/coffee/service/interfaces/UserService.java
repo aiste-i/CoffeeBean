@@ -14,4 +14,6 @@ public interface UserService {
     boolean validatePasswordResetToken(String token);
 
     boolean changeEmail(User user, String email) throws CredentialChangeException;
+
+    public void updatePassword(Long userId, String currentPassword, String newPassword);
 }
