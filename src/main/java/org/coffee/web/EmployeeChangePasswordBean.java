@@ -32,6 +32,7 @@ public class EmployeeChangePasswordBean {
     @Inject
     private UserSessionBean sessionBean;
 
+
     public String changePassword() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
