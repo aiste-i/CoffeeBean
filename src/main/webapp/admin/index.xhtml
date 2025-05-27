@@ -30,6 +30,16 @@
     </script>
 </h:head>
 <h:body>
+    <h:form id="buttonForm">
+        <p:commandButton value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
+                         rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
+                         styleClass="ui-button-primary"/>
+        <p:commandButton value="Log Out"
+                         icon="pi pi-sign-out"
+                         action="#{employeeLoginBean.logout}"
+                         rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}"
+                         styleClass="ui-button-danger" ajax="false"/>
+    </h:form>
     <p:growl id="dashMessages" showDetail="true" life="5000" sticky="false"/>
     <h:form id="dashboardForm">
 
