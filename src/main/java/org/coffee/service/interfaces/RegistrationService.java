@@ -4,7 +4,7 @@ import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.User;
 import org.coffee.exception.RegistrationException;
 
-public interface RegistrationServiceInterface {
+public interface RegistrationService {
 
     void registerUser(User user, String plainPassword) throws RegistrationException;
 

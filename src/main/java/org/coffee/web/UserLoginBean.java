@@ -2,11 +2,14 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.UserAuth;
+import org.coffee.exception.AuthenticationException;
 import org.coffee.persistence.entity.User;
 import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.dto.UserAuthResult;
-import org.coffee.service.interfaces.AuthenticationServiceInterface;
+import org.coffee.service.interfaces.AuthenticationService;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -21,7 +24,8 @@ import java.io.Serializable;
 public class UserLoginBean implements Serializable {
 
     @Inject
-    private AuthenticationServiceInterface authService;
+    @UserAuth
+    private AuthenticationService authService;
 
     @Getter
     @Setter
@@ -32,12 +36,12 @@ public class UserLoginBean implements Serializable {
     private String password;
 
 
-    public String login() {
+    public String login() throws AuthenticationException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         try {
-            UserAuthResult result = authService.authenticateUser(email, password);
+            UserAuthResult result = (UserAuthResult) authService.authenticate(email, password);
 
             if (result.isSuccess()) {
                 User user = result.getUser();
@@ -61,7 +65,7 @@ public class UserLoginBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Login failed.",
                             e.getCause().getMessage()));
-            return null;
+            throw e;
         }
     }
 }

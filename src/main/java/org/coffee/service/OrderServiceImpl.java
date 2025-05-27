@@ -1,5 +1,6 @@
 package org.coffee.service;
 
+import org.coffee.annotations.Logged;
 import org.coffee.event.*;
 import org.coffee.exception.*;
 import org.coffee.persistence.dao.*;
@@ -8,6 +9,7 @@ import org.coffee.persistence.entity.enums.OrderStatus;
 import org.coffee.dto.OrderItemDto;
 import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderModificationDto;
+import org.coffee.service.interfaces.OrderService;
 import org.hibernate.Hibernate;
 
 import javax.ejb.Stateless;
@@ -20,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
-public class OrderService implements Serializable {
+public class OrderServiceImpl implements OrderService {
 
     @Inject
     private OrderDAO orderDAO;
@@ -34,17 +36,21 @@ public class OrderService implements Serializable {
     @Inject
     private IngredientDAO ingredientDAO;
 
-
     @Inject
     Event<OrderSubmittedEvent> orderSubmittedEvent;
+
     @Inject
     Event<OrderAcceptedByEmployeeEvent> orderAcceptedEvent;
+
     @Inject
     Event<OrderCancelledByUserEvent> orderCancelledByUserEvent;
+
     @Inject
     Event<OrderCancelledByEmployeeEvent> orderCancelledByEmployeeEvent;
+
     @Inject
     Event<OrderModifiedByUserEvent> orderModifiedEvent;
+
     @Inject
     Event<OrderCompletedByEmployeeEvent> orderCompletedEvent;
 
@@ -99,6 +105,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order cancelOrderByUser(Long orderId, Long userId, Integer clientVersion)
             throws OrderNotFoundException, UserNotAuthorizedException, OrderCannotBeCancelledException, OrderConflictException {
         try {
@@ -131,6 +138,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order acceptOrderByEmployee(Long orderId )
             throws OrderNotFoundException, OrderActionException, OrderConflictException {
         try {
@@ -157,6 +165,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order cancelOrderByEmployee(Long orderId, Integer clientVersion )
             throws OrderNotFoundException, OrderActionException, OrderConflictException {
         try {
@@ -187,6 +196,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order completeOrderByEmployee(Long orderId, Integer clientVersion /*, String employeeId */)
             throws OrderNotFoundException, OrderActionException, OrderConflictException {
         try {
@@ -217,6 +227,7 @@ public class OrderService implements Serializable {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order createOrder(OrderCreationDto request, Long userId)
             throws UserNotFoundException, ProductNotFoundException, IngredientNotFoundException {
 
@@ -297,6 +308,7 @@ public class OrderService implements Serializable {
 
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order modifyOrderByUser(Long orderId, OrderModificationDto modRequest, Long userId)
             throws OrderNotFoundException, OrderCannotBeModifiedException,
             OrderConflictException {

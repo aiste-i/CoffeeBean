@@ -1,19 +1,21 @@
 package org.coffee.service;
 
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.EmployeeDAO;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.exception.CredentialChangeException;
-import org.coffee.service.interfaces.EmployeeServiceInterface;
+import org.coffee.service.interfaces.EmployeeService;
 import org.coffee.util.PasswordUtil;
 
 import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Stateless
-public class EmployeeService implements EmployeeServiceInterface {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Inject
     private EmployeeDAO employeeDAO;
@@ -24,11 +26,11 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     public Optional<Employee> getEmployee(String usernameOrEmailInput) {
         return employeeDAO.findByUsername(usernameOrEmailInput)
-                .map(Optional::of)
-                .orElseGet(() -> employeeDAO.findByEmail(usernameOrEmailInput));
+                .or(() -> employeeDAO.findByEmail(usernameOrEmailInput));
     }
 
     @Transactional
+    @Logged
     public boolean changePassword(Employee employee, String oldPassword, String password)
             throws CredentialChangeException, OptimisticLockException {
 

@@ -1,6 +1,6 @@
 package org.coffee.service.interfaces;
 
-public interface TokenServiceInterface {
+public interface TokenService {
 
     String generateToken();
 }

@@ -1,5 +1,6 @@
 package org.coffee.rest;
 
+import org.coffee.annotations.Logged;
 import org.coffee.dto.ClientConflictMessageDto;
 import org.coffee.dto.ClientMessageDto;
 import org.coffee.dto.OrderCreationDto;
@@ -43,6 +44,7 @@ public class OrderApiClient {
         }
     }
 
+    @Logged
     public Order createOrder(OrderCreationDto dto) throws OrderApiException {
         WebTarget createOrderTarget = baseTarget.path("orders");
         try (Response response = createOrderTarget
@@ -54,7 +56,6 @@ public class OrderApiClient {
             throw new OrderApiException("Network or processing error during create order: " + e.getMessage(), 0, e);
         }
     }
-
 
     public Order getOrderById(Long orderId) throws OrderApiException {
         WebTarget getOrderTarget = baseTarget.path("orders").path(String.valueOf(orderId));

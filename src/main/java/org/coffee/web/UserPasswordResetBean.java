@@ -2,15 +2,12 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.coffee.persistence.dao.PasswordResetDAO;
-import org.coffee.persistence.dao.UserDAO;
-import org.coffee.service.interfaces.UserServiceInterface;
+import org.coffee.service.interfaces.UserService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 
@@ -19,13 +16,7 @@ import java.io.Serializable;
 public class UserPasswordResetBean implements Serializable {
 
     @EJB
-    private UserServiceInterface userService;
-
-    @Inject
-    private UserDAO userDAO;
-
-    @Inject
-    private PasswordResetDAO resetDAO;
+    private UserService userService;
 
     @Getter
     @Setter

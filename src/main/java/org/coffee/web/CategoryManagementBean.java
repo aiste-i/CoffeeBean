@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.IngredientTypeDAO;
 import org.coffee.persistence.dao.ProductCategoryDAO;
 import org.coffee.persistence.entity.IngredientType;
@@ -53,6 +54,7 @@ public class CategoryManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void saveCategory() {
         if (selectedIngredientTypeIds != null) {
             List<IngredientType> selectedTypes = ingredientTypeDAO.findByIds(selectedIngredientTypeIds);
@@ -70,6 +72,8 @@ public class CategoryManagementBean implements Serializable {
         selectedIngredientTypeIds = null;
     }
 
+    @Transactional
+    @Logged
     public void deleteCategory(ProductCategory category) {
         categoryDAO.removeById(category.getId());
         refreshCategoryList();

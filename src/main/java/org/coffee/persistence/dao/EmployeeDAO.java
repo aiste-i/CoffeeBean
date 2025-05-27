@@ -43,7 +43,7 @@ public class EmployeeDAO extends BaseDAO<Employee> {
         }
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
+    @Transactional(Transactional.TxType.MANDATORY)
     public boolean removeByUsername(String username) {
         try {
             Employee employee = this.findByUsername(username).orElse(null);
