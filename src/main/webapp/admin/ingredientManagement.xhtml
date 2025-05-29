@@ -69,7 +69,8 @@
     </h:form>
 
     <p:dialog header="Ingredient Details" widgetVar="ingredientDialog" modal="true" resizable="false"
-              id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200" dynamic="true">
+              id="ingredientDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200" dynamic="true"
+              onShow="#{ingredientManagementBean.loadIngredientTypes()}">
         <h:form id="dialogs">
             <p:messages id="messages" autoUpdate="true" showDetail="true" />
             <p:outputPanel id="ingredientDialogPanel" style="text-align:center;">

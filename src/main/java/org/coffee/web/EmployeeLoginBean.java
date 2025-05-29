@@ -48,7 +48,7 @@ public class EmployeeLoginBean {
                 HttpSession session = request.getSession(true);
                 session.setAttribute(LOGGED_IN_USER_ID, employee.getId());
                 session.setAttribute(LOGGED_IN_USER_ROLE, employee.getRole());
-                session.setAttribute(LOGGED_IN_USERNAME, employee.getEmail());
+                session.setAttribute(LOGGED_IN_USERNAME, employee.getUsername());
 
                 return "/admin/dashboard.xhtml?faces-redirect=true";
             }
@@ -71,7 +71,7 @@ public class EmployeeLoginBean {
             context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Login failed.",
-                            e.getCause().getMessage()));
+                            "Unknown error occurred."));
             return null;
         }
     }
