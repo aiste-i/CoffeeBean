@@ -72,7 +72,8 @@
 
     <h:form id="dialogs">
         <p:dialog header="Product Details" widgetVar="productDialog" modal="true" resizable="false"
-                  id="productDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200">
+                  id="productDialog" draggable="false" showEffect="fade" hideEffect="fade" closable="true" width="700" minHeight="200"
+                onShow="#{productManagementBean.loadProductCategories()}">
             <p:outputPanel id="productDialogPanel" style="text-align:center;">
                 <p:panelGrid columns="2" style="margin:0 auto;" columnClasses="label,value">
 

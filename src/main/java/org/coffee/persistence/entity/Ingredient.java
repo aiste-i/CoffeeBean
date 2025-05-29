@@ -28,7 +28,7 @@ public class Ingredient {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_type_id", nullable = false)
+    @JoinColumn(name = "ingredient_type_id")
     @JsonbTransient
     private IngredientType type;
 

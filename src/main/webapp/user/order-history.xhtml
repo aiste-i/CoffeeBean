@@ -79,7 +79,7 @@
         </p:toolbar>
 
         <p:remoteCommand name="rcRefreshDashboard"
-                         update="activeOrdersPanel pastOrdersPanel pageGrowl"
+                         update="activeOrdersPanel pastOrdersPanel"
                          actionListener="#{orderHistoryBean.loadOrdersForUser(userSessionBean.loggedInUserId)}" />
 
         <p:panel id="activeOrdersPanel" header="Active Orders (#{orderHistoryBean.activeOrders.size()})">

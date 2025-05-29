@@ -1,6 +1,7 @@
 package org.coffee.persistence.dao;
 
 import org.coffee.persistence.entity.Product;
+import org.coffee.persistence.entity.ProductCategory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
@@ -30,4 +31,12 @@ public class ProductDAO extends BaseDAO<Product> {
         query.setParameter("id", id);
         return query.getSingleResult();
     }
+
+    public List<Product> findByCategory(ProductCategory category) {
+        return em.createQuery(
+                        "SELECT p FROM Product p WHERE p.category = :category", Product.class)
+                .setParameter("category", category)
+                .getResultList();
+    }
+
 }

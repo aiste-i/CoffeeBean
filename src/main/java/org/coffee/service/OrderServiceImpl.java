@@ -427,7 +427,6 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderStatus(OrderStatus.PENDING);
             Order mergedOrder = orderDAO.update(order);
             orderDAO.flush();
-            System.out.println("ordersubmiteed id= " + mergedOrder.getId());
 
             orderSubmittedEvent.fire(new OrderSubmittedEvent(initializeOrder(mergedOrder)));
             return mergedOrder;

@@ -6,10 +6,13 @@ import com.stripe.net.Webhook;
 import org.coffee.rest.OrderApiClient;
 
 
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.coffee.web.OrderBean;
 import org.json.JSONObject;
 
 
@@ -21,9 +24,12 @@ public class StripeWebhookResource {
     @Inject
     private OrderApiClient orderApiClient;
 
+    @Inject
+    private OrderBean orderBean;
+
     private static final String STRIPE_WEBHOOK_SECRET = "whsec_5b2646f0b0071125d862bb3ba50d3f4c253a7d082a843e43de012a9ad0ff7a38";
 
-
+    // stripe listen --forward-to localhost:9080/coffee-1.0-SNAPSHOT/api/payment/webhook
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

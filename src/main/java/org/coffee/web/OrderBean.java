@@ -120,6 +120,10 @@ public class OrderBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Order Cleared", "Your order has been emptied."));
     }
 
+    public void emptyOrder() {
+        createNewOrder();
+    }
+
     public boolean isOrderEmpty() {
         return currentOrder == null || currentOrder.getItems() == null || currentOrder.getItems().isEmpty();
     }

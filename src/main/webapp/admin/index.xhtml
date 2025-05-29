@@ -31,13 +31,15 @@
 </h:head>
 <h:body>
     <h:form id="buttonForm">
-        <p:commandButton style="margin: 3px; float: right;" value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"
-                         rendered="#{sessionScope.loggedInUserRole == 'ADMIN'}"
-                         styleClass="ui-button-primary"/>
+        <p:toolbar>
+            <p:toolbarGroup align="right">
+                <p:button value="Back to Dashboard" outcome="/admin/dashboard.xhtml" icon="pi pi-home"/>
+            </p:toolbarGroup>
+        </p:toolbar>
         <p:commandButton style="margin: 3px; float: right;"
                         value="Log Out"
                          icon="pi pi-sign-out"
-                         action="#{employeeLoginBean.logout}"
+                         action="#{userSessionBean.logout}"
                          rendered="#{sessionScope.loggedInUserRole == 'EMPLOYEE'}"
                          styleClass="ui-button-danger" ajax="false"/>
     </h:form>

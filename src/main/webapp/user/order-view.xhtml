@@ -90,6 +90,7 @@
                </h:panelGrid>
 
                <div class="action-buttons">
+                  <p:button value="Back to Menu" outcome="/user/menu.xhtml" icon="pi pi-home"/>
                   <p:commandButton value="Clear Order" actionListener="#{orderBean.clearOrder}"
                                    update=":reviewOrderForm:orderContentsPanel :pageMessages" process="@this"
                                    icon="pi pi-times-circle" styleClass="ui-button-warning"

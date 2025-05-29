@@ -35,10 +35,10 @@ public class IngredientType {
     @Column(name = "opt_lock_version")
     private Integer version;
 
-    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "type", cascade = CascadeType.DETACH)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "addonIngredientTypes")
+    @ManyToMany(mappedBy = "addonIngredientTypes", cascade = CascadeType.DETACH)
     private Set<ProductCategory> categories = new HashSet<>();
 
     @PrePersist
