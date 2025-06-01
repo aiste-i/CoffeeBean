@@ -5,7 +5,9 @@ import lombok.Setter;
 import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.IngredientTypeDAO;
 import org.coffee.persistence.dao.ProductCategoryDAO;
+import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.IngredientType;
+import org.coffee.persistence.entity.Product;
 import org.coffee.persistence.entity.ProductCategory;
 
 import javax.faces.view.ViewScoped;
@@ -24,6 +26,9 @@ public class CategoryManagementBean implements Serializable {
 
     @Inject
     private ProductCategoryDAO categoryDAO;
+
+    @Inject
+    private ProductDAO productDAO;
 
     private ProductCategory selectedCategory;
 
@@ -75,6 +80,12 @@ public class CategoryManagementBean implements Serializable {
     @Transactional
     @Logged
     public void deleteCategory(ProductCategory category) {
+        List<Product> products = productDAO.findByCategory(category);
+        for (Product product : products) {
+            product.setCategory(null);
+            productDAO.update(product);
+        }
+
         categoryDAO.removeById(category.getId());
         refreshCategoryList();
         if (selectedCategory != null && selectedCategory.equals(category)) {

@@ -1,9 +1,12 @@
 package org.coffee.persistence.dao;
 
+import org.coffee.persistence.entity.IngredientType;
 import org.coffee.persistence.entity.ProductCategory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.List;
 
 import static org.coffee.constants.Constants.PERSISTENCE_UNIT;
 
@@ -24,4 +27,11 @@ public class ProductCategoryDAO extends BaseDAO<ProductCategory> {
                 .setParameter("id", id)
                 .getSingleResult();
     }
+    public List<ProductCategory> findByAddonIngredientType(IngredientType type) {
+        return em.createQuery(
+                        "SELECT c FROM ProductCategory c JOIN c.addonIngredientTypes t WHERE t = :type", ProductCategory.class)
+                .setParameter("type", type)
+                .getResultList();
+    }
+
 }

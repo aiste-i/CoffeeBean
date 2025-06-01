@@ -37,7 +37,7 @@ public class ProductCategory implements Serializable {
     @JsonbTransient
     private Integer version;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.DETACH)
     private List<Product> products = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
