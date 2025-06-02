@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.dto.OrderCreationDto;
 import org.coffee.dto.OrderItemDto;
 import org.coffee.persistence.entity.Ingredient;
@@ -70,6 +71,7 @@ public class CheckoutConfirmBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void submitFinalOrder() {
         if (orderBean.isOrderEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null,

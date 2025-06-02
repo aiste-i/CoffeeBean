@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.IngredientTypeDAO;
 import org.coffee.persistence.entity.IngredientType;
 
@@ -37,6 +38,7 @@ public class IngTypeManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void saveIngredientType() {
         if (selectedIngredientType.getId() == null) {
             ingredientTypeDAO.persist(selectedIngredientType);
@@ -48,6 +50,7 @@ public class IngTypeManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void deleteIngredientType(IngredientType ingredientType) {
         ingredientTypeDAO.removeById(ingredientType.getId());
         refreshIngredientTypeList();

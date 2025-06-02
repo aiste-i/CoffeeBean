@@ -9,24 +9,38 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Logger;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 @Logged
 @Interceptor
-@Priority(Interceptor.Priority.APPLICATION) // Needed to activate the interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 public class LoggingInterceptor implements Serializable {
-
     private static final Logger LOGGER = Logger.getLogger(LoggingInterceptor.class.getName());
+    
+    static {
+        try {
+            FileHandler fileHandler = new FileHandler("application.log", true);
+
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+
+            LOGGER.addHandler(fileHandler);
+            LOGGER.setUseParentHandlers(false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @AroundInvoke
     public Object logMethod(InvocationContext ctx) throws Exception {
         long start = System.currentTimeMillis();
-
         String className = ctx.getTarget().getClass().getSimpleName();
         String methodName = ctx.getMethod().getName();
         String params = Arrays.toString(ctx.getParameters());
-
         LOGGER.info(() -> String.format("Entering %s.%s with parameters %s", className, methodName, params));
-
         try {
             Object result = ctx.proceed();
             long duration = System.currentTimeMillis() - start;

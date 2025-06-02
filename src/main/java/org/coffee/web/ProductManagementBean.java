@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.ProductCategoryDAO;
 import org.coffee.persistence.dao.ProductDAO;
 import org.coffee.persistence.entity.Product;
@@ -54,6 +55,7 @@ public class ProductManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void saveProduct() {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -79,6 +81,7 @@ public class ProductManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void deleteProduct(Product product) {
         productDAO.removeById(product.getId());
         getProductList();

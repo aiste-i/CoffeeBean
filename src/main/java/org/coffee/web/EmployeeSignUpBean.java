@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.entity.Employee;
 import org.coffee.persistence.entity.enums.UserRole;
 import org.coffee.service.interfaces.BusinessService;
@@ -37,6 +38,7 @@ public class EmployeeSignUpBean {
     private Employee employee = new Employee();
 
     @Transactional
+    @Logged
     public String signUp() {
         FacesContext context = FacesContext.getCurrentInstance();
 

@@ -385,6 +385,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     private Order initializeOrder(Order order) {
         if (order == null)
             return null;
@@ -413,6 +414,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
+    @Logged
     public Order updateOrder(Long orderId)
             throws OrderNotFoundException, OrderActionException, OrderConflictException {
         try {

@@ -2,6 +2,7 @@ package org.coffee.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.coffee.annotations.Logged;
 import org.coffee.persistence.dao.IngredientDAO;
 import org.coffee.persistence.dao.IngredientTypeDAO;
 import org.coffee.persistence.entity.Ingredient;
@@ -57,6 +58,7 @@ public class IngredientManagementBean implements Serializable {
 
 
     @Transactional
+    @Logged
     public void saveIngredient() {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -83,6 +85,7 @@ public class IngredientManagementBean implements Serializable {
     }
 
     @Transactional
+    @Logged
     public void deleteIngredient(Ingredient ingredient) {
         ingredientDAO.removeById(ingredient.getId());
         getIngredientList();
